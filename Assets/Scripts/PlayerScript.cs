@@ -6,9 +6,10 @@ using UnityEngine.InputSystem;
 public class PlayerScript : MonoBehaviour
 {
   CharacterController? controller;
-
   Vector2 currentMoveInput;
   Vector2 processedMoveInput;
+
+  int killCount;
 
   void HandleAttack()
   {
@@ -16,7 +17,13 @@ public class PlayerScript : MonoBehaviour
 
     foreach (var collider in colliders)
     {
-      Destroy(collider.transform.parent.gameObject);
+      var enemyDied = collider.transform.parent.gameObject
+        .GetComponent<EnemyScript>().InflictDamage(20);
+
+      if (enemyDied)
+      {
+        killCount++;
+      }
     }
   }
 
@@ -27,7 +34,7 @@ public class PlayerScript : MonoBehaviour
     processedMoveInput = Vector2.Lerp(
       processedMoveInput,
       targetMoveInput,
-      .05f
+      .02f
     );
 
     var moveInput = processedMoveInput;
@@ -56,9 +63,9 @@ public class PlayerScript : MonoBehaviour
     controller = GetComponent<CharacterController>();
   }
 
-  void Start()
+  void OnGUI()
   {
-
+    GUI.Label(new Rect(100, 16, 100, 20), $"Kill count: {killCount}");
   }
 
   void Update()
