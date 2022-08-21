@@ -7,4 +7,7 @@
 
 ### Links
 
-* [Get textures](https://tileable.co/)
+#### Get textures
+
+* [tileable.co](https://tileable.co/)
+* [textures.com](https://textures.com/)
