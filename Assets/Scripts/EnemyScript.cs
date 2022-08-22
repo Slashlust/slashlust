@@ -8,11 +8,18 @@ public class EnemyScript : MonoBehaviour
   NavMeshAgent? agent;
   GameObject? player;
 
-  float hitPoints = 100;
+  [HideInInspector]
+  public readonly float initialHitPoints = 100f;
+  float hitPoints = 100f;
 
   void Die()
   {
     GameManagerScript.instance?.KillEnemy(gameObject);
+  }
+
+  public float GetCurrentHitPoints()
+  {
+    return hitPoints;
   }
 
   void HandleMovement(NavMeshAgent agent, GameObject player)
@@ -26,12 +33,12 @@ public class EnemyScript : MonoBehaviour
   {
     var newHitPoints = hitPoints - damage;
 
-    if (hitPoints <= 0)
+    if (hitPoints <= 0f)
     {
       return false;
     }
 
-    if (newHitPoints <= 0)
+    if (newHitPoints <= 0f)
     {
       Die();
 

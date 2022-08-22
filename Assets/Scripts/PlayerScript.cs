@@ -46,9 +46,14 @@ public class PlayerScript : MonoBehaviour
 
   public void Fire(InputAction.CallbackContext context)
   {
-    var value = context.ReadValue<float>();
+    if (context.performed)
+    {
+      var value = context.ReadValue<float>();
 
-    HandleAttack();
+
+
+      HandleAttack();
+    }
   }
 
   public void Move(InputAction.CallbackContext context)
