@@ -34,7 +34,7 @@ public class PlayerScript : MonoBehaviour
     processedMoveInput = Vector2.Lerp(
       processedMoveInput,
       targetMoveInput,
-      .02f
+      1f
     );
 
     var moveInput = processedMoveInput;
@@ -60,7 +60,17 @@ public class PlayerScript : MonoBehaviour
   {
     var value = context.ReadValue<Vector2>();
 
-    currentMoveInput = value;
+    if (value.magnitude != 0) {
+      currentMoveInput = value;
+    }
+
+
+    /*
+    if (value.magnitude != 0) {
+      currentMoveInput = value;
+    }
+    */
+
   }
 
   void Awake()
