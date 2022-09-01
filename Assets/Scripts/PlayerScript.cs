@@ -6,9 +6,12 @@ using UnityEngine.InputSystem;
 public class PlayerScript : MonoBehaviour
 {
   CharacterController? controller;
+  PlayerInput? playerInput;
   Vector2 currentMoveInput;
   Vector2 processedMoveInput;
+  Vector2 lastMove;
 
+  float lastMoveTimestamp;
   int killCount;
 
   void HandleAttack()
@@ -34,7 +37,7 @@ public class PlayerScript : MonoBehaviour
     processedMoveInput = Vector2.Lerp(
       processedMoveInput,
       targetMoveInput,
-      1f
+      .02f
     );
 
     var moveInput = processedMoveInput;
@@ -50,8 +53,6 @@ public class PlayerScript : MonoBehaviour
     {
       var value = context.ReadValue<float>();
 
-
-
       HandleAttack();
     }
   }
@@ -60,22 +61,40 @@ public class PlayerScript : MonoBehaviour
   {
     var value = context.ReadValue<Vector2>();
 
-    if (value.magnitude != 0) {
+    if (value.magnitude == 0)
+    {
+      if (lastMove.magnitude == 0)
+      {
+        currentMoveInput = Vector2.zero;
+      }
+    }
+    else
+    {
       currentMoveInput = value;
     }
 
+    lastMove = value;
+    lastMoveTimestamp = Time.timeSinceLevelLoad;
+  }
 
-    /*
-    if (value.magnitude != 0) {
-      currentMoveInput = value;
+  public void MoveCheck()
+  {
+    var value = playerInput?.actions["Move"].ReadValue<Vector2>();
+
+    if (
+      value?.magnitude == 0 &&
+      lastMove.magnitude == 0 &&
+      Time.timeSinceLevelLoad - lastMoveTimestamp > .01f
+    )
+    {
+      currentMoveInput = Vector2.zero;
     }
-    */
-
   }
 
   void Awake()
   {
     controller = GetComponent<CharacterController>();
+    playerInput = GetComponent<PlayerInput>();
   }
 
   void OnGUI()
@@ -85,6 +104,8 @@ public class PlayerScript : MonoBehaviour
 
   void Update()
   {
+    MoveCheck();
+
     if (controller != null)
     {
       HandleMovement(controller: controller);
