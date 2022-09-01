@@ -1,6 +1,12 @@
 name: Build project
 
-on: [push, pull_request]
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+"
 
 jobs:
   buildForAllSupportedPlatforms:
@@ -18,21 +24,52 @@ jobs:
           - Android # Build an Android .apk standalone app.
           # - WebGL # WebGL.
     steps:
+      # Checkout
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
           lfs: true
+
+      # Cache
       - uses: actions/cache@v2
         with:
           path: Library
           key: Library-${{ matrix.targetPlatform }}
           restore-keys: Library-
+
+      # Builder
       - uses: game-ci/unity-builder@v2
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
         with:
           targetPlatform: ${{ matrix.targetPlatform }}
+
+      # Artifact upload
       - uses: actions/upload-artifact@v2
         with:
           name: Build-${{ matrix.targetPlatform }}
           path: build/${{ matrix.targetPlatform }}
+
+      # Windows build zip
+      - uses: montudor/action-zip@v1
+        if: matrix.targetPlatform == 'StandaloneWindows64'
+        with:
+          args: zip -qq -r build/StandaloneWindows64.zip build/StandaloneWindows64
+
+      # Windows artifact release
+      - name: Release with Notes
+        uses: softprops/action-gh-release@v1
+        if: matrix.targetPlatform == 'StandaloneWindows64'
+        with:
+          files: build/StandaloneWindows64.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Android artifact release
+      - name: Release with Notes
+        uses: softprops/action-gh-release@v1
+        if: matrix.targetPlatform == 'Android'
+        with:
+          files: build/Android/Android.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
