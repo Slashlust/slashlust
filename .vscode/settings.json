@@ -51,5 +51,7 @@
     "temp/": true,
     "Temp/": true
   },
-  "editor.rulers": [80]
+  "editor.rulers": [80],
+  "editor.tabSize": 2,
+  "prettier.tabWidth": 2
 }

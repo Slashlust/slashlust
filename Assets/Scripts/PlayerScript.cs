@@ -10,27 +10,37 @@ public class PlayerScript : MonoBehaviour
   Vector2 currentMoveInput;
   Vector2 processedMoveInput;
   Vector2 lastMove;
-
+  Vector3 characterVelocity;
   Animator? anima;
+  GameObject? model;
 
   float lastMoveTimestamp;
   int killCount;
   bool attackLock;
 
-  System.Collections.IEnumerator SpawnLoop()
+  System.Collections.IEnumerator AttackRoutine()
   {
     anima?.SetBool("attack", true);
     attackLock = true;
+
     yield return new WaitForSeconds(0.4f);
+
     HandleAttack();
-    attackLock = false;
+
     anima?.SetBool("attack", false);
+    attackLock = false;
   }
 
   void HandleAttack()
   {
-    Debug.DrawRay(transform.position, transform.position + new Vector3{x = currentMoveInput.x, z = currentMoveInput.y}, Color.red);
-    var colliders = Physics.OverlapSphere(transform.position + new Vector3{x = currentMoveInput.x, z = currentMoveInput.y}, 1.7f, 0b1000000);
+    var offset = characterVelocity.normalized;
+
+    var colliders = Physics.OverlapSphere(
+      transform.position + offset,
+      1f,
+      0b1000000
+    );
+
     foreach (var collider in colliders)
     {
       var enemyDied = collider.transform.parent.gameObject
@@ -60,15 +70,32 @@ public class PlayerScript : MonoBehaviour
     controller.SimpleMove(Vector3.ClampMagnitude(move, 1f) * 4f);
   }
 
+  void HandleModelAnimation(GameObject model)
+  {
+    model.transform.rotation =
+      Quaternion.Lerp(
+        model.transform.rotation,
+        Quaternion.Euler(
+          0f,
+          Mathf.Atan2(characterVelocity.x, characterVelocity.z) * Mathf.Rad2Deg,
+          0f
+        ),
+      .1f
+    );
+  }
+
   public void Fire(InputAction.CallbackContext context)
   {
-    if(attackLock) {
+    if (attackLock)
+    {
       return;
     }
+
     if (context.performed)
     {
       var value = context.ReadValue<float>();
-      StartCoroutine(SpawnLoop());
+
+      StartCoroutine(AttackRoutine());
     }
   }
 
@@ -104,14 +131,23 @@ public class PlayerScript : MonoBehaviour
     {
       currentMoveInput = Vector2.zero;
     }
-    anima?.SetFloat("speed", (controller?.velocity.magnitude??0f)/1.2f);
+
+    var tempCharacterVelocity = controller?.velocity ?? Vector3.zero;
+
+    if (tempCharacterVelocity.magnitude > .1f)
+    {
+      characterVelocity = tempCharacterVelocity;
+    }
+
+    anima?.SetFloat("speed", (controller?.velocity.magnitude ?? 0f) / 1.2f);
   }
 
   void Awake()
   {
     controller = GetComponent<CharacterController>();
     playerInput = GetComponent<PlayerInput>();
-    anima = transform.Find("DogPolyart").GetComponent<Animator>();
+    model = transform.Find("DogPolyart").gameObject;
+    anima = model.GetComponent<Animator>();
   }
 
   void OnGUI()
@@ -126,6 +162,11 @@ public class PlayerScript : MonoBehaviour
     if (controller != null)
     {
       HandleMovement(controller: controller);
+    }
+
+    if (model != null)
+    {
+      HandleModelAnimation(model);
     }
   }
 }
