@@ -11,15 +11,26 @@ public class PlayerScript : MonoBehaviour
   Vector2 processedMoveInput;
   Vector2 lastMove;
 
-  private Animator anima;
+  Animator? anima;
 
   float lastMoveTimestamp;
   int killCount;
+  bool attackLock;
+
+  System.Collections.IEnumerator SpawnLoop()
+  {
+    anima?.SetBool("attack", true);
+    attackLock = true;
+    yield return new WaitForSeconds(0.4f);
+    HandleAttack();
+    attackLock = false;
+    anima?.SetBool("attack", false);
+  }
 
   void HandleAttack()
   {
-    var colliders = Physics.OverlapSphere(transform.position, 1f, 0b1000000);
-
+    Debug.DrawRay(transform.position, transform.position + new Vector3{x = currentMoveInput.x, z = currentMoveInput.y}, Color.red);
+    var colliders = Physics.OverlapSphere(transform.position + new Vector3{x = currentMoveInput.x, z = currentMoveInput.y}, 1.7f, 0b1000000);
     foreach (var collider in colliders)
     {
       var enemyDied = collider.transform.parent.gameObject
@@ -51,11 +62,13 @@ public class PlayerScript : MonoBehaviour
 
   public void Fire(InputAction.CallbackContext context)
   {
+    if(attackLock) {
+      return;
+    }
     if (context.performed)
     {
       var value = context.ReadValue<float>();
-
-      HandleAttack();
+      StartCoroutine(SpawnLoop());
     }
   }
 
@@ -91,7 +104,7 @@ public class PlayerScript : MonoBehaviour
     {
       currentMoveInput = Vector2.zero;
     }
-    anima.SetFloat("speed", controller.velocity.magnitude/1.2f);
+    anima?.SetFloat("speed", (controller?.velocity.magnitude??0f)/1.2f);
   }
 
   void Awake()
