@@ -42,6 +42,13 @@ public class GameManagerScript : MonoBehaviour
 
   void Awake()
   {
+    var currentFrameRate = Application.targetFrameRate;
+
+    if (currentFrameRate < 60)
+    {
+      Application.targetFrameRate = 60;
+    }
+
     instance = this;
   }
 
