@@ -24,21 +24,37 @@ jobs:
           - Android # Build an Android .apk standalone app.
           # - WebGL # WebGL.
     steps:
+      # Checkout
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
           lfs: true
+
+      # Cache
       - uses: actions/cache@v2
         with:
           path: Library
           key: Library-${{ matrix.targetPlatform }}
           restore-keys: Library-
+
+      # Builder
       - uses: game-ci/unity-builder@v2
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
         with:
           targetPlatform: ${{ matrix.targetPlatform }}
+
+      # Artifact upload
       - uses: actions/upload-artifact@v2
         with:
           name: Build-${{ matrix.targetPlatform }}
           path: build/${{ matrix.targetPlatform }}
+
+      # Artifact release
+      - name: Release with Notes
+        uses: softprops/action-gh-release@v1
+        with:
+          files: build/Android/Android.apk
+          # files: app/build/outputs/apk/release/app-release-unsigned.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
