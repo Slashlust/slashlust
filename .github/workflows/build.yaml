@@ -52,15 +52,24 @@ jobs:
 
       # Windows build zip
       - uses: montudor/action-zip@v1
+        if: matrix.targetPlatform == 'StandaloneWindows64'
         with:
           args: zip -qq -r build/StandaloneWindows64.zip build/StandaloneWindows64
 
-      # Artifact release
+      # Windows artifact release
       - name: Release with Notes
         uses: softprops/action-gh-release@v1
+        if: matrix.targetPlatform == 'StandaloneWindows64'
         with:
-          files: |
-            build/Android/Android.apk
-            build/StandaloneWindows64.zip
+          files: build/StandaloneWindows64.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Android artifact release
+      - name: Release with Notes
+        uses: softprops/action-gh-release@v1
+        if: matrix.targetPlatform == 'Android'
+        with:
+          files: build/Android/Android.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
