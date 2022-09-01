@@ -37,7 +37,7 @@ public class PlayerScript : MonoBehaviour
     processedMoveInput = Vector2.Lerp(
       processedMoveInput,
       targetMoveInput,
-      .02f
+      .08f
     );
 
     var moveInput = processedMoveInput;
