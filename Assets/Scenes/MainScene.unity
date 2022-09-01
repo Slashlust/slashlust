@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.43470967, g: 0.4721343, b: 0.5098337, a: 1}
+  m_IndirectSpecularColor: {r: 0.44057134, g: 0.48920023, b: 0.569343, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -209,14 +209,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 23961099}
-  m_LocalRotation: {x: 0.079146475, y: -0.25794873, z: 0.02120723, w: 0.96267784}
+  m_LocalRotation: {x: 0.5411239, y: -0.17779137, z: 0.118280895, w: 0.8133787}
   m_LocalPosition: {x: 0, y: 3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 9.4, y: -30, z: 0}
+  m_LocalEulerAnglesHint: {x: 67.27, y: -24.66, z: 0}
 --- !u!1 &176817241
 GameObject:
   m_ObjectHideFlags: 0
@@ -2451,7 +2451,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1219551440
 MonoBehaviour:
@@ -2488,7 +2488,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh24568
+  m_Name: pb_Mesh36606
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -2713,29 +2713,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c7eefc8f6b5e68458f28981e3eb5196, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyPrefab: {fileID: 2422363816341469345, guid: 878f06b5ada303f47b84bdd84f0d4917, type: 3}
---- !u!1001 &1741255951
+  enemyPrefab: {fileID: 0}
+--- !u!1001 &1876611742
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: -3976935303735240655, guid: 5d4e7d89f2ca88444a90ee28fd289237, type: 3}
-      propertyPath: m_DefaultControlScheme
-      value: Gamepad
-      objectReference: {fileID: 0}
-    - target: {fileID: -3976935303735240655, guid: 5d4e7d89f2ca88444a90ee28fd289237, type: 3}
-      propertyPath: m_NeverAutoSwitchControlSchemes
-      value: 0
-      objectReference: {fileID: 0}
+    - target: {fileID: 260737732976867580, guid: 5d4e7d89f2ca88444a90ee28fd289237, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: b60dc9aa529b314489f628aa3b57c470, type: 2}
     - target: {fileID: 6281018500087805442, guid: 5d4e7d89f2ca88444a90ee28fd289237, type: 3}
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
     - target: {fileID: 6281018500087805443, guid: 5d4e7d89f2ca88444a90ee28fd289237, type: 3}
       propertyPath: m_RootOrder
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 6281018500087805443, guid: 5d4e7d89f2ca88444a90ee28fd289237, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2743,7 +2739,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6281018500087805443, guid: 5d4e7d89f2ca88444a90ee28fd289237, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.03
+      value: 1.21
       objectReference: {fileID: 0}
     - target: {fileID: 6281018500087805443, guid: 5d4e7d89f2ca88444a90ee28fd289237, type: 3}
       propertyPath: m_LocalPosition.z

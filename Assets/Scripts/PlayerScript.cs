@@ -11,6 +11,8 @@ public class PlayerScript : MonoBehaviour
   Vector2 processedMoveInput;
   Vector2 lastMove;
 
+  private Animator anima;
+
   float lastMoveTimestamp;
   int killCount;
 
@@ -44,7 +46,7 @@ public class PlayerScript : MonoBehaviour
 
     var move = moveInput.y * transform.forward + moveInput.x * transform.right;
 
-    controller.SimpleMove(Vector3.ClampMagnitude(move, 1f) * 6f);
+    controller.SimpleMove(Vector3.ClampMagnitude(move, 1f) * 4f);
   }
 
   public void Fire(InputAction.CallbackContext context)
@@ -89,12 +91,14 @@ public class PlayerScript : MonoBehaviour
     {
       currentMoveInput = Vector2.zero;
     }
+    anima.SetFloat("speed", controller.velocity.magnitude/1.2f);
   }
 
   void Awake()
   {
     controller = GetComponent<CharacterController>();
     playerInput = GetComponent<PlayerInput>();
+    anima = transform.Find("DogPolyart").GetComponent<Animator>();
   }
 
   void OnGUI()
