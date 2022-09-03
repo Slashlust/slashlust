@@ -23,7 +23,7 @@ public class GameManagerScript : MonoBehaviour
   {
     while (true)
     {
-      for (int i = 0; i < 5; i++)
+      for (int i = 0; i < 1; i++)
       {
         var vector2 = Random.insideUnitCircle * 5;
 
