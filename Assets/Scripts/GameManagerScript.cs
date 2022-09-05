@@ -7,10 +7,14 @@ public class GameManagerScript : MonoBehaviour
 {
   [SerializeField]
   GameObject? enemyPrefab;
+  [SerializeField]
+  List<GameObject>? roomPrefabs;
 
   List<GameObject> enemies = new List<GameObject>();
 
   public static GameManagerScript instance = new GameManagerScript();
+  public List<GameObject> GetRoomPrefabs =>
+    roomPrefabs ?? new List<GameObject> { };
 
   public void KillEnemy(GameObject enemy)
   {
