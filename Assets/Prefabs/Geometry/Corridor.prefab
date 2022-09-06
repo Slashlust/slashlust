@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 1512510488903838250}
   - component: {fileID: 1512510488903838251}
   - component: {fileID: 1512510488903838248}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -834,7 +834,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1512510490295915832}
-  m_Layer: 0
+  - component: {fileID: 8806165094647198657}
+  m_Layer: 7
   m_Name: Corridor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -858,6 +859,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8806165094647198657
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1512510490295915833}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 805fdd402844143449c117db608dd1af, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dimensions: {x: 8, y: 3, z: 8}
 --- !u!1 &5912142284899155845
 GameObject:
   m_ObjectHideFlags: 0
@@ -867,7 +881,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1993360738814005221}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Attachment
   m_TagString: Untagged
   m_Icon: {fileID: 0}

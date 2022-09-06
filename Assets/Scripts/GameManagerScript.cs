@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.AI.Navigation;
 
 #nullable enable
 
@@ -9,12 +10,29 @@ public class GameManagerScript : MonoBehaviour
   GameObject? enemyPrefab;
   [SerializeField]
   List<GameObject>? roomPrefabs;
+  [SerializeField]
+  GameObject? corridorPrefab;
+  [SerializeField]
+  GameObject? deadEndPrefab;
+
+  [SerializeField]
+  int minRoomCount;
 
   List<GameObject> enemies = new List<GameObject>();
+  List<GameObject> rooms = new List<GameObject>();
 
-  public static GameManagerScript instance = new GameManagerScript();
+  public static GameManagerScript instance = default!;
   public List<GameObject> GetRoomPrefabs =>
     roomPrefabs ?? new List<GameObject> { };
+  public GameObject GetCorridorPrefab => corridorPrefab ?? default!;
+  public GameObject GetDeadEndPrefab => deadEndPrefab ?? default!;
+  public List<GameObject> GetRooms => rooms;
+  public int GetMinRoomCount => minRoomCount;
+
+  public void BakeNavMesh()
+  {
+    GetComponent<NavMeshSurface>().BuildNavMesh();
+  }
 
   public void KillEnemy(GameObject enemy)
   {
