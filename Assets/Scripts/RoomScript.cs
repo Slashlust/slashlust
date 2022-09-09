@@ -44,7 +44,7 @@ public class RoomScript : MonoBehaviour
         }
       }
 
-      var roomPrefab = roomPrefabs[0];
+      var roomPrefab = roomPrefabs[Random.Range(0, roomPrefabs.Count)];
 
       var attachmentRoomScript = roomPrefab.GetComponent<RoomScript>();
 

@@ -849,6 +849,9 @@ MonoBehaviour:
   enemyPrefab: {fileID: 2422363816341469345, guid: 878f06b5ada303f47b84bdd84f0d4917, type: 3}
   roomPrefabs:
   - {fileID: 4026393600238520495, guid: 6109664f69c5dc6419104103d44e9410, type: 3}
+  - {fileID: 4026393600238520495, guid: 02b7b7f9725eb7e488f19955309ad5b8, type: 3}
+  - {fileID: 4026393600238520495, guid: f4b4bfa5de296f04885ef823309bfb68, type: 3}
+  - {fileID: 4026393600238520495, guid: 2515c16f0b6d31e4294e0190ca752fa5, type: 3}
   corridorPrefab: {fileID: 1512510490295915833, guid: 6851cd75e9f241f4f9328937ffd2e5e3, type: 3}
   deadEndPrefab: {fileID: 6036638518381947339, guid: e88a18bb667cc4a4187ef5caa7f22121, type: 3}
   minRoomCount: 10
