@@ -852,9 +852,14 @@ MonoBehaviour:
   - {fileID: 4026393600238520495, guid: 02b7b7f9725eb7e488f19955309ad5b8, type: 3}
   - {fileID: 4026393600238520495, guid: f4b4bfa5de296f04885ef823309bfb68, type: 3}
   - {fileID: 4026393600238520495, guid: 2515c16f0b6d31e4294e0190ca752fa5, type: 3}
+  - {fileID: 4026393600238520495, guid: 8179ea1982c5fc0478184683e31502ba, type: 3}
+  - {fileID: 4026393600238520495, guid: a631bcdabd6293b41abaaf57279e6d35, type: 3}
+  - {fileID: 4026393600238520495, guid: 00e65d15371cf884b9f2661f82242102, type: 3}
+  - {fileID: 4026393600238520495, guid: 2a5d910ffb6e7134ca812a83195e8584, type: 3}
+  - {fileID: 4026393600238520495, guid: 4d7c30d6f9077c641b440ec828b4f517, type: 3}
   corridorPrefab: {fileID: 1512510490295915833, guid: 6851cd75e9f241f4f9328937ffd2e5e3, type: 3}
   deadEndPrefab: {fileID: 6036638518381947339, guid: e88a18bb667cc4a4187ef5caa7f22121, type: 3}
-  minRoomCount: 10
+  minRoomCount: 200
 --- !u!114 &1524951598
 MonoBehaviour:
   m_ObjectHideFlags: 0
