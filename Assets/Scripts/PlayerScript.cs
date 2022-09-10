@@ -119,6 +119,7 @@ public class PlayerScript : MonoBehaviour
 
   public void Fire(InputAction.CallbackContext context)
   {
+    // TODO: Melhorar mecânica de ataque e autoswing com delay antes e após ataque e lock melhor
     if (attackLock)
     {
       return;
@@ -134,6 +135,7 @@ public class PlayerScript : MonoBehaviour
 
   public void Look(InputAction.CallbackContext context)
   {
+    // TODO: Arrumar o flick do analógico
     var value = context.ReadValue<Vector2>();
 
     if (value.magnitude == 0)
@@ -179,6 +181,7 @@ public class PlayerScript : MonoBehaviour
 
   public void MoveCheck()
   {
+    // TODO: Arrumar o flick do analógico
     var value = playerInput?.actions["Move"].ReadValue<Vector2>();
 
     if (
@@ -232,6 +235,8 @@ public class PlayerScript : MonoBehaviour
     {
       HandleCameraTransforms(cameraTransform);
     }
+
+    // TODO: Mover
 
     var mousePosition = Mouse.current.position;
 
