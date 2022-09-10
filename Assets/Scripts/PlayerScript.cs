@@ -13,6 +13,7 @@ public class PlayerScript : MonoBehaviour
   Vector3 characterVelocity;
   Animator? anima;
   GameObject? model;
+  Transform? cameraTransform;
 
   float lastMoveTimestamp;
   int killCount;
@@ -51,6 +52,18 @@ public class PlayerScript : MonoBehaviour
         killCount++;
       }
     }
+  }
+
+  void HandleCameraTransforms(Transform cameraTransform)
+  {
+    var movementVector = characterVelocity;
+
+    cameraTransform.localPosition =
+      Vector3.Lerp(
+        cameraTransform.localPosition,
+        movementVector.normalized,
+        .02f
+      );
   }
 
   void HandleMovement(CharacterController controller)
@@ -148,6 +161,7 @@ public class PlayerScript : MonoBehaviour
     playerInput = GetComponent<PlayerInput>();
     model = transform.Find("DogPolyart").gameObject;
     anima = model.GetComponent<Animator>();
+    cameraTransform = Camera.main.transform;
   }
 
   void OnGUI()
@@ -167,6 +181,11 @@ public class PlayerScript : MonoBehaviour
     if (model != null)
     {
       HandleModelAnimation(model);
+    }
+
+    if (cameraTransform != null)
+    {
+      HandleCameraTransforms(cameraTransform);
     }
   }
 }
