@@ -14,10 +14,13 @@ public class PlayerScript : MonoBehaviour
   Animator? anima;
   GameObject? model;
   Transform? cameraTransform;
+  Vector2 currentLookInput;
+  Vector2 lastLook;
 
   float lastMoveTimestamp;
   int killCount;
   bool attackLock;
+  float lastLookTimestamp;
 
   System.Collections.IEnumerator AttackRoutine()
   {
@@ -30,11 +33,22 @@ public class PlayerScript : MonoBehaviour
 
     anima?.SetBool("attack", false);
     attackLock = false;
+
+    if (playerInput?.actions["Look"].ReadValue<Vector2>().magnitude > .5f)
+    {
+      StartCoroutine(AttackRoutine());
+    }
   }
 
   void HandleAttack()
   {
-    var offset = characterVelocity.normalized;
+    var offset2d = currentLookInput.normalized;
+
+    var offset = new Vector3
+    {
+      x = offset2d.x,
+      z = offset2d.y,
+    };
 
     var colliders = Physics.OverlapSphere(
       transform.position + offset,
@@ -85,15 +99,21 @@ public class PlayerScript : MonoBehaviour
 
   void HandleModelAnimation(GameObject model)
   {
+    var vector = attackLock ? new Vector3
+    {
+      x = currentLookInput.x,
+      z = currentLookInput.y,
+    } : characterVelocity;
+
     model.transform.rotation =
       Quaternion.Lerp(
         model.transform.rotation,
         Quaternion.Euler(
           0f,
-          Mathf.Atan2(characterVelocity.x, characterVelocity.z) * Mathf.Rad2Deg,
+          Mathf.Atan2(vector.x, vector.z) * Mathf.Rad2Deg,
           0f
         ),
-      .1f
+      attackLock ? .4f : .1f
     );
   }
 
@@ -110,6 +130,31 @@ public class PlayerScript : MonoBehaviour
 
       StartCoroutine(AttackRoutine());
     }
+  }
+
+  public void Look(InputAction.CallbackContext context)
+  {
+    var value = context.ReadValue<Vector2>();
+
+    if (value.magnitude == 0)
+    {
+      if (lastLook.magnitude == 0)
+      {
+        currentLookInput = Vector2.zero;
+      }
+    }
+    else
+    {
+      currentLookInput = value;
+
+      if (currentLookInput.magnitude > .5f && !attackLock)
+      {
+        StartCoroutine(AttackRoutine());
+      }
+    }
+
+    lastLook = value;
+    lastLookTimestamp = Time.timeSinceLevelLoad;
   }
 
   public void Move(InputAction.CallbackContext context)
@@ -187,5 +232,12 @@ public class PlayerScript : MonoBehaviour
     {
       HandleCameraTransforms(cameraTransform);
     }
+
+    var mousePosition = Mouse.current.position;
+
+    var xRatio = (mousePosition.x.ReadValue() / Screen.width) - .5f;
+    var yRatio = (mousePosition.y.ReadValue() / Screen.height) - .5f;
+
+    currentLookInput = new Vector2 { x = xRatio, y = yRatio };
   }
 }
