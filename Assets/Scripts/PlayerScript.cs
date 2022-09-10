@@ -22,6 +22,8 @@ public class PlayerScript : MonoBehaviour
   bool attackLock;
   float lastLookTimestamp;
 
+  MenuState menuState = MenuState.closed;
+
   System.Collections.IEnumerator AttackRoutine()
   {
     anima?.SetBool("attack", true);
@@ -82,7 +84,8 @@ public class PlayerScript : MonoBehaviour
 
   void HandleMovement(CharacterController controller)
   {
-    var targetMoveInput = currentMoveInput;
+    var targetMoveInput = menuState == MenuState.open
+      ? Vector2.zero : currentMoveInput;
 
     processedMoveInput = Vector2.Lerp(
       processedMoveInput,
@@ -115,10 +118,17 @@ public class PlayerScript : MonoBehaviour
         ),
       attackLock ? .4f : .1f
     );
+
+    anima?.SetFloat("speed", (controller?.velocity.magnitude ?? 0f) / 1.2f);
   }
 
   public void Fire(InputAction.CallbackContext context)
   {
+    if (menuState == MenuState.open)
+    {
+      return;
+    }
+
     // TODO: Melhorar mecânica de ataque e autoswing com delay antes e após ataque e lock melhor
     if (attackLock)
     {
@@ -199,8 +209,18 @@ public class PlayerScript : MonoBehaviour
     {
       characterVelocity = tempCharacterVelocity;
     }
+  }
 
-    anima?.SetFloat("speed", (controller?.velocity.magnitude ?? 0f) / 1.2f);
+  public void OnMenuClick()
+  {
+    if (menuState == MenuState.closed)
+    {
+      menuState = MenuState.open;
+    }
+    else
+    {
+      menuState = MenuState.closed;
+    }
   }
 
   void Awake()
@@ -219,7 +239,25 @@ public class PlayerScript : MonoBehaviour
 
   void Update()
   {
-    MoveCheck();
+    switch (menuState)
+    {
+      case MenuState.closed:
+        MoveCheck();
+
+        // TODO: Mover
+
+        var mousePosition = Mouse.current.position;
+
+        var xRatio = (mousePosition.x.ReadValue() / Screen.width) - .5f;
+        var yRatio = (mousePosition.y.ReadValue() / Screen.height) - .5f;
+
+        currentLookInput = new Vector2 { x = xRatio, y = yRatio };
+
+        break;
+      case MenuState.open:
+
+        break;
+    }
 
     if (controller != null)
     {
@@ -235,14 +273,5 @@ public class PlayerScript : MonoBehaviour
     {
       HandleCameraTransforms(cameraTransform);
     }
-
-    // TODO: Mover
-
-    var mousePosition = Mouse.current.position;
-
-    var xRatio = (mousePosition.x.ReadValue() / Screen.width) - .5f;
-    var yRatio = (mousePosition.y.ReadValue() / Screen.height) - .5f;
-
-    currentLookInput = new Vector2 { x = xRatio, y = yRatio };
   }
 }
