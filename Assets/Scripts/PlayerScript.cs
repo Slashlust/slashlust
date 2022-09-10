@@ -22,8 +22,6 @@ public class PlayerScript : MonoBehaviour
   bool attackLock;
   float lastLookTimestamp;
 
-  MenuState menuState = MenuState.closed;
-
   System.Collections.IEnumerator AttackRoutine()
   {
     anima?.SetBool("attack", true);
@@ -38,6 +36,27 @@ public class PlayerScript : MonoBehaviour
 
     if (playerInput?.actions["Look"].ReadValue<Vector2>().magnitude > .5f)
     {
+      StartCoroutine(AttackRoutine());
+    }
+  }
+
+  public void Fire(InputAction.CallbackContext context)
+  {
+    if (GameManagerScript.instance.GetMenuState == MenuState.open)
+    {
+      return;
+    }
+
+    // TODO: Melhorar mecânica de ataque e autoswing com delay antes e após ataque e lock melhor
+    if (attackLock)
+    {
+      return;
+    }
+
+    if (context.performed)
+    {
+      var value = context.ReadValue<float>();
+
       StartCoroutine(AttackRoutine());
     }
   }
@@ -82,22 +101,14 @@ public class PlayerScript : MonoBehaviour
       );
   }
 
-  void HandleMovement(CharacterController controller)
+  void HandleConfigInitialization()
   {
-    var targetMoveInput = menuState == MenuState.open
-      ? Vector2.zero : currentMoveInput;
+    GameManagerScript.instance.DisableMenu();
 
-    processedMoveInput = Vector2.Lerp(
-      processedMoveInput,
-      targetMoveInput,
-      .08f
-    );
-
-    var moveInput = processedMoveInput;
-
-    var move = moveInput.y * transform.forward + moveInput.x * transform.right;
-
-    controller.SimpleMove(Vector3.ClampMagnitude(move, 1f) * 4f);
+    if (!LocalPrefs.GetGamepadEnabled())
+    {
+      GameManagerScript.instance.DisableGamepad();
+    }
   }
 
   void HandleModelAnimation(GameObject model)
@@ -122,25 +133,23 @@ public class PlayerScript : MonoBehaviour
     anima?.SetFloat("speed", (controller?.velocity.magnitude ?? 0f) / 1.2f);
   }
 
-  public void Fire(InputAction.CallbackContext context)
+  void HandleMovement(CharacterController controller)
   {
-    if (menuState == MenuState.open)
-    {
-      return;
-    }
+    var targetMoveInput =
+      GameManagerScript.instance.GetMenuState == MenuState.open
+      ? Vector2.zero : currentMoveInput;
 
-    // TODO: Melhorar mecânica de ataque e autoswing com delay antes e após ataque e lock melhor
-    if (attackLock)
-    {
-      return;
-    }
+    processedMoveInput = Vector2.Lerp(
+      processedMoveInput,
+      targetMoveInput,
+      .08f
+    );
 
-    if (context.performed)
-    {
-      var value = context.ReadValue<float>();
+    var moveInput = processedMoveInput;
 
-      StartCoroutine(AttackRoutine());
-    }
+    var move = moveInput.y * transform.forward + moveInput.x * transform.right;
+
+    controller.SimpleMove(Vector3.ClampMagnitude(move, 1f) * 4f);
   }
 
   public void Look(InputAction.CallbackContext context)
@@ -213,13 +222,13 @@ public class PlayerScript : MonoBehaviour
 
   public void OnMenuClick()
   {
-    if (menuState == MenuState.closed)
+    if (GameManagerScript.instance.GetMenuState == MenuState.closed)
     {
-      menuState = MenuState.open;
+      GameManagerScript.instance.EnableMenu();
     }
     else
     {
-      menuState = MenuState.closed;
+      GameManagerScript.instance.DisableMenu();
     }
   }
 
@@ -237,9 +246,14 @@ public class PlayerScript : MonoBehaviour
     GUI.Label(new Rect(100, 16, 100, 20), $"Kill count: {killCount}");
   }
 
+  void Start()
+  {
+    HandleConfigInitialization();
+  }
+
   void Update()
   {
-    switch (menuState)
+    switch (GameManagerScript.instance.GetMenuState)
     {
       case MenuState.closed:
         MoveCheck();
