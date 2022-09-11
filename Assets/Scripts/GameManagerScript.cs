@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.AI.Navigation;
 
 #nullable enable
 
@@ -7,10 +8,86 @@ public class GameManagerScript : MonoBehaviour
 {
   [SerializeField]
   GameObject? enemyPrefab;
+  [SerializeField]
+  List<GameObject>? roomPrefabs;
+  [SerializeField]
+  GameObject? corridorPrefab;
+  [SerializeField]
+  GameObject? deadEndPrefab;
+
+  [SerializeField]
+  int minRoomCount;
 
   List<GameObject> enemies = new List<GameObject>();
+  List<GameObject> rooms = new List<GameObject>();
+  GameObject? gamepadGroup;
+  GameObject? menuPanel;
+  GameObject? geometry;
 
-  public static GameManagerScript instance = new GameManagerScript();
+  MenuState menuState = MenuState.closed;
+
+  public static GameManagerScript instance = default!;
+  public List<GameObject> GetRoomPrefabs =>
+    roomPrefabs ?? new List<GameObject> { };
+  public GameObject GetCorridorPrefab => corridorPrefab ?? default!;
+  public GameObject GetDeadEndPrefab => deadEndPrefab ?? default!;
+  public List<GameObject> GetRooms => rooms;
+  public int GetMinRoomCount => minRoomCount;
+  public MenuState GetMenuState => menuState;
+  public GameObject GetGeometry => geometry ?? default!;
+
+  public void BakeNavMesh()
+  {
+    GetComponent<NavMeshSurface>().BuildNavMesh();
+  }
+
+  public void DisableGamepad()
+  {
+    if (gamepadGroup == null)
+    {
+      return;
+    }
+
+    gamepadGroup.SetActive(false);
+
+    LocalPrefs.SetGamepadEnabled(false);
+  }
+
+  public void DisableMenu()
+  {
+    if (menuPanel == null)
+    {
+      return;
+    }
+
+    menuPanel.SetActive(false);
+
+    menuState = MenuState.closed;
+  }
+
+  public void EnableGamepad()
+  {
+    if (gamepadGroup == null)
+    {
+      return;
+    }
+
+    gamepadGroup.SetActive(true);
+
+    LocalPrefs.SetGamepadEnabled(true);
+  }
+
+  public void EnableMenu()
+  {
+    if (menuPanel == null)
+    {
+      return;
+    }
+
+    menuPanel.SetActive(true);
+
+    menuState = MenuState.open;
+  }
 
   public void KillEnemy(GameObject enemy)
   {
@@ -42,6 +119,8 @@ public class GameManagerScript : MonoBehaviour
 
   void Awake()
   {
+    instance = this;
+
     var currentFrameRate = Application.targetFrameRate;
 
     if (currentFrameRate < 60)
@@ -49,7 +128,9 @@ public class GameManagerScript : MonoBehaviour
       Application.targetFrameRate = 60;
     }
 
-    instance = this;
+    gamepadGroup = GameObject.Find("Canvas/GamepadGroup");
+    menuPanel = GameObject.Find("Canvas/MenuPanel");
+    geometry = GameObject.Find("Geometry");
   }
 
   void OnGUI()

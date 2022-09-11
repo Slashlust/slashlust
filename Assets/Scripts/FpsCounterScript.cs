@@ -1,6 +1,8 @@
 using System.Collections;
 using UnityEngine;
 
+#nullable enable
+
 public class FpsCounterScript : MonoBehaviour
 {
   float fps = 0f;
