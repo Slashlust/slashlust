@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+#nullable enable
+
 public class RoomScript : MonoBehaviour
 {
   [SerializeField]
