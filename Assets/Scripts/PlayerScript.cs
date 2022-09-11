@@ -40,6 +40,14 @@ public class PlayerScript : MonoBehaviour
     }
   }
 
+  public void Back(InputAction.CallbackContext context)
+  {
+    if (context.performed)
+    {
+      OnMenuClick();
+    }
+  }
+
   public void Fire(InputAction.CallbackContext context)
   {
     if (GameManagerScript.instance.GetMenuState == MenuState.open)

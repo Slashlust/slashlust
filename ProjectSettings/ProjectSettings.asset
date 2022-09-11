@@ -14,7 +14,7 @@ PlayerSettings:
   accelerometerFrequency: 60
   companyName: Slashlust
   productName: Slashlust
-  defaultCursor: {fileID: 0}
+  defaultCursor: {fileID: 2800000, guid: 4332e79636ea8474e9fa708be5ed6873, type: 3}
   cursorHotspot: {x: 0, y: 0}
   m_SplashScreenBackgroundColor: {r: 0.043137256, g: 0.015686275, b: 0.03137255, a: 1}
   m_ShowUnitySplashScreen: 1

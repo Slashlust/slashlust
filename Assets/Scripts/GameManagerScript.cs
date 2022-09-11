@@ -22,6 +22,7 @@ public class GameManagerScript : MonoBehaviour
   List<GameObject> rooms = new List<GameObject>();
   GameObject? gamepadGroup;
   GameObject? menuPanel;
+  GameObject? geometry;
 
   MenuState menuState = MenuState.closed;
 
@@ -33,6 +34,7 @@ public class GameManagerScript : MonoBehaviour
   public List<GameObject> GetRooms => rooms;
   public int GetMinRoomCount => minRoomCount;
   public MenuState GetMenuState => menuState;
+  public GameObject GetGeometry => geometry ?? default!;
 
   public void BakeNavMesh()
   {
@@ -128,6 +130,7 @@ public class GameManagerScript : MonoBehaviour
 
     gamepadGroup = GameObject.Find("Canvas/GamepadGroup");
     menuPanel = GameObject.Find("Canvas/MenuPanel");
+    geometry = GameObject.Find("Geometry");
   }
 
   void OnGUI()
