@@ -658,7 +658,7 @@ MonoBehaviour:
   - {fileID: 4026393600238520495, guid: f01964504ef05ac4c8d84a6df4abcb6b, type: 3}
   corridorPrefab: {fileID: 1512510490295915833, guid: 6851cd75e9f241f4f9328937ffd2e5e3, type: 3}
   deadEndPrefab: {fileID: 6036638518381947339, guid: e88a18bb667cc4a4187ef5caa7f22121, type: 3}
-  minRoomCount: 20
+  minRoomCount: 200
 --- !u!114 &1524951598
 MonoBehaviour:
   m_ObjectHideFlags: 0
