@@ -120,6 +120,15 @@ public class PlayerScript : MonoBehaviour
 
   void HandleConfigInitialization()
   {
+    // TODO: Colocar na classe
+    var videoPlayer = Camera.main.gameObject.GetComponent<VideoPlayer>();
+
+    videoPlayer.Prepare();
+    videoPlayer.prepareCompleted += (source) =>
+    {
+      videoPlayer.Play();
+    };
+
     GameManagerScript.instance.DisableMenu();
 
     if (!LocalPrefs.GetGamepadEnabled())
