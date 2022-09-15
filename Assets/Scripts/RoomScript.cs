@@ -68,6 +68,9 @@ public class RoomScript : MonoBehaviour
 
             var deadEndRoom = deadEnd.GetComponent<DeadEndScript>().room;
 
+            // TODO: Talvez não seja necessário, mas removendo a layer de
+            // geometry do dead end para evitar que ele impacte nos raycasts ou
+            // geração do navmesh
             deadEnd.layer = Layers.defaultLayer;
 
             Destroy(deadEnd);

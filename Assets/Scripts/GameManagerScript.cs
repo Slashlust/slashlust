@@ -184,7 +184,8 @@ public class GameManagerScript : MonoBehaviour
 
   void Update()
   {
-    // TODO: Retirar visualização de debug da network gerada
+#if UNITY_EDITOR
     roomNetwork.DebugDrawNetwork();
+#endif
   }
 }
