@@ -66,36 +66,36 @@ public class RoomNetwork
       roomNodeCache = roomNode;
     }
   }
-  public List<RoomNode>? FindPath(RoomNode startNode, RoomNode targetNode)
+
+  public List<RoomNode> FindPath(RoomNode start, RoomNode end)
   {
-    return this.FindPath(startNode, targetNode, new List<RoomNode>());
-  }
+    Queue<RoomNode> queue = new Queue<RoomNode>();
+    List<RoomNode> visited = new List<RoomNode>();
+    List<RoomNode> path = new List<RoomNode>();
 
-  private List<RoomNode>? FindPath(RoomNode startNode, RoomNode targetNode, List<RoomNode> visited)
-  {
-    if (startNode == targetNode)
+    queue.Enqueue(start);
+    visited.Add(start);
+
+    while (queue.Count > 0)
     {
-      return visited;
-    }
+      RoomNode current = queue.Dequeue();
+      path.Add(current);
 
-    if (visited.Contains(startNode))
-    {
-      return null;
-    }
-
-    visited.Add(startNode);
-
-    foreach (var neighbour in startNode.neighbors)
-    {
-      var path = this.FindPath(neighbour, targetNode, visited);
-
-      if (path != null)
+      if (current == end)
       {
-        path.Add(startNode);
         return path;
       }
-    }
-    return null;
-  }
 
+      foreach (RoomNode neighbor in current.neighbors)
+      {
+        if (!visited.Contains(neighbor))
+        {
+          queue.Enqueue(neighbor);
+          visited.Add(neighbor);
+        }
+      }
+    }
+
+    return path;
+  }
 }
