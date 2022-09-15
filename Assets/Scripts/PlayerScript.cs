@@ -120,21 +120,24 @@ public class PlayerScript : MonoBehaviour
 
   void HandleConfigInitialization()
   {
-    // TODO: Colocar na classe
-    var videoPlayer = Camera.main.gameObject.GetComponent<VideoPlayer>();
-
-    videoPlayer.Prepare();
-    videoPlayer.prepareCompleted += (source) =>
-    {
-      videoPlayer.Play();
-    };
-
     GameManagerScript.instance.DisableMenu();
 
     if (!LocalPrefs.GetGamepadEnabled())
     {
       GameManagerScript.instance.DisableGamepad();
     }
+
+    // TODO: Colocar como atributo da classe
+    var videoPlayer = Camera.main.gameObject.GetComponent<VideoPlayer>();
+
+    videoPlayer.source = VideoSource.Url;
+    videoPlayer.url = AssetLoader.GetPath("Video/black-hole.mp4");
+
+    videoPlayer.Prepare();
+    videoPlayer.prepareCompleted += (source) =>
+    {
+      videoPlayer.Play();
+    };
   }
 
   void HandleModelAnimation(GameObject model)
