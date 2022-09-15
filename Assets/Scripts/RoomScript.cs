@@ -144,13 +144,14 @@ public class RoomScript : MonoBehaviour
         attachment.transform.rotation
       );
 
+      room.transform.SetParent(manager.GetGeometry.transform);
+
       manager.GetRoomNetwork.AddRoom(room);
 
       manager.GetRoomNetwork.ConnectRooms(
         gameObject.GetInstanceID(),
         room.GetInstanceID()
       );
-
 
       room.GetComponent<RoomScript>().GenerateRooms();
     }

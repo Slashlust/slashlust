@@ -11,6 +11,8 @@ public class GameManagerScript : MonoBehaviour
   [SerializeField]
   EnemySpawnSettings enemySpawnSettings = default!;
 
+  public bool isNavMeshBaked = false;
+
   List<GameObject> enemies = new List<GameObject>();
   GameObject? gamepadGroup;
   GameObject? menuPanel;
@@ -32,6 +34,8 @@ public class GameManagerScript : MonoBehaviour
   public void BakeNavMesh()
   {
     GetComponent<NavMeshSurface>().BuildNavMesh();
+
+    isNavMeshBaked = true;
   }
 
   public void DisableGamepad()

@@ -26,7 +26,10 @@ public class EnemyScript : MonoBehaviour
   {
     Debug.DrawLine(transform.position, player.transform.position);
 
-    agent.destination = player.transform.position;
+    if (GameManagerScript.instance.isNavMeshBaked)
+    {
+      agent.destination = player.transform.position;
+    }
   }
 
   public bool InflictDamage(float damage)
