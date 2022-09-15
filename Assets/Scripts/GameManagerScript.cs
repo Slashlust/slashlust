@@ -12,20 +12,21 @@ public class GameManagerScript : MonoBehaviour
   EnemySpawnSettings enemySpawnSettings = default!;
 
   List<GameObject> enemies = new List<GameObject>();
-  List<GameObject> rooms = new List<GameObject>();
   GameObject? gamepadGroup;
   GameObject? menuPanel;
   GameObject? geometry;
+  RoomNetwork roomNetwork = new RoomNetwork();
 
   MenuState menuState = MenuState.closed;
 
   public static GameManagerScript instance = default!;
 
-  public List<GameObject> GetRooms => rooms;
   public MenuState GetMenuState => menuState;
   public GameObject GetGeometry => geometry ?? default!;
+  public RoomNetwork GetRoomNetwork => roomNetwork;
 
-  public MapGenerationSettings GetMapGenerationSettings => mapGenerationSettings;
+  public MapGenerationSettings GetMapGenerationSettings =>
+    mapGenerationSettings;
   public EnemySpawnSettings GetEnemySpawnSettings => enemySpawnSettings;
 
   public void BakeNavMesh()
@@ -115,7 +116,15 @@ public class GameManagerScript : MonoBehaviour
             var position = new Vector3(x: vector2.x, y: 4f, z: vector2.y);
 
             RaycastHit hit;
-            if (!Physics.Raycast(position, Vector3.down, out hit, 10f, Layers.geometryMask))
+            if (
+              !Physics.Raycast(
+                position,
+                Vector3.down,
+                out hit,
+                10f,
+                Layers.geometryMask
+              )
+            )
             {
               continue;
             }
@@ -167,5 +176,11 @@ public class GameManagerScript : MonoBehaviour
   void Start()
   {
     StartCoroutine(SpawnLoop());
+  }
+
+  void Update()
+  {
+    // TODO: Retirar visualização de debug da network gerada
+    roomNetwork.DebugDrawNetwork();
   }
 }
