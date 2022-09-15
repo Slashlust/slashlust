@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Video;
 
 #nullable enable
 
@@ -227,6 +228,10 @@ public class PlayerScript : MonoBehaviour
   void OnGUI()
   {
     GUI.Label(new Rect(100, 16, 100, 20), $"Kill count: {killCount}");
+    GUI.Label(new Rect(200, 116, 100, 20), $"active: {Camera.main.gameObject.GetComponent<VideoPlayer>().isActiveAndEnabled}");
+    GUI.Label(new Rect(200, 216, 100, 20), $"paused: {Camera.main.gameObject.GetComponent<VideoPlayer>().isPaused}");
+    GUI.Label(new Rect(200, 316, 100, 20), $"playing: {Camera.main.gameObject.GetComponent<VideoPlayer>().isPlaying}");
+    GUI.Label(new Rect(200, 416, 100, 20), $"prepared: {Camera.main.gameObject.GetComponent<VideoPlayer>().isPrepared}");
   }
 
   void Start()
