@@ -54,8 +54,12 @@ public class PlayerScript : MonoBehaviour
       }
 
       GameManagerScript.instance.currentRoom = hit.collider.transform.parent.gameObject;
-      if (GameManagerScript.instance.currentRoom != null && GameManagerScript.instance.GetRoomNetwork.bossRoom != null) {
-        GameManagerScript.instance.GetRoomNetwork.AStar(GameManagerScript.instance.currentRoom.GetInstanceID(), GameManagerScript.instance.GetRoomNetwork.bossRoom.room.GetInstanceID());
+      if (GameManagerScript.instance.currentRoom != null && GameManagerScript.instance.GetRoomNetwork.bossRoom != null)
+      {
+        var rtaisda = GameManagerScript.instance.GetRoomNetwork.FindPath(GameManagerScript.instance.GetRoomNetwork.roomNodes[GameManagerScript.instance.currentRoom.GetInstanceID()], GameManagerScript.instance.GetRoomNetwork.bossRoom);
+        if (rtaisda != null) {
+          GameManagerScript.instance.GetRoomNetwork.DebugDrawPath(rtaisda);
+        }
       }
     }
   }
