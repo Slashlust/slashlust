@@ -24,9 +24,14 @@ public class EnemyScript : MonoBehaviour
 
   void HandleMovement(NavMeshAgent agent, GameObject player)
   {
+#if UNITY_EDITOR
     Debug.DrawLine(transform.position, player.transform.position);
+#endif
 
-    agent.destination = player.transform.position;
+    if (GameManagerScript.instance.isNavMeshBaked)
+    {
+      agent.destination = player.transform.position;
+    }
   }
 
   public bool InflictDamage(float damage)
