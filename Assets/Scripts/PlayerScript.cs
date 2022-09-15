@@ -82,7 +82,7 @@ public class PlayerScript : MonoBehaviour
     var colliders = Physics.OverlapSphere(
       transform.position + offset,
       1f,
-      0b1000000
+      Layers.enemyMask
     );
 
     foreach (var collider in colliders)

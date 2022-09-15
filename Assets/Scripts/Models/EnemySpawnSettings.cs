@@ -7,6 +7,10 @@ using UnityEngine;
 public class EnemySpawnSettings
 {
   public bool isEnemySpawnEnabled;
+  [Min(1)]
+  public int spawnBatchSize;
+  [Min(1f)]
+  public float spawnInterval;
 
   public List<GameObject> enemyPrefabs = default!;
 

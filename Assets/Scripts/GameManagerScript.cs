@@ -94,23 +94,52 @@ public class GameManagerScript : MonoBehaviour
     {
       if (enemySpawnSettings.isEnemySpawnEnabled)
       {
-        for (int i = 0; i < 1; i++)
+        for (int i = 0; i < enemySpawnSettings.spawnBatchSize; i++)
         {
           var prefab = enemySpawnSettings.GetRandomEnemyPrefab();
 
-          var vector2 = Random.insideUnitCircle * 5;
+          var tries = 0;
 
-          var enemy = Instantiate(
-            prefab,
-            new Vector3(x: vector2.x, y: 2f, z: vector2.y),
-            Quaternion.identity
-          );
+          while (true)
+          {
+            tries++;
 
-          enemies.Add(enemy);
+            // Sistema de segurança para não cair em loop.
+            if (tries > 10)
+            {
+              break;
+            }
+
+            var vector2 = Random.insideUnitCircle * 10f;
+
+            var position = new Vector3(x: vector2.x, y: 4f, z: vector2.y);
+
+            RaycastHit hit;
+            if (!Physics.Raycast(position, Vector3.down, out hit, 10f, Layers.geometryMask))
+            {
+              continue;
+            }
+
+            // Não deixar o inimigo spawnar em cima de paredes.
+            if (hit.point.y > 1f)
+            {
+              continue;
+            }
+
+            var enemy = Instantiate(
+              prefab,
+              hit.point,
+              Quaternion.identity
+            );
+
+            enemies.Add(enemy);
+
+            break;
+          }
         }
       }
 
-      yield return new WaitForSeconds(10);
+      yield return new WaitForSeconds(enemySpawnSettings.spawnInterval);
     }
   }
 
