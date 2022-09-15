@@ -3,6 +3,9 @@ using UnityEngine.AI;
 
 #nullable enable
 
+// TODO: Fazer classe genérica para os inimigos:
+// MeleeEnemyScript, RangedEnemyScript : EnemyScript
+
 public class EnemyRangedScript : MonoBehaviour
 {
   NavMeshAgent? agent;
