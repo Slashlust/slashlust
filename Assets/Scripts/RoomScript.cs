@@ -18,11 +18,11 @@ public class RoomScript : MonoBehaviour
 
     var attachments = GetAttachments();
 
-    var roomPrefabs = manager.GetRoomPrefabs;
+    var roomPrefabs = manager.GetMapGenerationSettings.roomPrefabs;
 
-    var corridorPrefab = manager.GetCorridorPrefab;
+    var corridorPrefab = manager.GetMapGenerationSettings.corridorPrefab!;
 
-    var deadEndPrefab = manager.GetDeadEndPrefab;
+    var deadEndPrefab = manager.GetMapGenerationSettings.deadEndPrefab!;
 
     void GenerateDeadEnd(GameObject attachment)
     {
@@ -35,7 +35,9 @@ public class RoomScript : MonoBehaviour
 
     foreach (var attachment in attachments)
     {
-      if (manager.GetRooms.Count >= manager.GetMinRoomCount)
+      if (
+        manager.GetRooms.Count >= manager.GetMapGenerationSettings.minRoomCount
+      )
       {
         // TODO: Trabalhar probabilidade de geração de cada attachment.
         if (Random.value > 0.2f)

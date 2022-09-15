@@ -7,16 +7,9 @@ using Unity.AI.Navigation;
 public class GameManagerScript : MonoBehaviour
 {
   [SerializeField]
-  GameObject? enemyPrefab;
+  MapGenerationSettings mapGenerationSettings = default!;
   [SerializeField]
-  List<GameObject>? roomPrefabs;
-  [SerializeField]
-  GameObject? corridorPrefab;
-  [SerializeField]
-  GameObject? deadEndPrefab;
-
-  [SerializeField]
-  int minRoomCount;
+  EnemySpawnSettings enemySpawnSettings = default!;
 
   List<GameObject> enemies = new List<GameObject>();
   List<GameObject> rooms = new List<GameObject>();
@@ -27,14 +20,13 @@ public class GameManagerScript : MonoBehaviour
   MenuState menuState = MenuState.closed;
 
   public static GameManagerScript instance = default!;
-  public List<GameObject> GetRoomPrefabs =>
-    roomPrefabs ?? new List<GameObject> { };
-  public GameObject GetCorridorPrefab => corridorPrefab ?? default!;
-  public GameObject GetDeadEndPrefab => deadEndPrefab ?? default!;
+
   public List<GameObject> GetRooms => rooms;
-  public int GetMinRoomCount => minRoomCount;
   public MenuState GetMenuState => menuState;
   public GameObject GetGeometry => geometry ?? default!;
+
+  public MapGenerationSettings GetMapGenerationSettings => mapGenerationSettings;
+  public EnemySpawnSettings GetEnemySpawnSettings => enemySpawnSettings;
 
   public void BakeNavMesh()
   {
@@ -100,17 +92,20 @@ public class GameManagerScript : MonoBehaviour
   {
     while (true)
     {
-      for (int i = 0; i < 1; i++)
+      if (enemySpawnSettings.isEnemySpawnEnabled)
       {
-        var vector2 = Random.insideUnitCircle * 5;
+        for (int i = 0; i < 1; i++)
+        {
+          var vector2 = Random.insideUnitCircle * 5;
 
-        var enemy = Instantiate(
-          prefab,
-          new Vector3(x: vector2.x, y: 2f, z: vector2.y),
-          Quaternion.identity
-        );
+          var enemy = Instantiate(
+            prefab,
+            new Vector3(x: vector2.x, y: 2f, z: vector2.y),
+            Quaternion.identity
+          );
 
-        enemies.Add(enemy);
+          enemies.Add(enemy);
+        }
       }
 
       yield return new WaitForSeconds(10);
@@ -140,9 +135,9 @@ public class GameManagerScript : MonoBehaviour
 
   void Start()
   {
-    if (enemyPrefab != null)
+    if (enemySpawnSettings.enemyPrefab != null)
     {
-      StartCoroutine(SpawnLoop(prefab: enemyPrefab));
+      StartCoroutine(SpawnLoop(prefab: enemySpawnSettings.enemyPrefab));
     }
   }
 }
