@@ -663,8 +663,8 @@ MonoBehaviour:
     - {fileID: 4026393600238520495, guid: 4f847d9983c9b47469670e627d94626e, type: 3}
   enemySpawnSettings:
     isEnemySpawnEnabled: 1
-    spawnBatchSize: 5
-    spawnInterval: 3
+    spawnBatchSize: 2
+    spawnInterval: 10
     enemyPrefabs:
     - {fileID: 2422363816341469345, guid: 878f06b5ada303f47b84bdd84f0d4917, type: 3}
   isNavMeshBaked: 0
@@ -779,8 +779,16 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: -3976935303735240655, guid: 5d4e7d89f2ca88444a90ee28fd289237, type: 3}
+      propertyPath: m_DefaultControlScheme
+      value: Keyboard&Mouse
+      objectReference: {fileID: 0}
+    - target: {fileID: -3976935303735240655, guid: 5d4e7d89f2ca88444a90ee28fd289237, type: 3}
       propertyPath: m_ActionEvents.Array.size
       value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: -3976935303735240655, guid: 5d4e7d89f2ca88444a90ee28fd289237, type: 3}
+      propertyPath: m_NeverAutoSwitchControlSchemes
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -3976935303735240655, guid: 5d4e7d89f2ca88444a90ee28fd289237, type: 3}
       propertyPath: m_ActionEvents.Array.data[13].m_ActionId

@@ -13,20 +13,30 @@ public class GameManagerScript : MonoBehaviour
 
   public bool isNavMeshBaked = false;
 
-  List<GameObject> enemies = new List<GameObject>();
+  // Referência.
   GameObject? gamepadGroup;
   GameObject? menuPanel;
   GameObject? geometry;
+  List<GameObject> enemies = new List<GameObject>();
   RoomNetwork roomNetwork = new RoomNetwork();
 
+  // State.
   MenuState menuState = MenuState.closed;
+  ControlState controlState = ControlState.gamepad;
 
   public static GameManagerScript instance = default!;
 
+  // Getters de state.
   public MenuState GetMenuState => menuState;
+  public ControlState GetControlState => controlState;
+
+  // Getters de tipo primitivo.
+  public string GetTargetControlScheme => controlState == ControlState.keyboard
+    ? ControlSchemes.keyboardMouse : ControlSchemes.gamepad;
+
+  // Getters de referência.
   public GameObject GetGeometry => geometry ?? default!;
   public RoomNetwork GetRoomNetwork => roomNetwork;
-
   public MapGenerationSettings GetMapGenerationSettings =>
     mapGenerationSettings;
   public EnemySpawnSettings GetEnemySpawnSettings => enemySpawnSettings;
@@ -46,6 +56,8 @@ public class GameManagerScript : MonoBehaviour
     }
 
     gamepadGroup.SetActive(false);
+
+    controlState = ControlState.keyboard;
 
     LocalPrefs.SetGamepadEnabled(false);
   }
@@ -70,6 +82,8 @@ public class GameManagerScript : MonoBehaviour
     }
 
     gamepadGroup.SetActive(true);
+
+    controlState = ControlState.gamepad;
 
     LocalPrefs.SetGamepadEnabled(true);
   }

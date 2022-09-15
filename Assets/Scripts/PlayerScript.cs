@@ -9,18 +9,16 @@ public class PlayerScript : MonoBehaviour
   PlayerInput? playerInput;
   Vector2 currentMoveInput;
   Vector2 processedMoveInput;
-  Vector2 lastMove;
   Vector3 characterVelocity;
   Animator? anima;
   GameObject? model;
   Transform? cameraTransform;
   Vector2 currentLookInput;
-  Vector2 lastLook;
 
-  float lastMoveTimestamp;
   int killCount;
   bool attackLock;
-  float lastLookTimestamp;
+
+  public PlayerInput? GetPlayerInput => playerInput;
 
   System.Collections.IEnumerator AttackRoutine()
   {
@@ -109,6 +107,16 @@ public class PlayerScript : MonoBehaviour
       );
   }
 
+  public void HandleCharacterControllerUpdate()
+  {
+    var tempCharacterVelocity = controller?.velocity ?? Vector3.zero;
+
+    if (tempCharacterVelocity.magnitude > .1f)
+    {
+      characterVelocity = tempCharacterVelocity;
+    }
+  }
+
   void HandleConfigInitialization()
   {
     GameManagerScript.instance.DisableMenu();
@@ -162,70 +170,37 @@ public class PlayerScript : MonoBehaviour
 
   public void Look(InputAction.CallbackContext context)
   {
-    // TODO: Arrumar o flick do analógico
     var value = context.ReadValue<Vector2>();
 
-    if (value.magnitude == 0)
+    if (
+      playerInput?.currentControlScheme !=
+        GameManagerScript.instance.GetTargetControlScheme
+    )
     {
-      if (lastLook.magnitude == 0)
-      {
-        currentLookInput = Vector2.zero;
-      }
-    }
-    else
-    {
-      currentLookInput = value;
-
-      if (currentLookInput.magnitude > .5f && !attackLock)
-      {
-        StartCoroutine(AttackRoutine());
-      }
+      return;
     }
 
-    lastLook = value;
-    lastLookTimestamp = Time.timeSinceLevelLoad;
+    currentLookInput = value;
+
+    if (currentLookInput.magnitude > .5f && !attackLock)
+    {
+      StartCoroutine(AttackRoutine());
+    }
   }
 
   public void Move(InputAction.CallbackContext context)
   {
     var value = context.ReadValue<Vector2>();
 
-    if (value.magnitude == 0)
-    {
-      if (lastMove.magnitude == 0)
-      {
-        currentMoveInput = Vector2.zero;
-      }
-    }
-    else
-    {
-      currentMoveInput = value;
-    }
-
-    lastMove = value;
-    lastMoveTimestamp = Time.timeSinceLevelLoad;
-  }
-
-  public void MoveCheck()
-  {
-    // TODO: Arrumar o flick do analógico
-    var value = playerInput?.actions["Move"].ReadValue<Vector2>();
-
     if (
-      value?.magnitude == 0 &&
-      lastMove.magnitude == 0 &&
-      Time.timeSinceLevelLoad - lastMoveTimestamp > .01f
+      playerInput?.currentControlScheme !=
+        GameManagerScript.instance.GetTargetControlScheme
     )
     {
-      currentMoveInput = Vector2.zero;
+      return;
     }
 
-    var tempCharacterVelocity = controller?.velocity ?? Vector3.zero;
-
-    if (tempCharacterVelocity.magnitude > .1f)
-    {
-      characterVelocity = tempCharacterVelocity;
-    }
+    currentMoveInput = value;
   }
 
   public void OnMenuClick()
@@ -261,14 +236,15 @@ public class PlayerScript : MonoBehaviour
 
   void Update()
   {
-    switch (GameManagerScript.instance.GetMenuState)
+    var manager = GameManagerScript.instance;
+
+    switch (manager.GetMenuState)
     {
       case MenuState.closed:
-        MoveCheck();
 
         // TODO: Mover
 
-        if (Input.mousePresent)
+        if (manager.GetControlState == ControlState.keyboard)
         {
           var mousePosition = Mouse.current.position;
 
@@ -283,6 +259,8 @@ public class PlayerScript : MonoBehaviour
 
         break;
     }
+
+    HandleCharacterControllerUpdate();
 
     if (controller != null)
     {
