@@ -12,31 +12,93 @@ public class RoomScript : MonoBehaviour
 
   public Vector3 GetDimensions => dimensions;
 
+  System.Collections.IEnumerator BakeNavMesh()
+  {
+    yield return new WaitForSecondsRealtime(2f);
+
+    GameManagerScript.instance.BakeNavMesh();
+  }
+
   public void GenerateRooms()
   {
     var manager = GameManagerScript.instance;
 
     var attachments = GetAttachments();
 
-    var roomPrefabs = manager.GetRoomPrefabs;
+    var roomPrefabs = manager.GetMapGenerationSettings.roomPrefabs;
 
-    var corridorPrefab = manager.GetCorridorPrefab;
+    var corridorPrefab = manager.GetMapGenerationSettings.corridorPrefab!;
 
-    var deadEndPrefab = manager.GetDeadEndPrefab;
+    var deadEndPrefab = manager.GetMapGenerationSettings.deadEndPrefab!;
 
     void GenerateDeadEnd(GameObject attachment)
     {
-      Instantiate(
+      var deadEnd = Instantiate(
         deadEndPrefab,
         attachment.transform.position,
         attachment.transform.rotation
       );
+
+      deadEnd.GetComponent<DeadEndScript>().room = gameObject;
     }
 
     foreach (var attachment in attachments)
     {
-      if (manager.GetRooms.Count >= manager.GetMinRoomCount)
+      if (
+        manager.GetRoomNetwork.roomNodes.Count >=
+        manager.GetMapGenerationSettings.minRoomCount
+      )
       {
+        RaycastHit hit;
+        if (
+          Physics.Raycast(
+            attachment.transform.position + Vector3.up,
+            attachment.transform.forward,
+            out hit,
+            9f,
+            Layers.geometryMask
+          )
+        )
+        {
+          if (hit.collider.name == "DeadEndModel")
+          {
+            // TODO: Trabalhar um atributo de chance de conexão de salas
+
+            var deadEnd = hit.collider.transform.parent.gameObject;
+
+            var deadEndRoom = deadEnd.GetComponent<DeadEndScript>().room;
+
+            // TODO: Talvez não seja necessário, mas removendo a layer de
+            // geometry do dead end para evitar que ele impacte nos raycasts ou
+            // geração do navmesh
+            deadEnd.layer = Layers.defaultLayer;
+
+            Destroy(deadEnd);
+
+            // TODO: Melhorar fluxo de conexão de salas
+
+            var attachmentCorridorScript2 =
+              corridorPrefab.GetComponent<CorridorScript>();
+
+            var corridorLength2 = attachmentCorridorScript2.GetDimensions.z;
+
+            // TODO: Usar ou remover corredor.
+            var corridor2 = Instantiate(
+              corridorPrefab,
+              attachment.transform.position + attachment.transform.forward *
+                corridorLength2 / 2f,
+              attachment.transform.rotation
+            );
+
+            manager.GetRoomNetwork.ConnectRooms(
+              gameObject.GetInstanceID(),
+              deadEndRoom.GetInstanceID()
+            );
+
+            continue;
+          }
+        }
+
         // TODO: Trabalhar probabilidade de geração de cada attachment.
         if (Random.value > 0.2f)
         {
@@ -46,7 +108,7 @@ public class RoomScript : MonoBehaviour
         }
       }
 
-      var roomPrefab = roomPrefabs[Random.Range(0, roomPrefabs.Count)];
+      var roomPrefab = manager.GetMapGenerationSettings.GetRandomRoomPrefab();
 
       var attachmentRoomScript = roomPrefab.GetComponent<RoomScript>();
 
@@ -85,7 +147,14 @@ public class RoomScript : MonoBehaviour
         attachment.transform.rotation
       );
 
-      manager.GetRooms.Add(room);
+      room.transform.SetParent(manager.GetGeometry.transform);
+
+      manager.GetRoomNetwork.AddRoom(room);
+
+      manager.GetRoomNetwork.ConnectRooms(
+        gameObject.GetInstanceID(),
+        room.GetInstanceID()
+      );
 
       room.GetComponent<RoomScript>().GenerateRooms();
     }
@@ -127,9 +196,12 @@ public class RoomScript : MonoBehaviour
   {
     if (isRoot)
     {
+      GameManagerScript.instance.GetRoomNetwork.AddRoom(gameObject);
+
       GenerateRooms();
 
-      GameManagerScript.instance.BakeNavMesh();
+      // TODO: Workaround pra geração do navmesh funcinoar mesmo com a lógica de remover paredes
+      StartCoroutine(BakeNavMesh());
     }
   }
 }

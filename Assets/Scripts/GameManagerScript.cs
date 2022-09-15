@@ -7,38 +7,35 @@ using Unity.AI.Navigation;
 public class GameManagerScript : MonoBehaviour
 {
   [SerializeField]
-  GameObject? enemyPrefab;
+  MapGenerationSettings mapGenerationSettings = default!;
   [SerializeField]
-  List<GameObject>? roomPrefabs;
-  [SerializeField]
-  GameObject? corridorPrefab;
-  [SerializeField]
-  GameObject? deadEndPrefab;
+  EnemySpawnSettings enemySpawnSettings = default!;
 
-  [SerializeField]
-  int minRoomCount;
+  public bool isNavMeshBaked = false;
 
   List<GameObject> enemies = new List<GameObject>();
-  List<GameObject> rooms = new List<GameObject>();
   GameObject? gamepadGroup;
   GameObject? menuPanel;
   GameObject? geometry;
+  RoomNetwork roomNetwork = new RoomNetwork();
 
   MenuState menuState = MenuState.closed;
 
   public static GameManagerScript instance = default!;
-  public List<GameObject> GetRoomPrefabs =>
-    roomPrefabs ?? new List<GameObject> { };
-  public GameObject GetCorridorPrefab => corridorPrefab ?? default!;
-  public GameObject GetDeadEndPrefab => deadEndPrefab ?? default!;
-  public List<GameObject> GetRooms => rooms;
-  public int GetMinRoomCount => minRoomCount;
+
   public MenuState GetMenuState => menuState;
   public GameObject GetGeometry => geometry ?? default!;
+  public RoomNetwork GetRoomNetwork => roomNetwork;
+
+  public MapGenerationSettings GetMapGenerationSettings =>
+    mapGenerationSettings;
+  public EnemySpawnSettings GetEnemySpawnSettings => enemySpawnSettings;
 
   public void BakeNavMesh()
   {
     GetComponent<NavMeshSurface>().BuildNavMesh();
+
+    isNavMeshBaked = true;
   }
 
   public void DisableGamepad()
@@ -96,24 +93,66 @@ public class GameManagerScript : MonoBehaviour
     Destroy(enemy);
   }
 
-  System.Collections.IEnumerator SpawnLoop(GameObject prefab)
+  System.Collections.IEnumerator SpawnLoop()
   {
     while (true)
     {
-      for (int i = 0; i < 1; i++)
+      if (enemySpawnSettings.isEnemySpawnEnabled)
       {
-        var vector2 = Random.insideUnitCircle * 5;
+        for (int i = 0; i < enemySpawnSettings.spawnBatchSize; i++)
+        {
+          var prefab = enemySpawnSettings.GetRandomEnemyPrefab();
 
-        var enemy = Instantiate(
-          prefab,
-          new Vector3(x: vector2.x, y: 2f, z: vector2.y),
-          Quaternion.identity
-        );
+          var tries = 0;
 
-        enemies.Add(enemy);
+          while (true)
+          {
+            tries++;
+
+            // Sistema de segurança para não cair em loop.
+            if (tries > 10)
+            {
+              break;
+            }
+
+            var vector2 = Random.insideUnitCircle * 10f;
+
+            var position = new Vector3(x: vector2.x, y: 4f, z: vector2.y);
+
+            RaycastHit hit;
+            if (
+              !Physics.Raycast(
+                position,
+                Vector3.down,
+                out hit,
+                10f,
+                Layers.geometryMask
+              )
+            )
+            {
+              continue;
+            }
+
+            // Não deixar o inimigo spawnar em cima de paredes.
+            if (hit.point.y > 1f)
+            {
+              continue;
+            }
+
+            var enemy = Instantiate(
+              prefab,
+              hit.point,
+              Quaternion.identity
+            );
+
+            enemies.Add(enemy);
+
+            break;
+          }
+        }
       }
 
-      yield return new WaitForSeconds(10);
+      yield return new WaitForSeconds(enemySpawnSettings.spawnInterval);
     }
   }
 
@@ -140,9 +179,13 @@ public class GameManagerScript : MonoBehaviour
 
   void Start()
   {
-    if (enemyPrefab != null)
-    {
-      StartCoroutine(SpawnLoop(prefab: enemyPrefab));
-    }
+    StartCoroutine(SpawnLoop());
+  }
+
+  void Update()
+  {
+#if UNITY_EDITOR
+    roomNetwork.DebugDrawNetwork();
+#endif
   }
 }

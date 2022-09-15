@@ -82,7 +82,7 @@ public class PlayerScript : MonoBehaviour
     var colliders = Physics.OverlapSphere(
       transform.position + offset,
       1f,
-      0b1000000
+      Layers.enemyMask
     );
 
     foreach (var collider in colliders)
@@ -268,12 +268,15 @@ public class PlayerScript : MonoBehaviour
 
         // TODO: Mover
 
-        var mousePosition = Mouse.current.position;
+        if (Input.mousePresent)
+        {
+          var mousePosition = Mouse.current.position;
 
-        var xRatio = (mousePosition.x.ReadValue() / Screen.width) - .5f;
-        var yRatio = (mousePosition.y.ReadValue() / Screen.height) - .5f;
+          var xRatio = (mousePosition.x.ReadValue() / Screen.width) - .5f;
+          var yRatio = (mousePosition.y.ReadValue() / Screen.height) - .5f;
 
-        currentLookInput = new Vector2 { x = xRatio, y = yRatio };
+          currentLookInput = new Vector2 { x = xRatio, y = yRatio };
+        }
 
         break;
       case MenuState.open:
