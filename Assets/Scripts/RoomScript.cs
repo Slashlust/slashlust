@@ -48,7 +48,9 @@ public class RoomScript : MonoBehaviour
         }
       }
 
-      var roomPrefab = roomPrefabs[Random.Range(0, roomPrefabs.Count)];
+      var roomPrefab =
+        GameManagerScript.instance.GetMapGenerationSettings
+        .GetRandomRoomPrefab();
 
       var attachmentRoomScript = roomPrefab.GetComponent<RoomScript>();
 

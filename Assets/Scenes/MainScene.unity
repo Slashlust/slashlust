@@ -663,7 +663,8 @@ MonoBehaviour:
     - {fileID: 4026393600238520495, guid: 4f847d9983c9b47469670e627d94626e, type: 3}
   enemySpawnSettings:
     isEnemySpawnEnabled: 1
-    enemyPrefab: {fileID: 2422363816341469345, guid: 878f06b5ada303f47b84bdd84f0d4917, type: 3}
+    enemyPrefabs:
+    - {fileID: 2422363816341469345, guid: 878f06b5ada303f47b84bdd84f0d4917, type: 3}
 --- !u!114 &1524951598
 MonoBehaviour:
   m_ObjectHideFlags: 0

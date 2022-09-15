@@ -88,7 +88,7 @@ public class GameManagerScript : MonoBehaviour
     Destroy(enemy);
   }
 
-  System.Collections.IEnumerator SpawnLoop(GameObject prefab)
+  System.Collections.IEnumerator SpawnLoop()
   {
     while (true)
     {
@@ -96,6 +96,8 @@ public class GameManagerScript : MonoBehaviour
       {
         for (int i = 0; i < 1; i++)
         {
+          var prefab = enemySpawnSettings.GetRandomEnemyPrefab();
+
           var vector2 = Random.insideUnitCircle * 5;
 
           var enemy = Instantiate(
@@ -135,9 +137,6 @@ public class GameManagerScript : MonoBehaviour
 
   void Start()
   {
-    if (enemySpawnSettings.enemyPrefab != null)
-    {
-      StartCoroutine(SpawnLoop(prefab: enemySpawnSettings.enemyPrefab));
-    }
+    StartCoroutine(SpawnLoop());
   }
 }
