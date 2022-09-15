@@ -40,6 +40,26 @@ public class PlayerScript : MonoBehaviour
     }
   }
 
+  public void GetPosAndCalculePath()
+  {
+    RaycastHit hit;
+
+    if (Physics.Raycast(transform.position, Vector3.down, out hit, 5f, Layers.geometryMask))
+    {
+      // Debug.DrawRay(transform.position, Vector3.down, Color.red);
+      // Debug.Log("Entrei na sala: " + hit.collider.transform.parent.name);
+      if (hit.collider.transform.parent.name == "Corridor(Clone)")
+      {
+        return;
+      }
+
+      GameManagerScript.instance.currentRoom = hit.collider.transform.parent.gameObject;
+      if (GameManagerScript.instance.currentRoom != null && GameManagerScript.instance.GetRoomNetwork.bossRoom != null) {
+        GameManagerScript.instance.GetRoomNetwork.AStar(GameManagerScript.instance.currentRoom.GetInstanceID(), GameManagerScript.instance.GetRoomNetwork.bossRoom.room.GetInstanceID());
+      }
+    }
+  }
+
   public void Back(InputAction.CallbackContext context)
   {
     if (context.performed)
@@ -298,5 +318,7 @@ public class PlayerScript : MonoBehaviour
     {
       HandleCameraTransforms(cameraTransform);
     }
+
+    GetPosAndCalculePath();
   }
 }

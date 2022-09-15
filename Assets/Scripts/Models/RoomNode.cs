@@ -10,6 +10,7 @@ public class RoomNode
 
   public void AddNeighbor(RoomNode neighbor)
   {
+    Debug.Log("ID ADD NEIGHBOR -> " + neighbor.room.GetInstanceID());
     neighbors.Add(neighbor);
   }
 }

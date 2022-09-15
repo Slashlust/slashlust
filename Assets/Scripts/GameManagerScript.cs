@@ -17,6 +17,7 @@ public class GameManagerScript : MonoBehaviour
   GameObject? gamepadGroup;
   GameObject? menuPanel;
   GameObject? geometry;
+  public GameObject? currentRoom;
   RoomNetwork roomNetwork = new RoomNetwork();
 
   MenuState menuState = MenuState.closed;
