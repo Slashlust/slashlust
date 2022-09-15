@@ -5,25 +5,25 @@ using UnityEngine.UI;
 
 public class MenuScript : MonoBehaviour
 {
-  Toggle? gamepadEnabledToggle;
+  Toggle? gamepadDisabledToggle;
 
-  void SetGamepadEnabled(bool value, Toggle gamepadEnabledToggle)
+  void SetGamepadEnabled(bool value, Toggle gamepadDisabledToggle)
   {
-    gamepadEnabledToggle.isOn = value;
+    gamepadDisabledToggle.isOn = value;
 
     if (value)
     {
-      GameManagerScript.instance.EnableGamepad();
+      GameManagerScript.instance.DisableGamepad();
     }
     else
     {
-      GameManagerScript.instance.DisableGamepad();
+      GameManagerScript.instance.EnableGamepad();
     }
   }
 
   void Awake()
   {
-    gamepadEnabledToggle =
+    gamepadDisabledToggle =
       transform.Find("MenuPanel/Body/ScrollArea/Column/GamepadEnabled/Toggle")
       .GetComponent<Toggle>();
   }
@@ -32,13 +32,13 @@ public class MenuScript : MonoBehaviour
   {
     var gamepadEnabled = LocalPrefs.GetGamepadEnabled();
 
-    if (gamepadEnabledToggle != null)
+    if (gamepadDisabledToggle != null)
     {
-      SetGamepadEnabled(gamepadEnabled, gamepadEnabledToggle);
+      SetGamepadEnabled(gamepadEnabled, gamepadDisabledToggle);
 
-      gamepadEnabledToggle.onValueChanged.AddListener((value) =>
+      gamepadDisabledToggle.onValueChanged.AddListener((value) =>
       {
-        SetGamepadEnabled(value, gamepadEnabledToggle);
+        SetGamepadEnabled(value, gamepadDisabledToggle);
 
         LocalPrefs.SetGamepadEnabled(value);
       });
