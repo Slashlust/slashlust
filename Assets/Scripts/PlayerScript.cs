@@ -42,40 +42,28 @@ public class PlayerScript : MonoBehaviour
 
   public void GetPosAndCalculePath()
   {
-    RaycastHit hit;
+    var manager = GameManagerScript.instance;
 
+    var network = manager.GetRoomNetwork;
+
+    RaycastHit hit;
     if (Physics.Raycast(transform.position, Vector3.down, out hit, 5f, Layers.geometryMask))
     {
-      // Debug.DrawRay(transform.position, Vector3.down, Color.red);
-      // Debug.Log("Entrei na sala: " + hit.collider.transform.parent.name);
-
       var parent = hit.collider.transform.parent;
 
-      if (parent.name == "Corridor(Clone)")
+      if (parent.name != "Corridor(Clone)")
       {
-        return;
-      }
+        manager.currentRoom = parent.gameObject;
 
-      var manager = GameManagerScript.instance;
-
-      manager.currentRoom = parent.gameObject;
-
-      if (manager.currentRoom != null && manager.GetRoomNetwork.bossRoom != null)
-      {
-        var start = manager.GetRoomNetwork.roomNodes[manager.currentRoom.GetInstanceID()];
-
-        var end = manager.GetRoomNetwork.bossRoom;
-
-        Debug.Log("start " + start, start.room);
-        Debug.Log("end " + end, start.room);
-
-        var path = manager.GetRoomNetwork.FindPath(start, end);
-
-        if (path != null)
+        if (manager.currentRoom != null && network.bossRoom != null)
         {
-          manager.GetRoomNetwork.DebugDrawPath(path);
+          var start = network.roomNodes[manager.currentRoom.GetInstanceID()];
 
-          Debug.Break();
+          var end = network.bossRoom;
+
+          var path = network.AStar(start, end);
+
+          network.targetPath = path;
         }
       }
     }

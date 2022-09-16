@@ -186,7 +186,12 @@ public class GameManagerScript : MonoBehaviour
   void Update()
   {
 #if UNITY_EDITOR
-    // roomNetwork.DebugDrawNetwork();
+    roomNetwork.DebugDrawNetwork();
+
+    if (roomNetwork.targetPath != null)
+    {
+      roomNetwork.DebugDrawPath(roomNetwork.targetPath);
+    }
 #endif
   }
 }
