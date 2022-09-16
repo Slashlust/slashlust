@@ -14,13 +14,14 @@ public class GameManagerScript : MonoBehaviour
   public bool isNavMeshBaked = false;
 
   // Referência.
+  public GameObject? currentRoom;
   GameObject? gamepadGroup;
   GameObject? menuPanel;
   GameObject? geometry;
   GameObject? player;
-  List<GameObject> enemies = new List<GameObject>(); // TODO: fix
-  public GameObject? currentRoom;
+  MinimapScript? minimapScript;
   RoomNetwork roomNetwork = new RoomNetwork();
+  List<GameObject> enemies = new List<GameObject>();
 
   // State.
   MenuState menuState = MenuState.closed;
@@ -40,6 +41,7 @@ public class GameManagerScript : MonoBehaviour
   public GameObject GetGeometry => geometry ?? default!;
   public RoomNetwork GetRoomNetwork => roomNetwork;
   public GameObject? GetPlayer => player;
+  public MinimapScript? GetMinimapScript => minimapScript;
   public MapGenerationSettings GetMapGenerationSettings =>
     mapGenerationSettings;
   public EnemySpawnSettings GetEnemySpawnSettings => enemySpawnSettings;
@@ -101,6 +103,19 @@ public class GameManagerScript : MonoBehaviour
     menuPanel.SetActive(true);
 
     menuState = MenuState.open;
+  }
+
+  void HandleConfigInitialization()
+  {
+    var currentFrameRate = Application.targetFrameRate;
+
+    if (Application.isMobilePlatform)
+    {
+      if (currentFrameRate < 60)
+      {
+        Application.targetFrameRate = 60;
+      }
+    }
   }
 
   public void KillEnemy(GameObject enemy)
@@ -177,17 +192,14 @@ public class GameManagerScript : MonoBehaviour
   {
     instance = this;
 
-    var currentFrameRate = Application.targetFrameRate;
-
-    if (currentFrameRate < 60)
-    {
-      Application.targetFrameRate = 60;
-    }
-
     gamepadGroup = GameObject.Find("Canvas/GamepadGroup");
     menuPanel = GameObject.Find("Canvas/MenuPanel");
     geometry = GameObject.Find("Geometry");
     player = GameObject.Find("Player");
+    minimapScript = GameObject.Find("Canvas/Minimap")
+      .GetComponent<MinimapScript>();
+
+    HandleConfigInitialization();
   }
 
   void OnGUI()

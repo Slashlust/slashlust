@@ -12,7 +12,11 @@ public class RoomNetwork
 
   public void AddRoom(GameObject room, bool isRoot)
   {
-    var roomNode = new RoomNode { room = room };
+    var roomNode = new RoomNode
+    {
+      room = room,
+      roomScript = room.GetComponent<RoomScript>(),
+    };
 
     roomNodes.Add(room.GetInstanceID(), roomNode);
 

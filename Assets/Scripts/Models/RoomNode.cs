@@ -7,6 +7,7 @@ using UnityEngine;
 public class RoomNode
 {
   public GameObject room = default!;
+  public RoomScript roomScript = default!;
   public HashSet<RoomNode> neighbors = new HashSet<RoomNode>();
 
   public void AddNeighbor(RoomNode neighbor)

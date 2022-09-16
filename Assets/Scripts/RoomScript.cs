@@ -10,6 +10,8 @@ public class RoomScript : MonoBehaviour
   [SerializeField]
   Vector3 dimensions;
 
+  public RoomType roomType;
+
   public Vector3 GetDimensions => dimensions;
 
   System.Collections.IEnumerator BakeNavMesh()
@@ -151,7 +153,9 @@ public class RoomScript : MonoBehaviour
 
       manager.GetRoomNetwork.AddRoom(room, false);
 
-      if(roomPrefab.name == "RoomBoss") {
+      // TODO: Filtro por tipo do script
+      if (roomPrefab.name == "RoomBoss")
+      {
         GameManagerScript.instance.GetRoomNetwork.bossRoom = GameManagerScript.instance.GetRoomNetwork.roomNodes[room.GetInstanceID()];
       }
 
