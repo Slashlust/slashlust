@@ -7,7 +7,6 @@ using UnityEngine;
 public class RoomNode
 {
   public GameObject room = default!;
-  public bool visited;
   public HashSet<RoomNode> neighbors = new HashSet<RoomNode>();
 
   public void AddNeighbor(RoomNode neighbor)
@@ -24,6 +23,6 @@ public class RoomNode
       n += item.room.GetInstanceID() + ", ";
     }
 
-    return $"instance id: {room.GetInstanceID()}, visited: {visited}, neighbors: {n}";
+    return $"instance id: {room.GetInstanceID()}, neighbors: {n}";
   }
 }
