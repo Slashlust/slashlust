@@ -39,13 +39,11 @@ public class RoomNetwork
 
       foreach (var neighbor in roomNode.neighbors)
       {
-        /*
         Debug.DrawLine(
           roomNode.room.transform.position,
           neighbor.room.transform.position,
           Color.green
         );
-        */
       }
     }
   }

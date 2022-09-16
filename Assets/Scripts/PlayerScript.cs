@@ -48,17 +48,34 @@ public class PlayerScript : MonoBehaviour
     {
       // Debug.DrawRay(transform.position, Vector3.down, Color.red);
       // Debug.Log("Entrei na sala: " + hit.collider.transform.parent.name);
-      if (hit.collider.transform.parent.name == "Corridor(Clone)")
+
+      var parent = hit.collider.transform.parent;
+
+      if (parent.name == "Corridor(Clone)")
       {
         return;
       }
 
-      GameManagerScript.instance.currentRoom = hit.collider.transform.parent.gameObject;
-      if (GameManagerScript.instance.currentRoom != null && GameManagerScript.instance.GetRoomNetwork.bossRoom != null)
+      var manager = GameManagerScript.instance;
+
+      manager.currentRoom = parent.gameObject;
+
+      if (manager.currentRoom != null && manager.GetRoomNetwork.bossRoom != null)
       {
-        var rtaisda = GameManagerScript.instance.GetRoomNetwork.FindPath(GameManagerScript.instance.GetRoomNetwork.roomNodes[GameManagerScript.instance.currentRoom.GetInstanceID()], GameManagerScript.instance.GetRoomNetwork.bossRoom);
-        if (rtaisda != null) {
-          GameManagerScript.instance.GetRoomNetwork.DebugDrawPath(rtaisda);
+        var start = manager.GetRoomNetwork.roomNodes[manager.currentRoom.GetInstanceID()];
+
+        var end = manager.GetRoomNetwork.bossRoom;
+
+        Debug.Log("start " + start, start.room);
+        Debug.Log("end " + end, start.room);
+
+        var path = manager.GetRoomNetwork.FindPath(start, end);
+
+        if (path != null)
+        {
+          manager.GetRoomNetwork.DebugDrawPath(path);
+
+          Debug.Break();
         }
       }
     }
