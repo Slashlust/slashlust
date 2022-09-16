@@ -17,7 +17,8 @@ public class GameManagerScript : MonoBehaviour
   GameObject? gamepadGroup;
   GameObject? menuPanel;
   GameObject? geometry;
-  List<GameObject> enemies = new List<GameObject>();
+  List<GameObject> enemies = new List<GameObject>(); // TODO: fix
+  public GameObject? currentRoom;
   RoomNetwork roomNetwork = new RoomNetwork();
 
   // State.
@@ -59,7 +60,7 @@ public class GameManagerScript : MonoBehaviour
 
     controlState = ControlState.keyboard;
 
-    LocalPrefs.SetGamepadEnabled(false);
+    LocalPrefs.SetGamepadDisabled(true);
   }
 
   public void DisableMenu()
@@ -85,7 +86,7 @@ public class GameManagerScript : MonoBehaviour
 
     controlState = ControlState.gamepad;
 
-    LocalPrefs.SetGamepadEnabled(true);
+    LocalPrefs.SetGamepadDisabled(false);
   }
 
   public void EnableMenu()
@@ -200,6 +201,11 @@ public class GameManagerScript : MonoBehaviour
   {
 #if UNITY_EDITOR
     roomNetwork.DebugDrawNetwork();
+
+    if (roomNetwork.targetPath != null)
+    {
+      roomNetwork.DebugDrawPath(roomNetwork.targetPath);
+    }
 #endif
   }
 }

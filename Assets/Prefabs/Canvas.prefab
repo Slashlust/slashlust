@@ -79,7 +79,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Mostrar controles flutuantes
+  m_Text: Ocultar controles flutuantes
 --- !u!1 &2932101238255713229
 GameObject:
   m_ObjectHideFlags: 0

@@ -47,6 +47,45 @@ public class PlayerScript : MonoBehaviour
     }
   }
 
+  public void CalculatePath()
+  {
+    var manager = GameManagerScript.instance;
+
+    var network = manager.GetRoomNetwork;
+
+    RaycastHit hit;
+    if (Physics.Raycast(transform.position, Vector3.down, out hit, 5f, Layers.geometryMask))
+    {
+      var parent = hit.collider.transform.parent;
+
+      if (parent.name != "Corridor(Clone)")
+      {
+        manager.currentRoom = parent.gameObject;
+
+        if (manager.currentRoom != null && network.bossRoom != null)
+        {
+          var start = network.roomNodes[manager.currentRoom.GetInstanceID()];
+
+          var end = network.bossRoom;
+
+          var path = network.AStar(start, end);
+
+          network.targetPath = path;
+        }
+      }
+    }
+  }
+
+  System.Collections.IEnumerator CalculatePathLoop()
+  {
+    while (true)
+    {
+      CalculatePath();
+
+      yield return new WaitForSeconds(1f);
+    }
+  }
+
   public void Fire(InputAction.CallbackContext context)
   {
     if (GameManagerScript.instance.GetMenuState == MenuState.open)
@@ -122,7 +161,7 @@ public class PlayerScript : MonoBehaviour
   {
     GameManagerScript.instance.DisableMenu();
 
-    if (!LocalPrefs.GetGamepadEnabled())
+    if (LocalPrefs.GetGamepadDisabled())
     {
       GameManagerScript.instance.DisableGamepad();
     }
@@ -249,6 +288,8 @@ public class PlayerScript : MonoBehaviour
   void Start()
   {
     HandleConfigInitialization();
+
+    StartCoroutine(CalculatePathLoop());
   }
 
   void Update()

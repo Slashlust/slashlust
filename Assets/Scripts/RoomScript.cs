@@ -149,7 +149,11 @@ public class RoomScript : MonoBehaviour
 
       room.transform.SetParent(manager.GetGeometry.transform);
 
-      manager.GetRoomNetwork.AddRoom(room);
+      manager.GetRoomNetwork.AddRoom(room, false);
+
+      if(roomPrefab.name == "RoomBoss") {
+        GameManagerScript.instance.GetRoomNetwork.bossRoom = GameManagerScript.instance.GetRoomNetwork.roomNodes[room.GetInstanceID()];
+      }
 
       manager.GetRoomNetwork.ConnectRooms(
         gameObject.GetInstanceID(),
@@ -196,7 +200,7 @@ public class RoomScript : MonoBehaviour
   {
     if (isRoot)
     {
-      GameManagerScript.instance.GetRoomNetwork.AddRoom(gameObject);
+      GameManagerScript.instance.GetRoomNetwork.AddRoom(gameObject, true);
 
       GenerateRooms();
 
