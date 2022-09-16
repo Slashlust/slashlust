@@ -668,6 +668,7 @@ MonoBehaviour:
     enemyPrefabs:
     - {fileID: 2422363816341469345, guid: 878f06b5ada303f47b84bdd84f0d4917, type: 3}
   isNavMeshBaked: 0
+  currentRoom: {fileID: 0}
 --- !u!114 &1524951598
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -887,10 +888,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 2932101238006215581, guid: 3b586217a958dcd42976ca69ca9e3ed3, type: 3}
-      propertyPath: m_Text
-      value: Esconder controles flutuantes
-      objectReference: {fileID: 0}
     - target: {fileID: 2932101238026633416, guid: 3b586217a958dcd42976ca69ca9e3ed3, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -944,8 +941,8 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2932101238397256823, guid: 3b586217a958dcd42976ca69ca9e3ed3, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: -0.000061035156
+      propertyPath: m_LocalPosition.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2932101238483661021, guid: 3b586217a958dcd42976ca69ca9e3ed3, type: 3}
       propertyPath: m_AnchorMax.x
@@ -981,23 +978,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2932101239167418444, guid: 3b586217a958dcd42976ca69ca9e3ed3, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2932101239167418444, guid: 3b586217a958dcd42976ca69ca9e3ed3, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2932101239167418444, guid: 3b586217a958dcd42976ca69ca9e3ed3, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 1399.9999
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2932101239167418444, guid: 3b586217a958dcd42976ca69ca9e3ed3, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 90.3
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2932101239167418444, guid: 3b586217a958dcd42976ca69ca9e3ed3, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 699.99994
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2932101239374365858, guid: 3b586217a958dcd42976ca69ca9e3ed3, type: 3}
       propertyPath: m_Pivot.x
@@ -1087,9 +1084,9 @@ PrefabInstance:
       propertyPath: m_Name
       value: Canvas
       objectReference: {fileID: 0}
-    - target: {fileID: 2932101239911592907, guid: 3b586217a958dcd42976ca69ca9e3ed3, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: -49.999878
+    - target: {fileID: 2932101239425230356, guid: 3b586217a958dcd42976ca69ca9e3ed3, type: 3}
+      propertyPath: m_Value
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2932101240029749903, guid: 3b586217a958dcd42976ca69ca9e3ed3, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
