@@ -40,7 +40,15 @@ public class PlayerScript : MonoBehaviour
     }
   }
 
-  public void GetPosAndCalculePath()
+  public void Back(InputAction.CallbackContext context)
+  {
+    if (context.performed)
+    {
+      OnMenuClick();
+    }
+  }
+
+  public void CalculatePath()
   {
     var manager = GameManagerScript.instance;
 
@@ -69,11 +77,13 @@ public class PlayerScript : MonoBehaviour
     }
   }
 
-  public void Back(InputAction.CallbackContext context)
+  System.Collections.IEnumerator CalculatePathLoop()
   {
-    if (context.performed)
+    while (true)
     {
-      OnMenuClick();
+      CalculatePath();
+
+      yield return new WaitForSeconds(1f);
     }
   }
 
@@ -286,6 +296,8 @@ public class PlayerScript : MonoBehaviour
   void Start()
   {
     HandleConfigInitialization();
+
+    StartCoroutine(CalculatePathLoop());
   }
 
   void Update()
@@ -327,7 +339,5 @@ public class PlayerScript : MonoBehaviour
     {
       HandleCameraTransforms(cameraTransform);
     }
-
-    GetPosAndCalculePath();
   }
 }
