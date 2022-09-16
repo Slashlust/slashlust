@@ -1,6 +1,6 @@
 using UnityEngine;
 
-class Layers
+public class Layers
 {
   public static int defaultLayer = 0;
   public static int uiLayer = 5;

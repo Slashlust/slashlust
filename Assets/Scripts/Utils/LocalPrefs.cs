@@ -9,18 +9,18 @@ public enum LocalPrefKeys
 
 public static class LocalPrefs
 {
-  public static bool GetGamepadEnabled()
+  public static bool GetGamepadDisabled()
   {
     return PlayerPrefs.GetInt(
       LocalPrefKeys.gamepadDisabled.ToString()
-    ) == 0;
+    ) == 1;
   }
 
-  public static void SetGamepadEnabled(bool gamepadEnabled)
+  public static void SetGamepadDisabled(bool gamepadDisabled)
   {
     PlayerPrefs.SetInt(
       LocalPrefKeys.gamepadDisabled.ToString(),
-      gamepadEnabled ? 0 : 1
+      gamepadDisabled ? 1 : 0
     );
   }
 }
