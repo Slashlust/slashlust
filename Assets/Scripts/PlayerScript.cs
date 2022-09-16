@@ -152,7 +152,7 @@ public class PlayerScript : MonoBehaviour
   {
     GameManagerScript.instance.DisableMenu();
 
-    if (!LocalPrefs.GetGamepadEnabled())
+    if (LocalPrefs.GetGamepadDisabled())
     {
       GameManagerScript.instance.DisableGamepad();
     }

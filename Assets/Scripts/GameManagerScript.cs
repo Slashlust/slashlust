@@ -48,7 +48,7 @@ public class GameManagerScript : MonoBehaviour
 
     gamepadGroup.SetActive(false);
 
-    LocalPrefs.SetGamepadEnabled(false);
+    LocalPrefs.SetGamepadDisabled(true);
   }
 
   public void DisableMenu()
@@ -72,7 +72,7 @@ public class GameManagerScript : MonoBehaviour
 
     gamepadGroup.SetActive(true);
 
-    LocalPrefs.SetGamepadEnabled(true);
+    LocalPrefs.SetGamepadDisabled(false);
   }
 
   public void EnableMenu()

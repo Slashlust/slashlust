@@ -7,7 +7,7 @@ public class MenuScript : MonoBehaviour
 {
   Toggle? gamepadDisabledToggle;
 
-  void SetGamepadEnabled(bool value, Toggle gamepadDisabledToggle)
+  void SetGamepadDisabled(bool value, Toggle gamepadDisabledToggle)
   {
     gamepadDisabledToggle.isOn = value;
 
@@ -30,17 +30,17 @@ public class MenuScript : MonoBehaviour
 
   void Start()
   {
-    var gamepadEnabled = LocalPrefs.GetGamepadEnabled();
+    var gamepadDisabled = LocalPrefs.GetGamepadDisabled();
 
     if (gamepadDisabledToggle != null)
     {
-      SetGamepadEnabled(gamepadEnabled, gamepadDisabledToggle);
+      SetGamepadDisabled(gamepadDisabled, gamepadDisabledToggle);
 
       gamepadDisabledToggle.onValueChanged.AddListener((value) =>
       {
-        SetGamepadEnabled(value, gamepadDisabledToggle);
+        SetGamepadDisabled(value, gamepadDisabledToggle);
 
-        LocalPrefs.SetGamepadEnabled(value);
+        LocalPrefs.SetGamepadDisabled(value);
       });
     }
   }
