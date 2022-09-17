@@ -47,8 +47,6 @@ public class MinimapScript : MonoBehaviour
 
     var targetPath = network.targetPath;
 
-    // TODO: Check pra evitar re render do layout do mapa
-
     foreach (var icon in icons)
     {
       Destroy(icon);
@@ -61,43 +59,6 @@ public class MinimapScript : MonoBehaviour
 
     icons.Clear();
     connections.Clear();
-
-    foreach (var entry in network.roomNodes)
-    {
-      var roomNode = entry.Value;
-
-      GameObject? chosenPrefab = null;
-
-      switch (roomNode.roomScript.roomType)
-      {
-        case RoomType.boss:
-          chosenPrefab = bossRoomIconPrefab;
-          break;
-        case RoomType.regular:
-          chosenPrefab = roomIconPrefab;
-          break;
-        case RoomType.spawn:
-          chosenPrefab = spawnIconPrefab;
-          break;
-      }
-
-      if (chosenPrefab == null)
-      {
-        continue;
-      }
-
-      var icon = Instantiate(chosenPrefab, roomsTransform);
-
-      var position = new Vector3
-      {
-        x = roomNode.room.transform.position.x,
-        y = roomNode.room.transform.position.z,
-      } * 1f / minimapScale;
-
-      icon.GetComponent<RectTransform>().localPosition = position;
-
-      icons.Add(icon);
-    }
 
     foreach (var entry in network.roomEdges)
     {
@@ -127,16 +88,104 @@ public class MinimapScript : MonoBehaviour
 
       var lineRenderer = connection.AddComponent<UILineRenderer>();
 
-      lineRenderer.LineThickness = 6f;
       lineRenderer.color = new Color(0.6f, 0.6f, 0.6f);
+
+      lineRenderer.LineThickness = 6f;
       // TODO: Colocar mask em volta dos ícones
-      // TODO: Fazer mecanica de highlight do mapa
       lineRenderer.Points = new Vector2[]{
         Vector2.zero,
         diff
       };
 
       connections.Add(connection);
+    }
+
+    foreach (var entry in network.roomNodes)
+    {
+      var roomNode = entry.Value;
+
+      var room = roomNode.room;
+
+      GameObject? chosenPrefab = null;
+
+      switch (roomNode.roomScript.roomType)
+      {
+        case RoomType.boss:
+          chosenPrefab = bossRoomIconPrefab;
+          break;
+        case RoomType.regular:
+          chosenPrefab = roomIconPrefab;
+          break;
+        case RoomType.spawn:
+          chosenPrefab = spawnIconPrefab;
+          break;
+      }
+
+      if (chosenPrefab == null)
+      {
+        continue;
+      }
+
+      var icon = Instantiate(chosenPrefab, roomsTransform);
+
+      var position = new Vector3
+      {
+        x = room.transform.position.x,
+        y = room.transform.position.z,
+      } * 1f / minimapScale;
+
+      icon.GetComponent<RectTransform>().localPosition = position;
+
+      if (targetPath?.Contains(roomNode) == true)
+      {
+        icon.GetComponent<MinimapIconScript>().Paint(new Color(.3f, .8f, .4f));
+      }
+
+      icons.Add(icon);
+    }
+
+    if (targetPath != null)
+    {
+      RoomNode? lastItem = null;
+
+      foreach (var item in targetPath)
+      {
+        if (lastItem != null)
+        {
+          var connection = new GameObject("Connection");
+
+          var positionA = new Vector3
+          {
+            x = item.room.transform.position.x,
+            y = item.room.transform.position.z,
+          } * 1f / minimapScale;
+
+          var positionB = new Vector3
+          {
+            x = lastItem.room.transform.position.x,
+            y = lastItem.room.transform.position.z,
+          } * 1f / minimapScale;
+
+          var diff = positionB - positionA;
+
+          connection.transform.SetParent(connectionsTransform, false);
+          connection.transform.localPosition = positionA;
+
+          var lineRenderer = connection.AddComponent<UILineRenderer>();
+
+          lineRenderer.color = new Color(.2f, .7f, .3f);
+
+          lineRenderer.LineThickness = 6f;
+          lineRenderer.Points = new Vector2[]{
+            Vector2.zero,
+            diff
+          };
+
+          connections.Add(connection);
+        }
+
+        lastItem = item;
+      }
     }
   }
 
