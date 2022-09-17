@@ -128,8 +128,6 @@ public class PlayerScript : MonoBehaviour
 
   void HandleAttack()
   {
-
-    TakeDamage(20f);
     var offset2d = currentLookInput.normalized;
 
     var offset = new Vector3
