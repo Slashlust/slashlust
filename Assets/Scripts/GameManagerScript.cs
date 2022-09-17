@@ -217,6 +217,8 @@ public class GameManagerScript : MonoBehaviour
 #if UNITY_EDITOR
     roomNetwork.DebugDrawNetwork();
 
+    roomNetwork.DebugDrawEdges();
+
     if (roomNetwork.targetPath != null)
     {
       roomNetwork.DebugDrawPath(roomNetwork.targetPath);

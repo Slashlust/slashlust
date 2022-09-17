@@ -6,6 +6,8 @@ using UnityEngine;
 public class RoomNetwork
 {
   public Dictionary<int, RoomNode> roomNodes = new Dictionary<int, RoomNode>();
+  public Dictionary<string, RoomEdge> roomEdges = // TODO: User edges
+    new Dictionary<string, RoomEdge>();
   public RoomNode? root;
   public RoomNode? bossRoom;
   public List<RoomNode>? targetPath;
@@ -106,6 +108,30 @@ public class RoomNetwork
 
     roomNodeA.AddNeighbor(roomNodeB);
     roomNodeB.AddNeighbor(roomNodeA);
+
+    // TODO: Tirar log
+
+    var id = instanceIDA > instanceIDB
+      ? $"{instanceIDB} {instanceIDA}" : $"{instanceIDA} {instanceIDB}";
+
+    if (!roomEdges.ContainsKey(id))
+    {
+      roomEdges.Add(id, new RoomEdge { a = roomNodeA, b = roomNodeB });
+    }
+  }
+
+  public void DebugDrawEdges()
+  {
+    foreach (var entry in roomEdges)
+    {
+      var roomEdge = entry.Value;
+
+      Debug.DrawLine(
+        roomEdge.a.room.transform.position + Vector3.up * 5,
+        roomEdge.b.room.transform.position + Vector3.up * 5,
+        Color.red
+      );
+    }
   }
 
   public void DebugDrawNetwork()
@@ -148,8 +174,6 @@ public class RoomNetwork
   {
     // Crie uma lista vazia para o caminho
     var path = new List<RoomNode>();
-
-    // path.Add(current);
 
     // Enquanto o nó atual tiver um nó anterior
     while (current != null)

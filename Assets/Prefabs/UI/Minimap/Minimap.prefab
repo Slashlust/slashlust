@@ -265,6 +265,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   minimapScale: 0.5
-  roomIconPrefab: {fileID: 2402611569416158922, guid: 83adac905e2518847bd994fa20299990, type: 3}
+  roomIconPrefab: {fileID: 2402611569416158922, guid: 758dc011cd45b8940b99420c071d5055, type: 3}
   spawnIconPrefab: {fileID: 2402611569416158922, guid: 10e864dae8b4e8144918f5c7ee502fa9, type: 3}
-  bossRoomIconPrefab: {fileID: 2402611569416158922, guid: d5da70769942cd64fab50915317e4277, type: 3}
+  bossRoomIconPrefab: {fileID: 2402611569416158922, guid: 4e458fb884fedf649a8625d68676c4a7, type: 3}

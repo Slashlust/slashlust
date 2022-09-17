@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI.Extensions;
 
 #nullable enable
 
@@ -20,6 +21,7 @@ public class MinimapScript : MonoBehaviour
   RectTransform? contentTransform;
 
   List<GameObject> icons = new List<GameObject>();
+  List<GameObject> connections = new List<GameObject>();
 
   void HandleContentTransform(RectTransform contentTransform)
   {
@@ -46,7 +48,13 @@ public class MinimapScript : MonoBehaviour
       Destroy(icon);
     }
 
+    foreach (var connection in connections)
+    {
+      Destroy(connection);
+    }
+
     icons.Clear();
+    connections.Clear();
 
     foreach (var entry in network.roomNodes)
     {
@@ -69,32 +77,92 @@ public class MinimapScript : MonoBehaviour
 
       if (chosenPrefab == null)
       {
-        Debug.Log("chosenPrefab null");
-
         continue;
       }
 
       var icon = Instantiate(chosenPrefab, contentTransform);
 
-      icon.GetComponent<RectTransform>().localPosition = new Vector3
+      var position = new Vector3
       {
         x = roomNode.room.transform.position.x,
         y = roomNode.room.transform.position.z,
       } * 1f / minimapScale;
 
+      icon.GetComponent<RectTransform>().localPosition = position;
+
       icons.Add(icon);
-
-      // TODO: Fazer o layout do minimapa usando a room network
-
-      // foreach (var neighbor in roomNode.neighbors)
-      // {
-      //   Debug.DrawLine(
-      //     roomNode.room.transform.position,
-      //     neighbor.room.transform.position,
-      //     Color.yellow
-      //   );
-      // }
     }
+
+    foreach (var entry in network.roomEdges)
+    {
+      var roomEdge = entry.Value;
+
+      var a = roomEdge.a;
+      var b = roomEdge.b;
+
+      var connection = new GameObject("Connection");
+
+      var position = new Vector3
+      {
+        x = a.room.transform.position.x,
+        y = a.room.transform.position.z,
+      } * 1f / minimapScale;
+
+      var position2 = new Vector3
+      {
+        x = b.room.transform.position.x,
+        y = b.room.transform.position.z,
+      } * 1f / minimapScale;
+
+      var diff = position2 - position;
+
+      connection.transform.SetParent(contentTransform, false);
+      connection.transform.localPosition = position;
+
+      var lineRenderer = connection.AddComponent<UILineRenderer>();
+
+      lineRenderer.LineThickness = 6f;
+      lineRenderer.color = new Color(0.4f, 0.4f, 0.4f, .6f);
+      // lineRenderer.;
+      // TODO: fix, tirar opacidade talvez
+      // TODO: fixcolocar mask em volta dos ícones
+      // TODO: fix fazer mecanica de highlight do mapa
+      lineRenderer.Points = new Vector2[]{
+        Vector2.zero,
+        diff
+      };
+
+      connections.Add(connection);
+    }
+
+    // TODO: Fazer o layout do minimapa usando a room network
+
+    // foreach (var neighbor in roomNode.neighbors)
+    // {
+    //   var connection = new GameObject("Connection");
+
+    //   connection.transform.SetParent(icon.transform);
+    //   connection.transform.SetSiblingIndex(0);
+    //   connection.transform.localPosition = Vector3.zero;
+
+    //   var lineRenderer = connection.AddComponent<UILineRenderer>();
+
+    //   lineRenderer.LineThickness = 6f;
+    //   lineRenderer.color = new Color(.5f, .5f, .5f, .6f);
+
+    //   var nPosition = new Vector3
+    //   {
+    //     x = neighbor.room.transform.position.x,
+    //     y = neighbor.room.transform.position.z,
+    //   } * 1f / minimapScale;
+
+    //   var diff = nPosition - roomPosition;
+
+    //   lineRenderer.Points = new Vector2[] {
+    //     Vector2.zero,
+    //     new Vector2 { x = diff.x, y = diff.y }
+    //   };
+    // }
   }
 
   void Awake()
