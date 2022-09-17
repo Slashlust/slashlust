@@ -16,8 +16,12 @@ public class PlayerScript : MonoBehaviour
   Transform? cameraTransform;
   Vector2 currentLookInput;
 
+  public float hitPoints;
+  public float initialHitPoints = 100f;
+
   int killCount;
   bool attackLock;
+  bool dead;
 
   public PlayerInput? GetPlayerInput => playerInput;
 
@@ -37,6 +41,21 @@ public class PlayerScript : MonoBehaviour
     {
       StartCoroutine(AttackRoutine());
     }
+  }
+
+  public void TakeDamage(float damage)
+  {
+    if (hitPoints <= 0)
+    {
+      dead = true;
+    }
+
+    if (!dead) hitPoints -= damage;
+  }
+
+  public float GetCurrentHitPoints()
+  {
+    return this.hitPoints;
   }
 
   public void Back(InputAction.CallbackContext context)
@@ -109,6 +128,8 @@ public class PlayerScript : MonoBehaviour
 
   void HandleAttack()
   {
+
+    TakeDamage(20f);
     var offset2d = currentLookInput.normalized;
 
     var offset = new Vector3
@@ -274,6 +295,8 @@ public class PlayerScript : MonoBehaviour
     model = transform.Find("DogPolyart").gameObject;
     anima = model.GetComponent<Animator>();
     cameraTransform = Camera.main.transform;
+    hitPoints = initialHitPoints;
+    dead = false;
   }
 
   void OnGUI()
