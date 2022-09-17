@@ -18,7 +18,9 @@ public class MinimapScript : MonoBehaviour
   GameObject? bossRoomIconPrefab;
 
   // Referência.
+  RectTransform? roomsTransform;
   RectTransform? contentTransform;
+  RectTransform? connectionsTransform;
 
   List<GameObject> icons = new List<GameObject>();
   List<GameObject> connections = new List<GameObject>();
@@ -41,6 +43,10 @@ public class MinimapScript : MonoBehaviour
 
   public void Layout(RoomNetwork network)
   {
+    Debug.Log("Minimap redrawn");
+
+    var targetPath = network.targetPath;
+
     // TODO: Check pra evitar re render do layout do mapa
 
     foreach (var icon in icons)
@@ -80,7 +86,7 @@ public class MinimapScript : MonoBehaviour
         continue;
       }
 
-      var icon = Instantiate(chosenPrefab, contentTransform);
+      var icon = Instantiate(chosenPrefab, roomsTransform);
 
       var position = new Vector3
       {
@@ -102,31 +108,29 @@ public class MinimapScript : MonoBehaviour
 
       var connection = new GameObject("Connection");
 
-      var position = new Vector3
+      var positionA = new Vector3
       {
         x = a.room.transform.position.x,
         y = a.room.transform.position.z,
       } * 1f / minimapScale;
 
-      var position2 = new Vector3
+      var positionB = new Vector3
       {
         x = b.room.transform.position.x,
         y = b.room.transform.position.z,
       } * 1f / minimapScale;
 
-      var diff = position2 - position;
+      var diff = positionB - positionA;
 
-      connection.transform.SetParent(contentTransform, false);
-      connection.transform.localPosition = position;
+      connection.transform.SetParent(connectionsTransform, false);
+      connection.transform.localPosition = positionA;
 
       var lineRenderer = connection.AddComponent<UILineRenderer>();
 
       lineRenderer.LineThickness = 6f;
-      lineRenderer.color = new Color(0.4f, 0.4f, 0.4f, .6f);
-      // lineRenderer.;
-      // TODO: fix, tirar opacidade talvez
-      // TODO: fixcolocar mask em volta dos ícones
-      // TODO: fix fazer mecanica de highlight do mapa
+      lineRenderer.color = new Color(0.6f, 0.6f, 0.6f);
+      // TODO: Colocar mask em volta dos ícones
+      // TODO: Fazer mecanica de highlight do mapa
       lineRenderer.Points = new Vector2[]{
         Vector2.zero,
         diff
@@ -134,40 +138,15 @@ public class MinimapScript : MonoBehaviour
 
       connections.Add(connection);
     }
-
-    // TODO: Fazer o layout do minimapa usando a room network
-
-    // foreach (var neighbor in roomNode.neighbors)
-    // {
-    //   var connection = new GameObject("Connection");
-
-    //   connection.transform.SetParent(icon.transform);
-    //   connection.transform.SetSiblingIndex(0);
-    //   connection.transform.localPosition = Vector3.zero;
-
-    //   var lineRenderer = connection.AddComponent<UILineRenderer>();
-
-    //   lineRenderer.LineThickness = 6f;
-    //   lineRenderer.color = new Color(.5f, .5f, .5f, .6f);
-
-    //   var nPosition = new Vector3
-    //   {
-    //     x = neighbor.room.transform.position.x,
-    //     y = neighbor.room.transform.position.z,
-    //   } * 1f / minimapScale;
-
-    //   var diff = nPosition - roomPosition;
-
-    //   lineRenderer.Points = new Vector2[] {
-    //     Vector2.zero,
-    //     new Vector2 { x = diff.x, y = diff.y }
-    //   };
-    // }
   }
 
   void Awake()
   {
+    roomsTransform = transform.Find("Background/Content/Rooms")
+      .GetComponent<RectTransform>();
     contentTransform = transform.Find("Background/Content")
+      .GetComponent<RectTransform>();
+    connectionsTransform = transform.Find("Background/Content/Connections")
       .GetComponent<RectTransform>();
   }
 

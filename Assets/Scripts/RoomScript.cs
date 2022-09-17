@@ -204,12 +204,16 @@ public class RoomScript : MonoBehaviour
   {
     if (isRoot)
     {
-      GameManagerScript.instance.GetRoomNetwork.AddRoom(gameObject, true);
+      var manager = GameManagerScript.instance;
+
+      manager.GetRoomNetwork.AddRoom(gameObject, true);
 
       GenerateRooms();
 
       // TODO: Workaround pra geração do navmesh funcinoar mesmo com a lógica de remover paredes
       StartCoroutine(BakeNavMesh());
+
+      manager.GetPlayer?.GetComponent<PlayerScript>().CalculatePath(true);
     }
   }
 }

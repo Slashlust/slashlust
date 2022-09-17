@@ -144,6 +144,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isRoot: 0
   dimensions: {x: 32, y: 3, z: 32}
+  roomType: 1
 --- !u!1 &4026393600420885619
 GameObject:
   m_ObjectHideFlags: 0

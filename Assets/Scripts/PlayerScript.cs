@@ -48,8 +48,12 @@ public class PlayerScript : MonoBehaviour
     }
   }
 
-  public void CalculatePath()
+  // Cálculo do caminho da sala do player até a sala destino.
+  // Só atualiza o minimapa caso seja necessário.
+  public void CalculatePath(bool isFirstRender)
   {
+    bool minimapRedrawn = false;
+
     var manager = GameManagerScript.instance;
 
     var network = manager.GetRoomNetwork;
@@ -57,25 +61,78 @@ public class PlayerScript : MonoBehaviour
     RaycastHit hit;
     if (Physics.Raycast(transform.position, Vector3.down, out hit, 5f, Layers.geometryMask))
     {
+      // O raycast deu hit.
       var parent = hit.collider.transform.parent;
 
+      // Não é um corredor.
       if (parent.name != "Corridor(Clone)")
       {
+        // Atualiza a sala atual.
         manager.currentRoom = parent.gameObject;
 
+        // Verifica se faz sentido procurar um caminho.
         if (manager.currentRoom != null && network.bossRoom != null)
         {
           var start = network.roomNodes[manager.currentRoom.GetInstanceID()];
 
           var end = network.bossRoom;
 
+          // Calcula o caminho.
           var path = network.AStar(start, end);
 
-          network.targetPath = path;
+          if (network.targetPath?.Count != path?.Count)
+          {
+            // O tamanho dos caminhos é diferente.
+            // É uma certeza mais barata do que loopar conferindo se são iguais.
+            if (network.targetPath != null && path != null)
+            {
+              // Os paths não são null, compará-los.
 
-          manager.GetMinimapScript?.Layout(network);
+              var oldPath = "";
+
+              // TODO: Salvar a última key qnd atualizar o path para não ter que loopar aq
+
+              foreach (var item in network.targetPath)
+              {
+                oldPath += $"{item.room.GetInstanceID()} ";
+              }
+
+              var newPath = "";
+
+              foreach (var item in path)
+              {
+                newPath += $"{item.room.GetInstanceID()} ";
+              }
+
+              if (oldPath != newPath)
+              {
+                // Os paths são diferentes, atualizar o antigo.
+
+                network.targetPath = path;
+
+                minimapRedrawn = true;
+
+                manager.GetMinimapScript?.Layout(network);
+              }
+            }
+            else
+            {
+              // Um dos paths é null, aceitar novo path.
+
+              network.targetPath = path;
+
+              minimapRedrawn = true;
+
+              manager.GetMinimapScript?.Layout(network);
+            }
+          }
         }
       }
+    }
+
+    if (isFirstRender && !minimapRedrawn)
+    {
+      manager.GetMinimapScript?.Layout(network);
     }
   }
 
@@ -83,7 +140,7 @@ public class PlayerScript : MonoBehaviour
   {
     while (true)
     {
-      CalculatePath();
+      CalculatePath(false);
 
       yield return new WaitForSeconds(1f);
     }
