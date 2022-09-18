@@ -351,7 +351,7 @@ MonoBehaviour:
     m_ActionId: 10927b2d-68ce-430a-bce1-c5a1f1d3daf0
     m_ActionName: Player/Back[/Keyboard/escape,/Mouse/backButton,/Keyboard/tab]
   m_NeverAutoSwitchControlSchemes: 0
-  m_DefaultControlScheme: 
+  m_DefaultControlScheme: Joystick
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}

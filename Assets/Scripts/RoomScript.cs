@@ -10,6 +10,8 @@ public class RoomScript : MonoBehaviour
   [SerializeField]
   Vector3 dimensions;
 
+  public RoomType roomType;
+
   public Vector3 GetDimensions => dimensions;
 
   System.Collections.IEnumerator BakeNavMesh()
@@ -22,6 +24,8 @@ public class RoomScript : MonoBehaviour
   public void GenerateRooms()
   {
     var manager = GameManagerScript.instance;
+
+    var network = manager.GetRoomNetwork;
 
     var attachments = GetAttachments();
 
@@ -45,7 +49,7 @@ public class RoomScript : MonoBehaviour
     foreach (var attachment in attachments)
     {
       if (
-        manager.GetRoomNetwork.roomNodes.Count >=
+        network.roomNodes.Count >=
         manager.GetMapGenerationSettings.minRoomCount
       )
       {
@@ -90,7 +94,7 @@ public class RoomScript : MonoBehaviour
               attachment.transform.rotation
             );
 
-            manager.GetRoomNetwork.ConnectRooms(
+            network.ConnectRooms(
               gameObject.GetInstanceID(),
               deadEndRoom.GetInstanceID()
             );
@@ -149,10 +153,13 @@ public class RoomScript : MonoBehaviour
 
       room.transform.SetParent(manager.GetGeometry.transform);
 
-      manager.GetRoomNetwork.AddRoom(room, false);
+      network.AddRoom(room, false);
 
-      if(roomPrefab.name == "RoomBoss") {
-        GameManagerScript.instance.GetRoomNetwork.bossRoom = GameManagerScript.instance.GetRoomNetwork.roomNodes[room.GetInstanceID()];
+      var roomScript = room.GetComponent<RoomScript>();
+
+      if (roomScript.roomType == RoomType.boss)
+      {
+        network.bossRoom = network.roomNodes[room.GetInstanceID()];
       }
 
       manager.GetRoomNetwork.ConnectRooms(
@@ -160,7 +167,7 @@ public class RoomScript : MonoBehaviour
         room.GetInstanceID()
       );
 
-      room.GetComponent<RoomScript>().GenerateRooms();
+      roomScript.GenerateRooms();
     }
   }
 
@@ -200,12 +207,16 @@ public class RoomScript : MonoBehaviour
   {
     if (isRoot)
     {
-      GameManagerScript.instance.GetRoomNetwork.AddRoom(gameObject, true);
+      var manager = GameManagerScript.instance;
+
+      manager.GetRoomNetwork.AddRoom(gameObject, true);
 
       GenerateRooms();
 
       // TODO: Workaround pra geração do navmesh funcinoar mesmo com a lógica de remover paredes
       StartCoroutine(BakeNavMesh());
+
+      manager.GetPlayer?.GetComponent<PlayerScript>().CalculatePath(true);
     }
   }
 }

@@ -144,6 +144,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isRoot: 0
   dimensions: {x: 32, y: 3, z: 32}
+  roomType: 1
 --- !u!1 &4026393600420885619
 GameObject:
   m_ObjectHideFlags: 0
@@ -16634,17 +16635,9 @@ MonoBehaviour:
   m_Mesh: {fileID: 0}
   m_VersionIndex: 5760
   m_IsSelectable: 1
-  m_SelectedFaces: 90000000
-  m_SelectedEdges:
-  - a: 576
-    b: 577
-  - a: 577
-    b: 578
-  - a: 579
-    b: 576
-  - a: 578
-    b: 579
-  m_SelectedVertices: 40020000410200004202000043020000
+  m_SelectedFaces: 
+  m_SelectedEdges: []
+  m_SelectedVertices: 
 --- !u!114 &4026393600420885631
 MonoBehaviour:
   m_ObjectHideFlags: 0
