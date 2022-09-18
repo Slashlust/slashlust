@@ -6,7 +6,7 @@ using UnityEngine;
 public class RoomNetwork
 {
   public Dictionary<int, RoomNode> roomNodes = new Dictionary<int, RoomNode>();
-  public Dictionary<string, RoomEdge> roomEdges = // TODO: User edges
+  public Dictionary<string, RoomEdge> roomEdges =
     new Dictionary<string, RoomEdge>();
   public RoomNode? root;
   public RoomNode? bossRoom;
@@ -108,8 +108,6 @@ public class RoomNetwork
 
     roomNodeA.AddNeighbor(roomNodeB);
     roomNodeB.AddNeighbor(roomNodeA);
-
-    // TODO: Tirar log
 
     var id = instanceIDA > instanceIDB
       ? $"{instanceIDB} {instanceIDA}" : $"{instanceIDA} {instanceIDB}";

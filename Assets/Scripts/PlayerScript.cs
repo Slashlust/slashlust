@@ -261,6 +261,19 @@ public class PlayerScript : MonoBehaviour
     anima?.SetFloat("speed", (controller?.velocity.magnitude ?? 0f) / 1.2f);
   }
 
+  void HandleMouseAndKeyboardInput()
+  {
+    if (GameManagerScript.instance.GetControlState == ControlState.keyboard)
+    {
+      var mousePosition = Mouse.current.position;
+
+      var xRatio = (mousePosition.x.ReadValue() / Screen.width) - .5f;
+      var yRatio = (mousePosition.y.ReadValue() / Screen.height) - .5f;
+
+      currentLookInput = new Vector2 { x = xRatio, y = yRatio };
+    }
+  }
+
   void HandleMovement(CharacterController controller)
   {
     var targetMoveInput =
@@ -355,18 +368,7 @@ public class PlayerScript : MonoBehaviour
     switch (manager.GetMenuState)
     {
       case MenuState.closed:
-
-        // TODO: Mover
-
-        if (manager.GetControlState == ControlState.keyboard)
-        {
-          var mousePosition = Mouse.current.position;
-
-          var xRatio = (mousePosition.x.ReadValue() / Screen.width) - .5f;
-          var yRatio = (mousePosition.y.ReadValue() / Screen.height) - .5f;
-
-          currentLookInput = new Vector2 { x = xRatio, y = yRatio };
-        }
+        HandleMouseAndKeyboardInput();
 
         break;
       case MenuState.open:

@@ -25,6 +25,8 @@ public class RoomScript : MonoBehaviour
   {
     var manager = GameManagerScript.instance;
 
+    var network = manager.GetRoomNetwork;
+
     var attachments = GetAttachments();
 
     var roomPrefabs = manager.GetMapGenerationSettings.roomPrefabs;
@@ -47,7 +49,7 @@ public class RoomScript : MonoBehaviour
     foreach (var attachment in attachments)
     {
       if (
-        manager.GetRoomNetwork.roomNodes.Count >=
+        network.roomNodes.Count >=
         manager.GetMapGenerationSettings.minRoomCount
       )
       {
@@ -92,7 +94,7 @@ public class RoomScript : MonoBehaviour
               attachment.transform.rotation
             );
 
-            manager.GetRoomNetwork.ConnectRooms(
+            network.ConnectRooms(
               gameObject.GetInstanceID(),
               deadEndRoom.GetInstanceID()
             );
@@ -151,12 +153,13 @@ public class RoomScript : MonoBehaviour
 
       room.transform.SetParent(manager.GetGeometry.transform);
 
-      manager.GetRoomNetwork.AddRoom(room, false);
+      network.AddRoom(room, false);
 
-      // TODO: Filtro por tipo do script
-      if (roomPrefab.name == "RoomBoss")
+      var roomScript = room.GetComponent<RoomScript>();
+
+      if (roomScript.roomType == RoomType.boss)
       {
-        GameManagerScript.instance.GetRoomNetwork.bossRoom = GameManagerScript.instance.GetRoomNetwork.roomNodes[room.GetInstanceID()];
+        network.bossRoom = network.roomNodes[room.GetInstanceID()];
       }
 
       manager.GetRoomNetwork.ConnectRooms(
@@ -164,7 +167,7 @@ public class RoomScript : MonoBehaviour
         room.GetInstanceID()
       );
 
-      room.GetComponent<RoomScript>().GenerateRooms();
+      roomScript.GenerateRooms();
     }
   }
 
