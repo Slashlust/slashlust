@@ -17,9 +17,16 @@ public class PlayerScript : MonoBehaviour
   Transform? cameraTransform;
   Vector2 currentLookInput;
 
+  public float hitPoints;
+  public float initialHitPoints = 100f;
+
   int killCount;
   bool attackLock;
 
+  // Getters de tipo primitivo.
+  public float GetCurrentHitPoints() => hitPoints;
+
+  // Getters de referência.
   public PlayerInput? GetPlayerInput => playerInput;
 
   System.Collections.IEnumerator AttackRoutine()
@@ -144,6 +151,11 @@ public class PlayerScript : MonoBehaviour
 
       yield return new WaitForSeconds(1f);
     }
+  }
+
+  void Die()
+  {
+    // TODO: Implementar funcionalidade do player morrer
   }
 
   public void Fire(InputAction.CallbackContext context)
@@ -340,6 +352,20 @@ public class PlayerScript : MonoBehaviour
     }
   }
 
+  public void TakeDamage(float damage)
+  {
+    var newHitPoints = hitPoints - damage;
+
+    if (newHitPoints <= 0)
+    {
+      Die();
+    }
+    else
+    {
+      hitPoints = newHitPoints;
+    }
+  }
+
   void Awake()
   {
     controller = GetComponent<CharacterController>();
@@ -347,6 +373,7 @@ public class PlayerScript : MonoBehaviour
     model = transform.Find("DogPolyart").gameObject;
     anima = model.GetComponent<Animator>();
     cameraTransform = Camera.main.transform;
+    hitPoints = initialHitPoints;
   }
 
   void OnGUI()
