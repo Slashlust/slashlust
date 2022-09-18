@@ -17,6 +17,7 @@ public class GameManagerScript : MonoBehaviour
   GameObject? gamepadGroup;
   GameObject? menuPanel;
   GameObject? geometry;
+  GameObject? player;
   List<GameObject> enemies = new List<GameObject>(); // TODO: fix
   public GameObject? currentRoom;
   RoomNetwork roomNetwork = new RoomNetwork();
@@ -47,6 +48,11 @@ public class GameManagerScript : MonoBehaviour
     GetComponent<NavMeshSurface>().BuildNavMesh();
 
     isNavMeshBaked = true;
+  }
+
+  public GameObject GetPlayer()
+  {
+    return player;
   }
 
   public void DisableGamepad()
@@ -185,6 +191,7 @@ public class GameManagerScript : MonoBehaviour
     gamepadGroup = GameObject.Find("Canvas/GamepadGroup");
     menuPanel = GameObject.Find("Canvas/MenuPanel");
     geometry = GameObject.Find("Geometry");
+    player = GameObject.Find("Player");
   }
 
   void OnGUI()
