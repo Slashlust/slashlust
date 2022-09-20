@@ -156,6 +156,8 @@ public class PlayerScript : MonoBehaviour
   void Die()
   {
     // TODO: Implementar funcionalidade do player morrer
+
+    // TODO: Adicionar som de morte do player
   }
 
   public void Fire(InputAction.CallbackContext context)
@@ -206,7 +208,7 @@ public class PlayerScript : MonoBehaviour
         killCount++;
 
         // TODO: adicionar o som de morte do inimigo generico
-        
+
       }
     }
   }
