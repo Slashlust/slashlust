@@ -182,7 +182,6 @@ public class PlayerScript : MonoBehaviour
   void HandleAttack()
   {
     var offset2d = currentLookInput.normalized;
-
     var offset = new Vector3
     {
       x = offset2d.x,
@@ -200,9 +199,14 @@ public class PlayerScript : MonoBehaviour
       var enemyDied = collider.transform.parent.gameObject
         .GetComponent<EnemyScript>().InflictDamage(20);
 
+        // TODO: adicionar o som de espada colidindo ou de hit
+        
       if (enemyDied)
       {
         killCount++;
+
+        // TODO: adicionar o som de morte do inimigo generico
+        
       }
     }
   }
