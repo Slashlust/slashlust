@@ -16,6 +16,7 @@
 - [Built With](#built-with)
 - [Getting Started](#getting-started)
   - [Prerequisites](#prerequisites)
+- [Resources](#resources)
 - [License](#license)
 - [Members](#members)
 
@@ -44,6 +45,11 @@ TODO: Getting started
 * Unity 2021.3.6f1 7da38d85baf6 - [Open with Unity Hub](unityhub://2021.3.6f1/7da38d85baf6); 
 * Visual Studio, Visual Studio Code or any other IDE; 
 * For more info, [see system requirements](https://docs.unity3d.com/Manual/system-requirements.html); 
+
+## Resources
+
+* [tileable.co](https://tileable.co/)
+* [textures.com](https://textures.com/)
 
 ## License
 
