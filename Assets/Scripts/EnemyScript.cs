@@ -5,12 +5,19 @@ using UnityEngine.AI;
 
 public class EnemyScript : MonoBehaviour
 {
+  [Min(10f)]
+  public readonly float initialHitPoints = 100f;
+
+  [Min(1f)]
+  public float range = 5f;
+
+  public EnemyType enemyType = EnemyType.melee;
+
   NavMeshAgent? agent;
   GameObject? player;
+  CajadoScript? cajado;
 
-  [HideInInspector]
-  public readonly float initialHitPoints = 100f;
-  float hitPoints = 100f;
+  float hitPoints = 0f;
 
   void Die()
   {
@@ -20,6 +27,27 @@ public class EnemyScript : MonoBehaviour
   public float GetCurrentHitPoints()
   {
     return hitPoints;
+  }
+
+  void HandleAttack(GameObject player)
+  {
+    if (enemyType == EnemyType.melee)
+    {
+      MeleeAttack();
+    }
+    else
+    {
+      var diff = player.transform.position - transform.position;
+
+      transform.rotation = Quaternion.Euler(new Vector3 {
+        y = Mathf.Atan2(diff.x, diff.z) * Mathf.Rad2Deg
+      });
+
+      if (diff.magnitude <= range)
+      {
+        RangedAttack();
+      }
+    }
   }
 
   void HandleMovement(NavMeshAgent agent, GameObject player)
@@ -57,9 +85,23 @@ public class EnemyScript : MonoBehaviour
     return false;
   }
 
+  void MeleeAttack()
+  {
+    // TODO: fix
+  }
+
+  void RangedAttack()
+  {
+    cajado?.Atirar();
+  }
+
   void Awake()
   {
+    hitPoints = initialHitPoints;
+
     agent = GetComponent<NavMeshAgent>();
+
+    cajado = GetComponent<CajadoScript>();
 
     player = GameObject.Find("Player");
   }
@@ -68,7 +110,14 @@ public class EnemyScript : MonoBehaviour
   {
     if (agent != null && player != null)
     {
-      HandleMovement(agent: agent, player: player);
+      if (enemyType == EnemyType.melee)
+      {
+        HandleMovement(agent: agent, player: player);
+      }
+      else
+      {
+        HandleAttack(player);
+      }
     }
   }
 }

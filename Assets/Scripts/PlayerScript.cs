@@ -207,10 +207,6 @@ public class PlayerScript : MonoBehaviour
       {
         enemyDied = enemyScript.InflictDamage(20f);
       }
-      else
-      {
-        enemyDied = enemy.GetComponent<EnemyRangedScript>().InflictDamage(20f);
-      }
 
       if (enemyDied)
       {

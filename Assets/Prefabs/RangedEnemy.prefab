@@ -56,8 +56,8 @@ GameObject:
   m_Component:
   - component: {fileID: 2422363816341469344}
   - component: {fileID: 2086824897653738892}
-  - component: {fileID: 7259296599759319620}
   - component: {fileID: 8411282471946221643}
+  - component: {fileID: 2528334920938060813}
   m_Layer: 6
   m_Name: RangedEnemy
   m_TagString: Untagged
@@ -106,18 +106,6 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!114 &7259296599759319620
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2422363816341469345}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0c18f39418670ca48b8d1a6f55294ad3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &8411282471946221643
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -137,6 +125,19 @@ MonoBehaviour:
   timeBetweenShots: 4
   attackPoint: {fileID: 4625630236950262534}
   allowInvoke: 1
+--- !u!114 &2528334920938060813
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2422363816341469345}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e8ee19c6594fb44995e9be99b792976, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enemyType: 1
 --- !u!1 &7070262502191703618
 GameObject:
   m_ObjectHideFlags: 0

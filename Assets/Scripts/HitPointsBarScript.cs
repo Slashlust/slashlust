@@ -12,7 +12,6 @@ public class HitPointsBarScript : MonoBehaviour
 
   // TODO: Melhorar após implementar classe genérica para o inimigo
   EnemyScript? enemyScript;
-  EnemyRangedScript? enemyRangedScript;
 
   void UpdateFillTransform(
     RectTransform fillTransform,
@@ -26,11 +25,6 @@ public class HitPointsBarScript : MonoBehaviour
     {
       hitPoints = enemyScript.GetCurrentHitPoints();
       initialHitPoints = enemyScript.initialHitPoints;
-    }
-    else if (enemyRangedScript != null)
-    {
-      hitPoints = enemyRangedScript.GetCurrentHitPoints();
-      initialHitPoints = enemyRangedScript.initialHitPoints;
     }
 
     label.text = hitPoints.ToString("0");
@@ -46,7 +40,6 @@ public class HitPointsBarScript : MonoBehaviour
   void Awake()
   {
     enemyScript = transform.parent.GetComponent<EnemyScript>();
-    enemyRangedScript = transform.parent.GetComponent<EnemyRangedScript>();
   }
 
   void Update()
