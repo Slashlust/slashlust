@@ -1,4 +1,4 @@
-<div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 32px">
+<div align='center' style="display: flex; flex-direction: column; align-items: center; margin-bottom: 32px">
   <a href="https://github.com/Slashlust/slashlust">
   <img src="Assets/Sprites/slashlust-logo-alt.png" alt="Slashlust logo" width="340">
   </a>
