@@ -197,8 +197,20 @@ public class PlayerScript : MonoBehaviour
 
     foreach (var collider in colliders)
     {
-      var enemyDied = collider.transform.parent.gameObject
-        .GetComponent<EnemyScript>().InflictDamage(20);
+      var enemy = collider.transform.parent.gameObject;
+
+      var enemyDied = false;
+
+      var enemyScript = enemy.GetComponent<EnemyScript>();
+
+      if (enemyScript != null)
+      {
+        enemyDied = enemyScript.InflictDamage(20f);
+      }
+      else
+      {
+        enemyDied = enemy.GetComponent<EnemyRangedScript>().InflictDamage(20f);
+      }
 
       if (enemyDied)
       {

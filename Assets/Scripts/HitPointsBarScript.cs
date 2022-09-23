@@ -10,40 +10,53 @@ public class HitPointsBarScript : MonoBehaviour
   [SerializeField]
   Text? label;
 
+  // TODO: Melhorar após implementar classe genérica para o inimigo
   EnemyScript? enemyScript;
+  EnemyRangedScript? enemyRangedScript;
 
   void UpdateFillTransform(
     RectTransform fillTransform,
-    EnemyScript enemyScript,
     Text label
   )
   {
-    var hitPoints = enemyScript.GetCurrentHitPoints();
+    var hitPoints = 0f;
+    var initialHitPoints = 0f;
+
+    if (enemyScript != null)
+    {
+      hitPoints = enemyScript.GetCurrentHitPoints();
+      initialHitPoints = enemyScript.initialHitPoints;
+    }
+    else if (enemyRangedScript != null)
+    {
+      hitPoints = enemyRangedScript.GetCurrentHitPoints();
+      initialHitPoints = enemyRangedScript.initialHitPoints;
+    }
 
     label.text = hitPoints.ToString("0");
 
     fillTransform.localScale = new Vector3
     {
-      x = hitPoints / enemyScript.initialHitPoints,
+      x = hitPoints / initialHitPoints,
       y = 1,
       z = 1
     };
   }
 
-  void Start()
+  void Awake()
   {
     enemyScript = transform.parent.GetComponent<EnemyScript>();
+    enemyRangedScript = transform.parent.GetComponent<EnemyRangedScript>();
   }
 
   void Update()
   {
     transform.LookAt(Camera.main.transform.position);
 
-    if (fillTransform != null && enemyScript != null && label != null)
+    if (fillTransform != null && label != null)
     {
       UpdateFillTransform(
         fillTransform: fillTransform,
-        enemyScript: enemyScript,
         label: label
       );
     }
