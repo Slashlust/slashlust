@@ -15,18 +15,15 @@ public class EnemyScript : MonoBehaviour
 
   NavMeshAgent? agent;
   GameObject? player;
-  CajadoScript? cajado;
+  RangedAttackScript? rangedAttackScript;
 
   float hitPoints = 0f;
+
+  public float GetCurrentHitPoints => hitPoints;
 
   void Die()
   {
     GameManagerScript.instance?.KillEnemy(gameObject);
-  }
-
-  public float GetCurrentHitPoints()
-  {
-    return hitPoints;
   }
 
   void HandleAttack(GameObject player)
@@ -39,7 +36,8 @@ public class EnemyScript : MonoBehaviour
     {
       var diff = player.transform.position - transform.position;
 
-      transform.rotation = Quaternion.Euler(new Vector3 {
+      transform.rotation = Quaternion.Euler(new Vector3
+      {
         y = Mathf.Atan2(diff.x, diff.z) * Mathf.Rad2Deg
       });
 
@@ -87,12 +85,12 @@ public class EnemyScript : MonoBehaviour
 
   void MeleeAttack()
   {
-    // TODO: fix
+    // TODO: Implementar ataque melee
   }
 
   void RangedAttack()
   {
-    cajado?.Atirar();
+    rangedAttackScript?.Attack();
   }
 
   void Awake()
@@ -101,7 +99,7 @@ public class EnemyScript : MonoBehaviour
 
     agent = GetComponent<NavMeshAgent>();
 
-    cajado = GetComponent<CajadoScript>();
+    rangedAttackScript = GetComponent<RangedAttackScript>();
 
     player = GameObject.Find("Player");
   }

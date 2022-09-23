@@ -10,7 +10,6 @@ public class HitPointsBarScript : MonoBehaviour
   [SerializeField]
   Text? label;
 
-  // TODO: Melhorar após implementar classe genérica para o inimigo
   EnemyScript? enemyScript;
 
   void UpdateFillTransform(
@@ -23,7 +22,7 @@ public class HitPointsBarScript : MonoBehaviour
 
     if (enemyScript != null)
     {
-      hitPoints = enemyScript.GetCurrentHitPoints();
+      hitPoints = enemyScript.GetCurrentHitPoints;
       initialHitPoints = enemyScript.initialHitPoints;
     }
 

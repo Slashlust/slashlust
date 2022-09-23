@@ -118,13 +118,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1cd51a488469574f94b9b8652f13eef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bullet: {fileID: 6122725168259043706, guid: 39884e848128ee84b922aad6a24877c4, type: 3}
-  timeBetweenShooting: 5
-  spread: 50
-  reloadTime: 3
-  timeBetweenShots: 4
+  projectilePrefab: {fileID: 6122725168259043706, guid: 39884e848128ee84b922aad6a24877c4, type: 3}
   attackPoint: {fileID: 4625630236950262534}
-  allowInvoke: 1
+  secondsBeteweenShots: 1
+  projectileForce: 10
 --- !u!114 &2528334920938060813
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -137,6 +134,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e8ee19c6594fb44995e9be99b792976, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  range: 5
   enemyType: 1
 --- !u!1 &7070262502191703618
 GameObject:
