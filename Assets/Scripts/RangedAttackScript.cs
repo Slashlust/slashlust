@@ -45,14 +45,14 @@ public class RangedAttackScript : MonoBehaviour
   {
     isOnAttackCooldown = true;
 
-    var currentBullet = Instantiate(
+    var projectile = Instantiate(
       projectilePrefab,
       attackPoint.position,
       attackPoint.rotation
     );
 
-    currentBullet?.GetComponent<Rigidbody>()
-      .AddForce(projectileForce * transform.forward, ForceMode.Impulse);
+    projectile?.GetComponent<Rigidbody>()
+      .AddForce(projectileForce * attackPoint.forward, ForceMode.Impulse);
 
     yield return new WaitForSeconds(secondsBeteweenShots);
 

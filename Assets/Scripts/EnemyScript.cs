@@ -9,7 +9,10 @@ public class EnemyScript : MonoBehaviour
   public readonly float initialHitPoints = 100f;
 
   [Min(1f)]
-  public float range = 5f;
+  public float maxRange = 5f;
+
+  [Min(1f)]
+  public float minRange = 5f;
 
   public EnemyType enemyType = EnemyType.melee;
 
@@ -41,7 +44,7 @@ public class EnemyScript : MonoBehaviour
         y = Mathf.Atan2(diff.x, diff.z) * Mathf.Rad2Deg
       });
 
-      if (diff.magnitude <= range)
+      if (diff.magnitude <= maxRange && diff.magnitude >= minRange)
       {
         RangedAttack();
       }
