@@ -34,7 +34,7 @@ The team decided to make a game in the style of hack 'n slash with inspirations 
 
 ## Built With
 
-* Unity 2021.3.6f1 7da38d85baf6 - unityhub://2021.3.6f1/7da38d85baf6
+* ``Unity 2021.3.6f1 7da38d85baf6 - unityhub://2021.3.6f1/7da38d85baf6``
 
 ## Getting Started
 
@@ -42,7 +42,7 @@ TODO: Getting started
 
 ### Prerequisites
 
-* Unity 2021.3.6f1 7da38d85baf6 - unityhub://2021.3.6f1/7da38d85baf6
+* ``Unity 2021.3.6f1 7da38d85baf6 - unityhub://2021.3.6f1/7da38d85baf6``
 * Visual Studio, Visual Studio Code or any other IDE; 
 * For more info, [see system requirements](https://docs.unity3d.com/Manual/system-requirements.html); 
 
