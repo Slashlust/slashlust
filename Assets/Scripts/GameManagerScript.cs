@@ -15,6 +15,8 @@ public class GameManagerScript : MonoBehaviour
 
   // Referência.
   public GameObject? currentRoom;
+
+  public GameObject? effectPrefab;
   GameObject? gamepadGroup;
   GameObject? menuPanel;
   GameObject? geometry;

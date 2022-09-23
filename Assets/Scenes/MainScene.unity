@@ -312,7 +312,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh-14482
+  m_Name: pb_Mesh-2480
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -618,7 +618,7 @@ PrefabInstance:
       objectReference: {fileID: 1078937266}
     - target: {fileID: 4026393600420885624, guid: 2a5d910ffb6e7134ca812a83195e8584, type: 3}
       propertyPath: m_VersionIndex
-      value: 4460
+      value: 4463
       objectReference: {fileID: 0}
     - target: {fileID: 4026393600420885628, guid: 2a5d910ffb6e7134ca812a83195e8584, type: 3}
       propertyPath: m_Mesh
@@ -729,6 +729,7 @@ MonoBehaviour:
     - {fileID: 2422363816341469345, guid: 878f06b5ada303f47b84bdd84f0d4917, type: 3}
   isNavMeshBaked: 0
   currentRoom: {fileID: 0}
+  effectPrefab: {fileID: 1390118265774136416, guid: a17030364649a5944926716399bd79f7, type: 3}
 --- !u!114 &1524951598
 MonoBehaviour:
   m_ObjectHideFlags: 0

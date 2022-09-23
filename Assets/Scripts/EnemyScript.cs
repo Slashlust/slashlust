@@ -38,6 +38,13 @@ public class EnemyScript : MonoBehaviour
   {
     var newHitPoints = hitPoints - damage;
 
+    //Spawna particula de sangue no inimigo
+    var effectPrefab = GameManagerScript.instance.effectPrefab;
+    if (effectPrefab != null)
+    {
+      Instantiate(GameManagerScript.instance.effectPrefab, transform.position, transform.rotation);
+    }
+
     if (hitPoints <= 0f)
     {
       return false;
