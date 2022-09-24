@@ -18,6 +18,7 @@ public class HitPointsBarScript : MonoBehaviour
   )
   {
     var hitPoints = 0f;
+
     var initialHitPoints = 0f;
 
     if (enemyScript != null)
