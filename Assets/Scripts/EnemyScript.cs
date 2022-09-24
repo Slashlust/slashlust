@@ -5,21 +5,50 @@ using UnityEngine.AI;
 
 public class EnemyScript : MonoBehaviour
 {
+  [Min(10f)]
+  public readonly float initialHitPoints = 100f;
+
+  [Min(1f)]
+  public float maxRange = 5f;
+
+  [Min(1f)]
+  public float minRange = 5f;
+
+  public EnemyType enemyType = EnemyType.melee;
+
   NavMeshAgent? agent;
   GameObject? player;
+  RangedAttackScript? rangedAttackScript;
 
-  [HideInInspector]
-  public readonly float initialHitPoints = 100f;
-  float hitPoints = 100f;
+  float hitPoints = 0f;
+
+  public float GetCurrentHitPoints => hitPoints;
 
   void Die()
   {
     GameManagerScript.instance?.KillEnemy(gameObject);
   }
 
-  public float GetCurrentHitPoints()
+  void HandleAttack(GameObject player)
   {
-    return hitPoints;
+    if (enemyType == EnemyType.melee)
+    {
+      MeleeAttack();
+    }
+    else
+    {
+      var diff = player.transform.position - transform.position;
+
+      transform.rotation = Quaternion.Euler(new Vector3
+      {
+        y = Mathf.Atan2(diff.x, diff.z) * Mathf.Rad2Deg
+      });
+
+      if (diff.magnitude <= maxRange && diff.magnitude >= minRange)
+      {
+        RangedAttack();
+      }
+    }
   }
 
   void HandleMovement(NavMeshAgent agent, GameObject player)
@@ -64,9 +93,23 @@ public class EnemyScript : MonoBehaviour
     return false;
   }
 
+  void MeleeAttack()
+  {
+    // TODO: Implementar ataque melee
+  }
+
+  void RangedAttack()
+  {
+    rangedAttackScript?.Attack();
+  }
+
   void Awake()
   {
+    hitPoints = initialHitPoints;
+
     agent = GetComponent<NavMeshAgent>();
+
+    rangedAttackScript = GetComponent<RangedAttackScript>();
 
     player = GameObject.Find("Player");
   }
@@ -75,7 +118,14 @@ public class EnemyScript : MonoBehaviour
   {
     if (agent != null && player != null)
     {
-      HandleMovement(agent: agent, player: player);
+      if (enemyType == EnemyType.melee)
+      {
+        HandleMovement(agent: agent, player: player);
+      }
+      else
+      {
+        HandleAttack(player);
+      }
     }
   }
 }
