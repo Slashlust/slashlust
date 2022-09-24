@@ -20,7 +20,7 @@ public class RangedAttackScript : MonoBehaviour
 
   [SerializeField]
   [Min(.05f)]
-  float secondsBeteweenShots = 1f;
+  float secondsBeteweenAttacks = 1f;
 
   [SerializeField]
   [Min(.05f)]
@@ -54,7 +54,7 @@ public class RangedAttackScript : MonoBehaviour
     projectile?.GetComponent<Rigidbody>()
       .AddForce(projectileForce * attackPoint.forward, ForceMode.Impulse);
 
-    yield return new WaitForSeconds(secondsBeteweenShots);
+    yield return new WaitForSeconds(secondsBeteweenAttacks);
 
     isOnAttackCooldown = false;
   }

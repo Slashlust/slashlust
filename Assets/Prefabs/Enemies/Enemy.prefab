@@ -89,6 +89,7 @@ GameObject:
   - component: {fileID: 2422363816341469344}
   - component: {fileID: 2086824897653738892}
   - component: {fileID: 3503760530964097698}
+  - component: {fileID: 6042433618088700611}
   - component: {fileID: 1965117362002356806}
   - component: {fileID: 3807738895873047813}
   m_Layer: 6
@@ -125,7 +126,7 @@ NavMeshAgent:
   m_GameObject: {fileID: 2422363816341469345}
   m_Enabled: 1
   m_AgentTypeID: 0
-  m_Radius: 0.5
+  m_Radius: 0.92
   m_Speed: 1.55
   m_Acceleration: 2.82
   avoidancePriority: 50
@@ -150,9 +151,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e8ee19c6594fb44995e9be99b792976, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxRange: 5
-  minRange: 5
+  initialHitPoints: 50
+  maxRange: 1
+  minRange: 0
   enemyType: 0
+  deathEffectPrefab: {fileID: 1390118265774136416, guid: a17030364649a5944926716399bd79f7, type: 3}
+--- !u!114 &6042433618088700611
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2422363816341469345}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 35735739ad2427e428838500e8476fa4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  secondsBeteweenAttacks: 1
 --- !u!198 &1965117362002356806
 ParticleSystem:
   m_ObjectHideFlags: 0
