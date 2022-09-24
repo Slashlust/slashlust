@@ -335,6 +335,15 @@ public class PlayerScript : MonoBehaviour
     }
   }
 
+  // Método usado para resetar o input do gamepad, evitando o um problema
+  // relacionado ao input.
+  public void Move()
+  {
+    var value = Vector2.zero;
+
+    currentMoveInput = value;
+  }
+
   public void Move(InputAction.CallbackContext context)
   {
     var value = context.ReadValue<Vector2>();
