@@ -57,6 +57,7 @@ GameObject:
   - component: {fileID: 2422363816341469344}
   - component: {fileID: 2086824897653738892}
   - component: {fileID: 3503760530964097698}
+  - component: {fileID: 2244221387408746164}
   m_Layer: 6
   m_Name: Boss
   m_TagString: Untagged
@@ -116,6 +117,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e8ee19c6594fb44995e9be99b792976, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  initialHitPoints: 2000
+  maxRange: 2
+  minRange: 0
+  enemyType: 0
+  deathEffectPrefab: {fileID: 1390118265774136416, guid: a17030364649a5944926716399bd79f7, type: 3}
+--- !u!114 &2244221387408746164
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2422363816341469345}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 35735739ad2427e428838500e8476fa4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  secondsBeteweenAttacks: 1
 --- !u!1001 &4789945712826962890
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -618,7 +618,7 @@ PrefabInstance:
       objectReference: {fileID: 1078937266}
     - target: {fileID: 4026393600420885624, guid: 2a5d910ffb6e7134ca812a83195e8584, type: 3}
       propertyPath: m_VersionIndex
-      value: 4460
+      value: 4463
       objectReference: {fileID: 0}
     - target: {fileID: 4026393600420885628, guid: 2a5d910ffb6e7134ca812a83195e8584, type: 3}
       propertyPath: m_Mesh
@@ -728,6 +728,7 @@ MonoBehaviour:
     enemyPrefabs:
     - {fileID: 2422363816341469345, guid: 878f06b5ada303f47b84bdd84f0d4917, type: 3}
     - {fileID: 2422363816341469345, guid: d8fc18198181de64a9748ac34ed8bbd3, type: 3}
+    - {fileID: 2422363816341469345, guid: d1a345f2a0f822246a75854118660aab, type: 3}
   isNavMeshBaked: 0
   currentRoom: {fileID: 0}
 --- !u!114 &1524951598

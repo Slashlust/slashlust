@@ -4,6 +4,8 @@ using UnityEngine.Video;
 
 #nullable enable
 
+// TODO: Melhorar mecância de ataque com cooldown
+
 public class PlayerScript : MonoBehaviour
 {
   // Referência.
