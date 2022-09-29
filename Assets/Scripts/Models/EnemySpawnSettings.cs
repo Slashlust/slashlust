@@ -11,6 +11,8 @@ public class EnemySpawnSettings
   public int spawnBatchSize;
   [Min(1f)]
   public float spawnInterval;
+  [Min(1)]
+  public int maxEnemiesAlive = 5;
 
   public List<GameObject> enemyPrefabs = default!;
 

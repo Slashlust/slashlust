@@ -130,7 +130,8 @@ public class GameManagerScript : MonoBehaviour
   {
     while (true)
     {
-      if (enemySpawnSettings.isEnemySpawnEnabled)
+      if (enemySpawnSettings.isEnemySpawnEnabled &&
+        enemies.Count < enemySpawnSettings.maxEnemiesAlive)
       {
         for (int i = 0; i < enemySpawnSettings.spawnBatchSize; i++)
         {

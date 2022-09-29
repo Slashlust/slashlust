@@ -6,6 +6,8 @@ public class ProjectileScript : MonoBehaviour
 {
   void Despawn()
   {
+    gameObject.SetActive(false);
+
     Destroy(gameObject);
   }
 
@@ -14,6 +16,7 @@ public class ProjectileScript : MonoBehaviour
     var collider = collision.collider;
 
     // TODO: Fazer lógica de refletir o projétil
+    // TODO: Otimizar o projétil pra mobile
 
     if (collider.gameObject.layer == Layers.geometryLayer)
     {
@@ -21,12 +24,12 @@ public class ProjectileScript : MonoBehaviour
     }
     else if (collider.name == "Player")
     {
+      Despawn();
+
       var playerScript = GameManagerScript.instance.GetPlayer?
         .GetComponent<PlayerScript>();
 
       playerScript?.TakeDamage(10f);
-
-      Despawn();
     }
   }
 }
