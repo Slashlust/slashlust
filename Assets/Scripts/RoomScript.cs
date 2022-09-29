@@ -86,8 +86,7 @@ public class RoomScript : MonoBehaviour
 
             var corridorLength2 = attachmentCorridorScript2.GetDimensions.z;
 
-            // TODO: Usar ou remover corredor.
-            var corridor2 = Instantiate(
+            Instantiate(
               corridorPrefab,
               attachment.transform.position + attachment.transform.forward *
                 corridorLength2 / 2f,
@@ -136,8 +135,7 @@ public class RoomScript : MonoBehaviour
         continue;
       }
 
-      // TODO: Usar ou remover corredor.
-      var corridor = Instantiate(
+      Instantiate(
         corridorPrefab,
         attachment.transform.position + attachment.transform.forward *
           corridorLength / 2f,
@@ -213,7 +211,7 @@ public class RoomScript : MonoBehaviour
 
       GenerateRooms();
 
-      // TODO: Workaround pra geração do navmesh funcinoar mesmo com a lógica de remover paredes
+      // TODO: Melhorar workaround pra geração do navmesh funcionar mesmo com a lógica de remover paredes
       StartCoroutine(BakeNavMesh());
 
       manager.GetPlayer?.GetComponent<PlayerScript>().CalculatePath(true);

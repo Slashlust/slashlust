@@ -3,7 +3,7 @@ using UnityEngine.AI;
 
 #nullable enable
 
-// TODO: Adicionar efeito de fumação na morte do inimigo
+// TODO: Adicionar efeito de fumaça na morte do inimigo
 
 public class EnemyScript : MonoBehaviour
 {
