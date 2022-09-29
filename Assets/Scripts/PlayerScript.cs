@@ -18,6 +18,7 @@ public class PlayerScript : MonoBehaviour
   GameObject? model;
   Transform? cameraTransform;
   Vector2 currentLookInput;
+  VideoPlayer? videoPlayer;
 
   public float hitPoints;
   public float initialHitPoints = 100f;
@@ -248,17 +249,10 @@ public class PlayerScript : MonoBehaviour
       GameManagerScript.instance.DisableGamepad();
     }
 
-    // TODO: Colocar como atributo da classe
-    var videoPlayer = Camera.main.gameObject.GetComponent<VideoPlayer>();
-
-    videoPlayer.source = VideoSource.Url;
-    videoPlayer.url = AssetLoader.GetPath("Video/black-hole.mp4");
-
-    videoPlayer.Prepare();
-    videoPlayer.prepareCompleted += (source) =>
+    if (videoPlayer != null)
     {
-      videoPlayer.Play();
-    };
+      HandleVideoConfigInitialization(videoPlayer);
+    }
   }
 
   void HandleModelAnimation(GameObject model)
@@ -313,6 +307,21 @@ public class PlayerScript : MonoBehaviour
     var move = moveInput.y * transform.forward + moveInput.x * transform.right;
 
     controller.SimpleMove(Vector3.ClampMagnitude(move, 1f) * 4f);
+  }
+
+  void HandleVideoConfigInitialization(VideoPlayer videoPlayer)
+  {
+    var videoPath = Application.isMobilePlatform
+      ? "Video/black-hole-mobile.mp4" : "Video/black-hole.mp4";
+
+    videoPlayer.source = VideoSource.Url;
+    videoPlayer.url = AssetLoader.GetPath(videoPath);
+
+    videoPlayer.Prepare();
+    videoPlayer.prepareCompleted += (source) =>
+    {
+      videoPlayer.Play();
+    };
   }
 
   public void Look(InputAction.CallbackContext context)
@@ -392,6 +401,8 @@ public class PlayerScript : MonoBehaviour
     model = transform.Find("DogPolyart").gameObject;
     anima = model.GetComponent<Animator>();
     cameraTransform = Camera.main.transform;
+    videoPlayer = Camera.main.gameObject.GetComponent<VideoPlayer>();
+
     hitPoints = initialHitPoints;
   }
 
