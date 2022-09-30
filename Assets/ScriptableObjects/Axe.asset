@@ -15,6 +15,6 @@ MonoBehaviour:
   ID: 0
   DisplayName: Axe
   Description: 
-  Icon: {fileID: 0}
+  Icon: {fileID: 21300000, guid: 467bc45910efb4d96a94a325403607b5, type: 3}
   MaxStackSize: 1
   Damage: 8
