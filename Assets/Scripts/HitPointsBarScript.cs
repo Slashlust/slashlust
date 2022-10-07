@@ -14,29 +14,23 @@ public class HitPointsBarScript : MonoBehaviour
 
   void UpdateFillTransform(
     RectTransform fillTransform,
+    EnemyScript enemyScript,
     Text label
   )
   {
-    var hitPoints = 0f;
-    var initialHitPoints = 0f;
-
-    if (enemyScript != null)
-    {
-      hitPoints = enemyScript.GetCurrentHitPoints;
-      initialHitPoints = enemyScript.initialHitPoints;
-    }
+    var hitPoints = enemyScript.GetCurrentHitPoints();
 
     label.text = hitPoints.ToString("0");
 
     fillTransform.localScale = new Vector3
     {
-      x = hitPoints / initialHitPoints,
+      x = hitPoints / enemyScript.initialHitPoints,
       y = 1,
       z = 1
     };
   }
 
-  void Awake()
+  void Start()
   {
     enemyScript = transform.parent.GetComponent<EnemyScript>();
   }
@@ -45,10 +39,11 @@ public class HitPointsBarScript : MonoBehaviour
   {
     transform.LookAt(Camera.main.transform.position);
 
-    if (fillTransform != null && label != null)
+    if (fillTransform != null && enemyScript != null && label != null)
     {
       UpdateFillTransform(
         fillTransform: fillTransform,
+        enemyScript: enemyScript,
         label: label
       );
     }

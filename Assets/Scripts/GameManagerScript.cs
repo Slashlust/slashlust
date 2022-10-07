@@ -7,51 +7,38 @@ using Unity.AI.Navigation;
 public class GameManagerScript : MonoBehaviour
 {
   [SerializeField]
-  MapGenerationSettings mapGenerationSettings = default!;
+  GameObject? enemyPrefab;
   [SerializeField]
-  EnemySpawnSettings enemySpawnSettings = default!;
+  List<GameObject>? roomPrefabs;
+  [SerializeField]
+  GameObject? corridorPrefab;
+  [SerializeField]
+  GameObject? deadEndPrefab;
 
-  public bool isNavMeshBaked = false;
+  [SerializeField]
+  int minRoomCount;
 
-  // Referência.
-  public GameObject? currentRoom;
-
+  List<GameObject> enemies = new List<GameObject>();
+  List<GameObject> rooms = new List<GameObject>();
   GameObject? gamepadGroup;
   GameObject? menuPanel;
   GameObject? geometry;
-  GameObject? player;
-  MinimapScript? minimapScript;
-  RoomNetwork roomNetwork = new RoomNetwork();
-  List<GameObject> enemies = new List<GameObject>();
 
-  // State.
   MenuState menuState = MenuState.closed;
-  ControlState controlState = ControlState.gamepad;
 
   public static GameManagerScript instance = default!;
-
-  // Getters de state.
+  public List<GameObject> GetRoomPrefabs =>
+    roomPrefabs ?? new List<GameObject> { };
+  public GameObject GetCorridorPrefab => corridorPrefab ?? default!;
+  public GameObject GetDeadEndPrefab => deadEndPrefab ?? default!;
+  public List<GameObject> GetRooms => rooms;
+  public int GetMinRoomCount => minRoomCount;
   public MenuState GetMenuState => menuState;
-  public ControlState GetControlState => controlState;
-
-  // Getters de tipo primitivo.
-  public string GetTargetControlScheme => controlState == ControlState.keyboard
-    ? ControlSchemes.keyboardMouse : ControlSchemes.gamepad;
-
-  // Getters de referência.
   public GameObject GetGeometry => geometry ?? default!;
-  public RoomNetwork GetRoomNetwork => roomNetwork;
-  public GameObject? GetPlayer => player;
-  public MinimapScript? GetMinimapScript => minimapScript;
-  public MapGenerationSettings GetMapGenerationSettings =>
-    mapGenerationSettings;
-  public EnemySpawnSettings GetEnemySpawnSettings => enemySpawnSettings;
 
   public void BakeNavMesh()
   {
     GetComponent<NavMeshSurface>().BuildNavMesh();
-
-    isNavMeshBaked = true;
   }
 
   public void DisableGamepad()
@@ -63,9 +50,7 @@ public class GameManagerScript : MonoBehaviour
 
     gamepadGroup.SetActive(false);
 
-    controlState = ControlState.keyboard;
-
-    LocalPrefs.SetGamepadDisabled(true);
+    LocalPrefs.SetGamepadEnabled(false);
   }
 
   public void DisableMenu()
@@ -89,9 +74,7 @@ public class GameManagerScript : MonoBehaviour
 
     gamepadGroup.SetActive(true);
 
-    controlState = ControlState.gamepad;
-
-    LocalPrefs.SetGamepadDisabled(false);
+    LocalPrefs.SetGamepadEnabled(true);
   }
 
   public void EnableMenu()
@@ -106,19 +89,6 @@ public class GameManagerScript : MonoBehaviour
     menuState = MenuState.open;
   }
 
-  void HandleConfigInitialization()
-  {
-    var currentFrameRate = Application.targetFrameRate;
-
-    if (Application.isMobilePlatform)
-    {
-      if (currentFrameRate < 60)
-      {
-        Application.targetFrameRate = 60;
-      }
-    }
-  }
-
   public void KillEnemy(GameObject enemy)
   {
     enemies.Remove(enemy);
@@ -126,67 +96,24 @@ public class GameManagerScript : MonoBehaviour
     Destroy(enemy);
   }
 
-  System.Collections.IEnumerator SpawnLoop()
+  System.Collections.IEnumerator SpawnLoop(GameObject prefab)
   {
     while (true)
     {
-      if (enemySpawnSettings.isEnemySpawnEnabled &&
-        enemies.Count < enemySpawnSettings.maxEnemiesAlive)
+      for (int i = 0; i < 1; i++)
       {
-        for (int i = 0; i < enemySpawnSettings.spawnBatchSize; i++)
-        {
-          var prefab = enemySpawnSettings.GetRandomEnemyPrefab();
+        var vector2 = Random.insideUnitCircle * 5;
 
-          var tries = 0;
+        var enemy = Instantiate(
+          prefab,
+          new Vector3(x: vector2.x, y: 2f, z: vector2.y),
+          Quaternion.identity
+        );
 
-          while (true)
-          {
-            tries++;
-
-            // Sistema de segurança para não cair em loop.
-            if (tries > 10)
-            {
-              break;
-            }
-
-            var vector2 = Random.insideUnitCircle * 10f;
-
-            var position = new Vector3(x: vector2.x, y: 4f, z: vector2.y);
-
-            RaycastHit hit;
-            if (
-              !Physics.Raycast(
-                position,
-                Vector3.down,
-                out hit,
-                10f,
-                Layers.geometryMask
-              )
-            )
-            {
-              continue;
-            }
-
-            // Não deixar o inimigo spawnar em cima de paredes.
-            if (hit.point.y > 1f)
-            {
-              continue;
-            }
-
-            var enemy = Instantiate(
-              prefab,
-              hit.point,
-              Quaternion.identity
-            );
-
-            enemies.Add(enemy);
-
-            break;
-          }
-        }
+        enemies.Add(enemy);
       }
 
-      yield return new WaitForSeconds(enemySpawnSettings.spawnInterval);
+      yield return new WaitForSeconds(10);
     }
   }
 
@@ -194,14 +121,16 @@ public class GameManagerScript : MonoBehaviour
   {
     instance = this;
 
+    var currentFrameRate = Application.targetFrameRate;
+
+    if (currentFrameRate < 60)
+    {
+      Application.targetFrameRate = 60;
+    }
+
     gamepadGroup = GameObject.Find("Canvas/GamepadGroup");
     menuPanel = GameObject.Find("Canvas/MenuPanel");
     geometry = GameObject.Find("Geometry");
-    player = GameObject.Find("Player");
-    minimapScript = GameObject.Find("Canvas/Minimap")
-      .GetComponent<MinimapScript>();
-
-    HandleConfigInitialization();
   }
 
   void OnGUI()
@@ -211,20 +140,9 @@ public class GameManagerScript : MonoBehaviour
 
   void Start()
   {
-    StartCoroutine(SpawnLoop());
-  }
-
-  void Update()
-  {
-#if UNITY_EDITOR
-    roomNetwork.DebugDrawNetwork();
-
-    roomNetwork.DebugDrawEdges();
-
-    if (roomNetwork.targetPath != null)
+    if (enemyPrefab != null)
     {
-      roomNetwork.DebugDrawPath(roomNetwork.targetPath);
+      StartCoroutine(SpawnLoop(prefab: enemyPrefab));
     }
-#endif
   }
 }

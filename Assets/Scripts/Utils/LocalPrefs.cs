@@ -4,23 +4,23 @@ using UnityEngine;
 
 public enum LocalPrefKeys
 {
-  gamepadDisabled,
+  gamepadEnabled,
 }
 
 public static class LocalPrefs
 {
-  public static bool GetGamepadDisabled()
+  public static bool GetGamepadEnabled()
   {
     return PlayerPrefs.GetInt(
-      LocalPrefKeys.gamepadDisabled.ToString()
+      LocalPrefKeys.gamepadEnabled.ToString()
     ) == 1;
   }
 
-  public static void SetGamepadDisabled(bool gamepadDisabled)
+  public static void SetGamepadEnabled(bool gamepadEnabled)
   {
     PlayerPrefs.SetInt(
-      LocalPrefKeys.gamepadDisabled.ToString(),
-      gamepadDisabled ? 1 : 0
+      LocalPrefKeys.gamepadEnabled.ToString(),
+      gamepadEnabled ? 1 : 0
     );
   }
 }

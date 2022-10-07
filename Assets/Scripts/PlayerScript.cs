@@ -1,36 +1,26 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.Video;
 
 #nullable enable
 
-// TODO: Melhorar mecância de ataque com cooldown
-
 public class PlayerScript : MonoBehaviour
 {
-  // Referência.
   CharacterController? controller;
   PlayerInput? playerInput;
   Vector2 currentMoveInput;
   Vector2 processedMoveInput;
+  Vector2 lastMove;
   Vector3 characterVelocity;
   Animator? anima;
   GameObject? model;
   Transform? cameraTransform;
   Vector2 currentLookInput;
-  VideoPlayer? videoPlayer;
+  Vector2 lastLook;
 
-  public float hitPoints;
-  public float initialHitPoints = 100f;
-
+  float lastMoveTimestamp;
   int killCount;
   bool attackLock;
-
-  // Getters de tipo primitivo.
-  public float GetCurrentHitPoints() => hitPoints;
-
-  // Getters de referência.
-  public PlayerInput? GetPlayerInput => playerInput;
+  float lastLookTimestamp;
 
   System.Collections.IEnumerator AttackRoutine()
   {
@@ -56,109 +46,6 @@ public class PlayerScript : MonoBehaviour
     {
       OnMenuClick();
     }
-  }
-
-  // Cálculo do caminho da sala do player até a sala destino.
-  // Só atualiza o minimapa caso seja necessário.
-  public void CalculatePath(bool isFirstRender)
-  {
-    bool minimapRedrawn = false;
-
-    var manager = GameManagerScript.instance;
-
-    var network = manager.GetRoomNetwork;
-
-    RaycastHit hit;
-    if (Physics.Raycast(transform.position, Vector3.down, out hit, 5f, Layers.geometryMask))
-    {
-      // O raycast deu hit.
-      var parent = hit.collider.transform.parent;
-
-      // Não é um corredor.
-      if (parent.name != "Corridor(Clone)")
-      {
-        // Atualiza a sala atual.
-        manager.currentRoom = parent.gameObject;
-
-        // Verifica se faz sentido procurar um caminho.
-        if (manager.currentRoom != null && network.bossRoom != null)
-        {
-          var start = network.roomNodes[manager.currentRoom.GetInstanceID()];
-
-          var end = network.bossRoom;
-
-          // Calcula o caminho.
-          var path = network.AStar(start, end);
-
-          if (network.targetPath?.Count != path?.Count)
-          {
-            // O tamanho dos caminhos é diferente.
-            // É uma certeza mais barata do que loopar conferindo se são iguais.
-            if (network.targetPath != null && path != null)
-            {
-              // Os paths não são null, compará-los.
-
-              var oldPath = "";
-
-              // TODO: Salvar a última key qnd atualizar o path para não ter que loopar aq
-
-              foreach (var item in network.targetPath)
-              {
-                oldPath += $"{item.room.GetInstanceID()} ";
-              }
-
-              var newPath = "";
-
-              foreach (var item in path)
-              {
-                newPath += $"{item.room.GetInstanceID()} ";
-              }
-
-              if (oldPath != newPath)
-              {
-                // Os paths são diferentes, atualizar o antigo.
-
-                network.targetPath = path;
-
-                minimapRedrawn = true;
-
-                manager.GetMinimapScript?.Layout(network);
-              }
-            }
-            else
-            {
-              // Um dos paths é null, aceitar novo path.
-
-              network.targetPath = path;
-
-              minimapRedrawn = true;
-
-              manager.GetMinimapScript?.Layout(network);
-            }
-          }
-        }
-      }
-    }
-
-    if (isFirstRender && !minimapRedrawn)
-    {
-      manager.GetMinimapScript?.Layout(network);
-    }
-  }
-
-  System.Collections.IEnumerator CalculatePathLoop()
-  {
-    while (true)
-    {
-      CalculatePath(false);
-
-      yield return new WaitForSeconds(1f);
-    }
-  }
-
-  void Die()
-  {
-    // TODO: Implementar funcionalidade do player morrer
   }
 
   public void Fire(InputAction.CallbackContext context)
@@ -195,21 +82,13 @@ public class PlayerScript : MonoBehaviour
     var colliders = Physics.OverlapSphere(
       transform.position + offset,
       1f,
-      Layers.enemyMask
+      0b1000000
     );
 
     foreach (var collider in colliders)
     {
-      var enemy = collider.transform.parent.gameObject;
-
-      var enemyDied = false;
-
-      var enemyScript = enemy.GetComponent<EnemyScript>();
-
-      if (enemyScript != null)
-      {
-        enemyDied = enemyScript.InflictDamage(20f);
-      }
+      var enemyDied = collider.transform.parent.gameObject
+        .GetComponent<EnemyScript>().InflictDamage(20);
 
       if (enemyDied)
       {
@@ -230,28 +109,13 @@ public class PlayerScript : MonoBehaviour
       );
   }
 
-  public void HandleCharacterControllerUpdate()
-  {
-    var tempCharacterVelocity = controller?.velocity ?? Vector3.zero;
-
-    if (tempCharacterVelocity.magnitude > .1f)
-    {
-      characterVelocity = tempCharacterVelocity;
-    }
-  }
-
   void HandleConfigInitialization()
   {
     GameManagerScript.instance.DisableMenu();
 
-    if (LocalPrefs.GetGamepadDisabled())
+    if (!LocalPrefs.GetGamepadEnabled())
     {
       GameManagerScript.instance.DisableGamepad();
-    }
-
-    if (videoPlayer != null)
-    {
-      HandleVideoConfigInitialization(videoPlayer);
     }
   }
 
@@ -277,19 +141,6 @@ public class PlayerScript : MonoBehaviour
     anima?.SetFloat("speed", (controller?.velocity.magnitude ?? 0f) / 1.2f);
   }
 
-  void HandleMouseAndKeyboardInput()
-  {
-    if (GameManagerScript.instance.GetControlState == ControlState.keyboard)
-    {
-      var mousePosition = Mouse.current.position;
-
-      var xRatio = (mousePosition.x.ReadValue() / Screen.width) - .5f;
-      var yRatio = (mousePosition.y.ReadValue() / Screen.height) - .5f;
-
-      currentLookInput = new Vector2 { x = xRatio, y = yRatio };
-    }
-  }
-
   void HandleMovement(CharacterController controller)
   {
     var targetMoveInput =
@@ -309,63 +160,72 @@ public class PlayerScript : MonoBehaviour
     controller.SimpleMove(Vector3.ClampMagnitude(move, 1f) * 4f);
   }
 
-  void HandleVideoConfigInitialization(VideoPlayer videoPlayer)
-  {
-    var videoPath = Application.isMobilePlatform
-      ? "Video/black-hole-mobile.mp4" : "Video/black-hole.mp4";
-
-    videoPlayer.source = VideoSource.Url;
-    videoPlayer.url = AssetLoader.GetPath(videoPath);
-
-    videoPlayer.Prepare();
-    videoPlayer.prepareCompleted += (source) =>
-    {
-      videoPlayer.Play();
-    };
-  }
-
   public void Look(InputAction.CallbackContext context)
   {
+    // TODO: Arrumar o flick do analógico
     var value = context.ReadValue<Vector2>();
 
-    if (
-      playerInput?.currentControlScheme !=
-        GameManagerScript.instance.GetTargetControlScheme
-    )
+    if (value.magnitude == 0)
     {
-      return;
+      if (lastLook.magnitude == 0)
+      {
+        currentLookInput = Vector2.zero;
+      }
+    }
+    else
+    {
+      currentLookInput = value;
+
+      if (currentLookInput.magnitude > .5f && !attackLock)
+      {
+        StartCoroutine(AttackRoutine());
+      }
     }
 
-    currentLookInput = value;
-
-    if (currentLookInput.magnitude > .5f && !attackLock)
-    {
-      StartCoroutine(AttackRoutine());
-    }
-  }
-
-  // Método usado para resetar o input do gamepad, evitando o um problema
-  // relacionado ao input.
-  public void Move()
-  {
-    var value = Vector2.zero;
-
-    currentMoveInput = value;
+    lastLook = value;
+    lastLookTimestamp = Time.timeSinceLevelLoad;
   }
 
   public void Move(InputAction.CallbackContext context)
   {
     var value = context.ReadValue<Vector2>();
 
-    if (
-      playerInput?.currentControlScheme !=
-        GameManagerScript.instance.GetTargetControlScheme
-    )
+    if (value.magnitude == 0)
     {
-      return;
+      if (lastMove.magnitude == 0)
+      {
+        currentMoveInput = Vector2.zero;
+      }
+    }
+    else
+    {
+      currentMoveInput = value;
     }
 
-    currentMoveInput = value;
+    lastMove = value;
+    lastMoveTimestamp = Time.timeSinceLevelLoad;
+  }
+
+  public void MoveCheck()
+  {
+    // TODO: Arrumar o flick do analógico
+    var value = playerInput?.actions["Move"].ReadValue<Vector2>();
+
+    if (
+      value?.magnitude == 0 &&
+      lastMove.magnitude == 0 &&
+      Time.timeSinceLevelLoad - lastMoveTimestamp > .01f
+    )
+    {
+      currentMoveInput = Vector2.zero;
+    }
+
+    var tempCharacterVelocity = controller?.velocity ?? Vector3.zero;
+
+    if (tempCharacterVelocity.magnitude > .1f)
+    {
+      characterVelocity = tempCharacterVelocity;
+    }
   }
 
   public void OnMenuClick()
@@ -380,20 +240,6 @@ public class PlayerScript : MonoBehaviour
     }
   }
 
-  public void TakeDamage(float damage)
-  {
-    var newHitPoints = hitPoints - damage;
-
-    if (newHitPoints <= 0)
-    {
-      Die();
-    }
-    else
-    {
-      hitPoints = newHitPoints;
-    }
-  }
-
   void Awake()
   {
     controller = GetComponent<CharacterController>();
@@ -401,9 +247,6 @@ public class PlayerScript : MonoBehaviour
     model = transform.Find("DogPolyart").gameObject;
     anima = model.GetComponent<Animator>();
     cameraTransform = Camera.main.transform;
-    videoPlayer = Camera.main.gameObject.GetComponent<VideoPlayer>();
-
-    hitPoints = initialHitPoints;
   }
 
   void OnGUI()
@@ -414,26 +257,29 @@ public class PlayerScript : MonoBehaviour
   void Start()
   {
     HandleConfigInitialization();
-
-    StartCoroutine(CalculatePathLoop());
   }
 
   void Update()
   {
-    var manager = GameManagerScript.instance;
-
-    switch (manager.GetMenuState)
+    switch (GameManagerScript.instance.GetMenuState)
     {
       case MenuState.closed:
-        HandleMouseAndKeyboardInput();
+        MoveCheck();
+
+        // TODO: Mover
+
+        var mousePosition = Mouse.current.position;
+
+        var xRatio = (mousePosition.x.ReadValue() / Screen.width) - .5f;
+        var yRatio = (mousePosition.y.ReadValue() / Screen.height) - .5f;
+
+        currentLookInput = new Vector2 { x = xRatio, y = yRatio };
 
         break;
       case MenuState.open:
 
         break;
     }
-
-    HandleCharacterControllerUpdate();
 
     if (controller != null)
     {
