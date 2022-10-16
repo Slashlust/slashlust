@@ -14,6 +14,8 @@ public class RangedAttackScript : MonoBehaviour
 {
   [SerializeField]
   GameObject? projectilePrefab;
+  [SerializeField]
+  GameObject? mobileProjectilePrefab;
 
   [SerializeField]
   Transform? attackPoint;
@@ -43,10 +45,13 @@ public class RangedAttackScript : MonoBehaviour
 
   System.Collections.IEnumerator AttackRoutine(Transform attackPoint)
   {
+    var prefab = Application.isMobilePlatform
+      ? mobileProjectilePrefab : projectilePrefab;
+
     isOnAttackCooldown = true;
 
     var projectile = Instantiate(
-      projectilePrefab,
+      prefab,
       attackPoint.position,
       attackPoint.rotation
     );
