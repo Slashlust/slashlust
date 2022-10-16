@@ -5,6 +5,7 @@ using UnityEngine;
 public enum LocalPrefKeys
 {
   gamepadDisabled,
+  sFXVolume,
 }
 
 public static class LocalPrefs
@@ -21,6 +22,22 @@ public static class LocalPrefs
     PlayerPrefs.SetInt(
       LocalPrefKeys.gamepadDisabled.ToString(),
       gamepadDisabled ? 1 : 0
+    );
+  }
+
+  public static float GetSFXVolume()
+  {
+    return PlayerPrefs.GetFloat(
+      LocalPrefKeys.sFXVolume.ToString(),
+      .5f
+    );
+  }
+
+  public static void SetSFXVolume(float sFXVolume)
+  {
+    PlayerPrefs.SetFloat(
+      LocalPrefKeys.sFXVolume.ToString(),
+      sFXVolume
     );
   }
 }

@@ -37,7 +37,11 @@ public class PlayerScript : MonoBehaviour
     anima?.SetBool("attack", true);
     attackLock = true;
 
-    yield return new WaitForSeconds(0.4f);
+    yield return new WaitForSeconds(0.2f);
+
+    SoundManagerScript.instance.PlaySwordSwing();
+
+    yield return new WaitForSeconds(0.2f);
 
     HandleAttack();
 
@@ -207,19 +211,18 @@ public class PlayerScript : MonoBehaviour
 
       var enemyScript = enemy.GetComponent<EnemyScript>();
 
+      SoundManagerScript.instance.PlaySwordHit();
+
       if (enemyScript != null)
       {
         enemyDied = enemyScript.InflictDamage(20f);
       }
 
-        // TODO: adicionar o som de espada colidindo ou de hit
-        
       if (enemyDied)
       {
         killCount++;
 
-        // TODO: adicionar o som de morte do inimigo generico
-
+        SoundManagerScript.instance.PlayNpcDeath();
       }
     }
   }

@@ -26,8 +26,7 @@ public class MeleeAttackScript : MonoBehaviour
   {
     isOnAttackCooldown = true;
 
-    GameManagerScript.instance.GetPlayer?
-      .GetComponent<PlayerScript>().TakeDamage(5f);
+    GameManagerScript.instance.GetPlayerScript?.TakeDamage(5f);
 
     yield return new WaitForSeconds(secondsBeteweenAttacks);
 

@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class MenuScript : MonoBehaviour
 {
   Toggle? gamepadDisabledToggle;
+  Slider? sFXVolumeSlider;
 
   void SetGamepadDisabled(bool value, Toggle gamepadDisabledToggle)
   {
@@ -21,11 +22,21 @@ public class MenuScript : MonoBehaviour
     }
   }
 
+  void SetSFXVolume(float value, Slider sFXVolumeSlider)
+  {
+    sFXVolumeSlider.value = value;
+  }
+
   void Awake()
   {
     gamepadDisabledToggle =
-      transform.Find("MenuPanel/Body/ScrollArea/Column/GamepadEnabled/Toggle")
-      .GetComponent<Toggle>();
+      transform.Find(
+        "MenuPanel/Body/ScrollArea/Column/GamepadEnabled/Toggle"
+      ).GetComponent<Toggle>();
+    sFXVolumeSlider =
+      transform.Find(
+        "MenuPanel/Body/ScrollArea/Column/SFXVolume/Slider"
+      ).GetComponent<Slider>();
   }
 
   void Start()
@@ -41,6 +52,20 @@ public class MenuScript : MonoBehaviour
         SetGamepadDisabled(value, gamepadDisabledToggle);
 
         LocalPrefs.SetGamepadDisabled(value);
+      });
+    }
+
+    var sFXVolume = LocalPrefs.GetSFXVolume();
+
+    if (sFXVolumeSlider != null)
+    {
+      SetSFXVolume(sFXVolume, sFXVolumeSlider);
+
+      sFXVolumeSlider.onValueChanged.AddListener((value) =>
+      {
+        SetSFXVolume(value, sFXVolumeSlider);
+
+        LocalPrefs.SetSFXVolume(value);
       });
     }
   }

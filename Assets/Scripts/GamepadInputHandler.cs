@@ -18,10 +18,7 @@ public class GamepadInputHandler : OnScreenControl, IPointerDownHandler, IPointe
   {
     SendValueToControl(Vector2.zero);
 
-    var playerScript = GameManagerScript.instance.GetPlayer?
-      .GetComponent<PlayerScript>();
-
-    playerScript?.Move();
+    GameManagerScript.instance.GetPlayerScript?.Move();
   }
 
   public void OnPointerUp(PointerEventData data)

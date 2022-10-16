@@ -214,7 +214,7 @@ public class RoomScript : MonoBehaviour
       // TODO: Melhorar workaround pra geração do navmesh funcionar mesmo com a lógica de remover paredes
       StartCoroutine(BakeNavMesh());
 
-      manager.GetPlayer?.GetComponent<PlayerScript>().CalculatePath(true);
+      manager.GetPlayerScript?.CalculatePath(true);
     }
   }
 }

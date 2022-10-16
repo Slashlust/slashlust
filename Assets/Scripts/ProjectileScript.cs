@@ -26,10 +26,7 @@ public class ProjectileScript : MonoBehaviour
     {
       Despawn();
 
-      var playerScript = GameManagerScript.instance.GetPlayer?
-        .GetComponent<PlayerScript>();
-
-      playerScript?.TakeDamage(10f);
+      GameManagerScript.instance.GetPlayerScript?.TakeDamage(10f);
     }
   }
 }
