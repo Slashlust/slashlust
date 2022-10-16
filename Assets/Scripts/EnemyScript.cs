@@ -3,23 +3,55 @@ using UnityEngine.AI;
 
 #nullable enable
 
+// TODO: Adicionar efeito de fumaça na morte do inimigo
+
 public class EnemyScript : MonoBehaviour
 {
+  [Min(1f)]
+  public float initialHitPoints = 100f;
+  [Min(.1f)]
+  public float maxRange = 5f;
+  [Min(0f)]
+  public float minRange = 5f;
+
+  public EnemyType enemyType = EnemyType.melee;
+
+  public GameObject? deathEffectPrefab;
+
   NavMeshAgent? agent;
   GameObject? player;
+  MeleeAttackScript? meleeAttackScript;
+  RangedAttackScript? rangedAttackScript;
 
-  [HideInInspector]
-  public readonly float initialHitPoints = 100f;
-  float hitPoints = 100f;
+  float hitPoints = 0f;
+
+  public float GetCurrentHitPoints => hitPoints;
 
   void Die()
   {
     GameManagerScript.instance?.KillEnemy(gameObject);
   }
 
-  public float GetCurrentHitPoints()
+  void HandleAttack(GameObject player)
   {
-    return hitPoints;
+    var diff = player.transform.position - transform.position;
+
+    transform.rotation = Quaternion.Euler(new Vector3
+    {
+      y = Mathf.Atan2(diff.x, diff.z) * Mathf.Rad2Deg
+    });
+
+    if (diff.magnitude <= maxRange && diff.magnitude >= minRange)
+    {
+      if (enemyType == EnemyType.melee)
+      {
+        MeleeAttack();
+      }
+      else
+      {
+        RangedAttack();
+      }
+    }
   }
 
   void HandleMovement(NavMeshAgent agent, GameObject player)
@@ -27,6 +59,10 @@ public class EnemyScript : MonoBehaviour
 #if UNITY_EDITOR
     Debug.DrawLine(transform.position, player.transform.position);
 #endif
+
+    // TODO: Só aumentar o tick de mover pro player target se o player estiver perto
+
+    // TODO: Implementar lógica de movimentação
 
     if (GameManagerScript.instance.isNavMeshBaked)
     {
@@ -38,9 +74,10 @@ public class EnemyScript : MonoBehaviour
   {
     var newHitPoints = hitPoints - damage;
 
-    if (hitPoints <= 0f)
+    //Spawna particula de sangue no inimigo
+    if (deathEffectPrefab != null)
     {
-      return false;
+      Instantiate(deathEffectPrefab, transform.position, transform.rotation);
     }
 
     if (newHitPoints <= 0f)
@@ -57,9 +94,24 @@ public class EnemyScript : MonoBehaviour
     return false;
   }
 
+  void MeleeAttack()
+  {
+    meleeAttackScript?.Attack();
+  }
+
+  void RangedAttack()
+  {
+    rangedAttackScript?.Attack();
+  }
+
   void Awake()
   {
+    hitPoints = initialHitPoints;
+
     agent = GetComponent<NavMeshAgent>();
+
+    meleeAttackScript = GetComponent<MeleeAttackScript>();
+    rangedAttackScript = GetComponent<RangedAttackScript>();
 
     player = GameObject.Find("Player");
   }
@@ -68,7 +120,12 @@ public class EnemyScript : MonoBehaviour
   {
     if (agent != null && player != null)
     {
-      HandleMovement(agent: agent, player: player);
+      if (enemyType == EnemyType.melee)
+      {
+        HandleMovement(agent: agent, player: player);
+      }
+
+      HandleAttack(player);
     }
   }
 }

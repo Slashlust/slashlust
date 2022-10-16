@@ -4,6 +4,8 @@ using UnityEngine.Video;
 
 #nullable enable
 
+// TODO: Melhorar mecância de ataque com cooldown
+
 public class PlayerScript : MonoBehaviour
 {
   // Referência.
@@ -16,6 +18,7 @@ public class PlayerScript : MonoBehaviour
   GameObject? model;
   Transform? cameraTransform;
   Vector2 currentLookInput;
+  VideoPlayer? videoPlayer;
 
   public float hitPoints;
   public float initialHitPoints = 100f;
@@ -198,8 +201,16 @@ public class PlayerScript : MonoBehaviour
 
     foreach (var collider in colliders)
     {
-      var enemyDied = collider.transform.parent.gameObject
-        .GetComponent<EnemyScript>().InflictDamage(20);
+      var enemy = collider.transform.parent.gameObject;
+
+      var enemyDied = false;
+
+      var enemyScript = enemy.GetComponent<EnemyScript>();
+
+      if (enemyScript != null)
+      {
+        enemyDied = enemyScript.InflictDamage(20f);
+      }
 
         // TODO: adicionar o som de espada colidindo ou de hit
         
@@ -244,17 +255,10 @@ public class PlayerScript : MonoBehaviour
       GameManagerScript.instance.DisableGamepad();
     }
 
-    // TODO: Colocar como atributo da classe
-    var videoPlayer = Camera.main.gameObject.GetComponent<VideoPlayer>();
-
-    videoPlayer.source = VideoSource.Url;
-    videoPlayer.url = AssetLoader.GetPath("Video/black-hole.mp4");
-
-    videoPlayer.Prepare();
-    videoPlayer.prepareCompleted += (source) =>
+    if (videoPlayer != null)
     {
-      videoPlayer.Play();
-    };
+      HandleVideoConfigInitialization(videoPlayer);
+    }
   }
 
   void HandleModelAnimation(GameObject model)
@@ -311,6 +315,21 @@ public class PlayerScript : MonoBehaviour
     controller.SimpleMove(Vector3.ClampMagnitude(move, 1f) * 4f);
   }
 
+  void HandleVideoConfigInitialization(VideoPlayer videoPlayer)
+  {
+    var videoPath = Application.isMobilePlatform
+      ? "Video/black-hole-mobile.mp4" : "Video/black-hole.mp4";
+
+    videoPlayer.source = VideoSource.Url;
+    videoPlayer.url = AssetLoader.GetPath(videoPath);
+
+    videoPlayer.Prepare();
+    videoPlayer.prepareCompleted += (source) =>
+    {
+      videoPlayer.Play();
+    };
+  }
+
   public void Look(InputAction.CallbackContext context)
   {
     var value = context.ReadValue<Vector2>();
@@ -329,6 +348,15 @@ public class PlayerScript : MonoBehaviour
     {
       StartCoroutine(AttackRoutine());
     }
+  }
+
+  // Método usado para resetar o input do gamepad, evitando o um problema
+  // relacionado ao input.
+  public void Move()
+  {
+    var value = Vector2.zero;
+
+    currentMoveInput = value;
   }
 
   public void Move(InputAction.CallbackContext context)
@@ -379,6 +407,8 @@ public class PlayerScript : MonoBehaviour
     model = transform.Find("DogPolyart").gameObject;
     anima = model.GetComponent<Animator>();
     cameraTransform = Camera.main.transform;
+    videoPlayer = Camera.main.gameObject.GetComponent<VideoPlayer>();
+
     hitPoints = initialHitPoints;
   }
 
