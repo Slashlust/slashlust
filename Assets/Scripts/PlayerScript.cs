@@ -37,7 +37,11 @@ public class PlayerScript : MonoBehaviour
     anima?.SetBool("attack", true);
     attackLock = true;
 
-    yield return new WaitForSeconds(0.4f);
+    yield return new WaitForSeconds(0.2f);
+
+    SoundManagerScript.instance.PlaySwordSwing();
+
+    yield return new WaitForSeconds(0.2f);
 
     HandleAttack();
 
@@ -159,6 +163,8 @@ public class PlayerScript : MonoBehaviour
   void Die()
   {
     // TODO: Implementar funcionalidade do player morrer
+
+    // TODO: Adicionar som de morte do player
   }
 
   public void Fire(InputAction.CallbackContext context)
@@ -185,7 +191,6 @@ public class PlayerScript : MonoBehaviour
   void HandleAttack()
   {
     var offset2d = currentLookInput.normalized;
-
     var offset = new Vector3
     {
       x = offset2d.x,
@@ -206,6 +211,8 @@ public class PlayerScript : MonoBehaviour
 
       var enemyScript = enemy.GetComponent<EnemyScript>();
 
+      SoundManagerScript.instance.PlaySwordHit();
+
       if (enemyScript != null)
       {
         enemyDied = enemyScript.InflictDamage(20f);
@@ -214,6 +221,8 @@ public class PlayerScript : MonoBehaviour
       if (enemyDied)
       {
         killCount++;
+
+        SoundManagerScript.instance.PlayNpcDeath();
       }
     }
   }

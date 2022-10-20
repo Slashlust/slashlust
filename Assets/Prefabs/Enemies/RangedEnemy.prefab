@@ -136,6 +136,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   projectilePrefab: {fileID: 6122725168259043706, guid: 39884e848128ee84b922aad6a24877c4, type: 3}
+  mobileProjectilePrefab: {fileID: 4802643116889572473, guid: 3a11f9dbbd4a23d4db2b2401bd79afa2, type: 3}
   attackPoint: {fileID: 4625630236950262534}
   secondsBeteweenAttacks: 1
   projectileForce: 5

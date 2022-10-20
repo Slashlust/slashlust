@@ -20,6 +20,7 @@ public class GameManagerScript : MonoBehaviour
   GameObject? menuPanel;
   GameObject? geometry;
   GameObject? player;
+  PlayerScript? playerScript;
   MinimapScript? minimapScript;
   RoomNetwork roomNetwork = new RoomNetwork();
   List<GameObject> enemies = new List<GameObject>();
@@ -42,6 +43,7 @@ public class GameManagerScript : MonoBehaviour
   public GameObject GetGeometry => geometry ?? default!;
   public RoomNetwork GetRoomNetwork => roomNetwork;
   public GameObject? GetPlayer => player;
+  public PlayerScript? GetPlayerScript => playerScript;
   public MinimapScript? GetMinimapScript => minimapScript;
   public MapGenerationSettings GetMapGenerationSettings =>
     mapGenerationSettings;
@@ -198,6 +200,7 @@ public class GameManagerScript : MonoBehaviour
     menuPanel = GameObject.Find("Canvas/MenuPanel");
     geometry = GameObject.Find("Geometry");
     player = GameObject.Find("Player");
+    playerScript = player.GetComponent<PlayerScript>();
     minimapScript = GameObject.Find("Canvas/Minimap")
       .GetComponent<MinimapScript>();
 
