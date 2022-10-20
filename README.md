@@ -12,13 +12,17 @@
 
  
 
-- [About](#about)
-- [Built With](#built-with)
-- [Getting Started](#getting-started)
-  - [Prerequisites](#prerequisites)
-- [Resources](#resources)
-- [License](#license)
-- [Members](#members)
+* [About](#about)
+* [Built With](#built-with)
+* [Getting Started](#getting-started)
+  + [Prerequisites](#prerequisites)
+* [Resources](#resources)
+* [License](#license)
+* [Credits](#credits)
+  + [Music](#music)
+  + [SFX](#sfx)
+  + [Background](#background)
+* [Members](#members)
 
 ## About 
 
@@ -54,6 +58,34 @@ TODO: Getting started
 ## License
 
 Distributed under the MIT License. See [LICENSE](https://github.com/Slashlust/slashlust/blob/main/LICENSE.md) for more information.
+
+## Credits
+
+### Music
+
+Special thanks to [prod. ayc](https://www.youtube.com/channel/UC06oKQ_VOHjSXtXnUIbFoLg) for letting us use their music.
+
+* [Transcendent (Prod. AY Collective)](https://www.youtube.com/watch?v=KwJTS5eCFZA)
+
+### SFX
+
+[Freesound](https://freesound.org/) is a huge collaborative database of audio snippets, samples, recordings and bleeps released under Creative Commons licenses that allow their reuse.
+
+* https://freesound.org/people/Merrick079/sounds/568169/
+* https://freesound.org/people/qubodup/sounds/60013/
+* https://freesound.org/people/InspectorJ/sounds/394419/
+* https://freesound.org/people/Glaneur%20de%20sons/sounds/420618/
+* https://freesound.org/people/Nightflame/sounds/422512/
+* https://freesound.org/people/lmbubec/sounds/118792/
+* https://freesound.org/people/el_boss/sounds/625658/
+* https://freesound.org/people/TheBuilder15/sounds/434896/
+* https://freesound.org/people/tonsil5/sounds/555411/
+* https://freesound.org/people/scorpion67890/sounds/614315/
+* https://freesound.org/people/spookymodem/sounds/249813/
+
+### Background
+
+The animated background footage was recorded using [Space Engine](https://spaceengine.org/).
 
 ## Members
 

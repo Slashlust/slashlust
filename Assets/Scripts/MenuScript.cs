@@ -7,6 +7,7 @@ public class MenuScript : MonoBehaviour
 {
   Toggle? gamepadDisabledToggle;
   Slider? sFXVolumeSlider;
+  Slider? musicVolumeSlider;
 
   void SetGamepadDisabled(bool value, Toggle gamepadDisabledToggle)
   {
@@ -27,6 +28,13 @@ public class MenuScript : MonoBehaviour
     sFXVolumeSlider.value = value;
   }
 
+  void SetMusicVolume(float value, Slider musicVolumeSlider)
+  {
+    musicVolumeSlider.value = value;
+
+    SoundManagerScript.instance.SetMusicAudioSourceVolume(value);
+  }
+
   void Awake()
   {
     gamepadDisabledToggle =
@@ -36,6 +44,10 @@ public class MenuScript : MonoBehaviour
     sFXVolumeSlider =
       transform.Find(
         "MenuPanel/Body/ScrollArea/Column/SFXVolume/Slider"
+      ).GetComponent<Slider>();
+    musicVolumeSlider =
+      transform.Find(
+        "MenuPanel/Body/ScrollArea/Column/MusicVolume/Slider"
       ).GetComponent<Slider>();
   }
 
@@ -66,6 +78,20 @@ public class MenuScript : MonoBehaviour
         SetSFXVolume(value, sFXVolumeSlider);
 
         LocalPrefs.SetSFXVolume(value);
+      });
+    }
+
+    var musicVolume = LocalPrefs.GetMusicVolume();
+
+    if (musicVolumeSlider != null)
+    {
+      SetMusicVolume(musicVolume, musicVolumeSlider);
+
+      musicVolumeSlider.onValueChanged.AddListener((value) =>
+      {
+        SetMusicVolume(value, musicVolumeSlider);
+
+        LocalPrefs.SetMusicVolume(value);
       });
     }
   }

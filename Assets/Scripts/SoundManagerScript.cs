@@ -7,6 +7,9 @@ public class SoundManagerScript : MonoBehaviour
   public static SoundManagerScript instance = default!;
 
   [SerializeField]
+  AudioSource musicAudioSource = default!;
+
+  [SerializeField]
   AudioSettings audioSettings = default!;
 
   AudioSource? audioSource;
@@ -47,6 +50,14 @@ public class SoundManagerScript : MonoBehaviour
         audioSettings.GetRandomSwordSwingAudioClip(),
         volume
       );
+    }
+  }
+
+  public void SetMusicAudioSourceVolume(float volume)
+  {
+    if (musicAudioSource != null)
+    {
+      musicAudioSource.volume = volume;
     }
   }
 
