@@ -333,6 +333,20 @@ public class PlayerScript : MonoBehaviour
     };
   }
 
+  public void Heal(float healHitPoints)
+  {
+    var newHitPoints = hitPoints + healHitPoints;
+
+    if (newHitPoints > initialHitPoints)
+    {
+      hitPoints = initialHitPoints;
+    }
+    else
+    {
+      hitPoints = newHitPoints;
+    }
+  }
+
   public void Look(InputAction.CallbackContext context)
   {
     var value = context.ReadValue<Vector2>();
