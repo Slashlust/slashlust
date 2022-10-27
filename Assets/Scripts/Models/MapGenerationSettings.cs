@@ -7,6 +7,8 @@ using UnityEngine;
 public class MapGenerationSettings
 {
   public int minRoomCount;
+  [Range(0f, 1f)]
+  public float roomConnectionChance = .2f;
 
   public GameObject? deadEndPrefab;
   public GameObject? corridorPrefab;

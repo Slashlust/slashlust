@@ -52,8 +52,8 @@ MonoBehaviour:
     baseHitPoints: 0
     baseDamageBuff: 0
     damageMultiplierBuff: 0
-    baseMovementSpeedBuff: 1
-    movementSpeedMultiplierBuff: 0.1
+    baseMovementSpeedBuff: 0.5
+    movementSpeedMultiplierBuff: 0.01
     baseAttackRangeBuff: 0
     attackRangeMultiplierBuff: 0
 --- !u!54 &4227791301383778843

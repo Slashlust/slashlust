@@ -66,39 +66,44 @@ public class RoomScript : MonoBehaviour
         {
           if (hit.collider.name == "DeadEndModel")
           {
-            // TODO: Trabalhar um atributo de chance de conexão de salas
+            // Chance de conectar 2 salas com um corredor.
+            if (
+              Random.value <=
+              manager.GetMapGenerationSettings.roomConnectionChance
+            )
+            {
+              var deadEnd = hit.collider.transform.parent.gameObject;
 
-            var deadEnd = hit.collider.transform.parent.gameObject;
+              var deadEndRoom = deadEnd.GetComponent<DeadEndScript>().room;
 
-            var deadEndRoom = deadEnd.GetComponent<DeadEndScript>().room;
+              // TODO: Talvez não seja necessário, mas removendo a layer de
+              // geometry do dead end para evitar que ele impacte nos raycasts ou
+              // geração do navmesh
+              deadEnd.layer = Layers.defaultLayer;
 
-            // TODO: Talvez não seja necessário, mas removendo a layer de
-            // geometry do dead end para evitar que ele impacte nos raycasts ou
-            // geração do navmesh
-            deadEnd.layer = Layers.defaultLayer;
+              Destroy(deadEnd);
 
-            Destroy(deadEnd);
+              // TODO: Melhorar fluxo de conexão de salas
 
-            // TODO: Melhorar fluxo de conexão de salas
+              var attachmentCorridorScript2 =
+                corridorPrefab.GetComponent<CorridorScript>();
 
-            var attachmentCorridorScript2 =
-              corridorPrefab.GetComponent<CorridorScript>();
+              var corridorLength2 = attachmentCorridorScript2.GetDimensions.z;
 
-            var corridorLength2 = attachmentCorridorScript2.GetDimensions.z;
+              Instantiate(
+                corridorPrefab,
+                attachment.transform.position + attachment.transform.forward *
+                  corridorLength2 / 2f,
+                attachment.transform.rotation
+              );
 
-            Instantiate(
-              corridorPrefab,
-              attachment.transform.position + attachment.transform.forward *
-                corridorLength2 / 2f,
-              attachment.transform.rotation
-            );
+              network.ConnectRooms(
+                gameObject.GetInstanceID(),
+                deadEndRoom.GetInstanceID()
+              );
 
-            network.ConnectRooms(
-              gameObject.GetInstanceID(),
-              deadEndRoom.GetInstanceID()
-            );
-
-            continue;
+              continue;
+            }
           }
         }
 

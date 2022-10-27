@@ -25,6 +25,8 @@ public class DropScript : MonoBehaviour
         buffs.movementSpeedMultiplierBuff += playerBuffs.movementSpeedMultiplierBuff;
         buffs.baseAttackRangeBuff += playerBuffs.baseAttackRangeBuff;
         buffs.attackRangeMultiplierBuff += playerBuffs.attackRangeMultiplierBuff;
+
+        playerScript.TriggerUpdateStats();
       }
 
       Destroy(gameObject);

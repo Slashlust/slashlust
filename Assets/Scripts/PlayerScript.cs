@@ -260,6 +260,8 @@ public class PlayerScript : MonoBehaviour
     {
       HandleVideoConfigInitialization(videoPlayer);
     }
+
+    TriggerUpdateStats();
   }
 
   void HandleModelAnimation(GameObject model)
@@ -417,6 +419,11 @@ public class PlayerScript : MonoBehaviour
     {
       playerBuffs.baseHitPoints = newHitPoints;
     }
+  }
+
+  public void TriggerUpdateStats()
+  {
+    StatsScript.instance?.UpdateStats(playerBuffs);
   }
 
   void Awake()
