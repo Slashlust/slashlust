@@ -12,6 +12,7 @@ public class MapGenerationSettings
 
   public GameObject? deadEndPrefab;
   public GameObject? corridorPrefab;
+  public GameObject? bossRoomPrefab;
   public List<GameObject> roomPrefabs = default!;
 
   public GameObject GetRandomRoomPrefab()

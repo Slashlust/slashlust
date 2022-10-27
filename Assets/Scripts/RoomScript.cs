@@ -116,7 +116,28 @@ public class RoomScript : MonoBehaviour
         }
       }
 
-      var roomPrefab = manager.GetMapGenerationSettings.GetRandomRoomPrefab();
+      var blockBossRoomSpawn = false;
+
+      if (network.hasBossRoomSpawned)
+      {
+        blockBossRoomSpawn = true;
+      }
+      else if (network.roomNodes.Count <= 4)
+      {
+        blockBossRoomSpawn = true;
+      }
+
+      var spawnChance =
+        network.roomNodes.Count /
+        (manager.GetMapGenerationSettings.minRoomCount - 2f);
+
+      var shouldBossRoomSpawn = blockBossRoomSpawn
+        ? false
+        : Random.value < spawnChance;
+
+      var roomPrefab = shouldBossRoomSpawn
+        ? manager.GetMapGenerationSettings.bossRoomPrefab!
+        : manager.GetMapGenerationSettings.GetRandomRoomPrefab();
 
       var attachmentRoomScript = roomPrefab.GetComponent<RoomScript>();
 
@@ -162,6 +183,8 @@ public class RoomScript : MonoBehaviour
 
       if (roomScript.roomType == RoomType.boss)
       {
+        network.hasBossRoomSpawned = true;
+
         network.bossRoom = network.roomNodes[room.GetInstanceID()];
       }
 

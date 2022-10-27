@@ -97,7 +97,7 @@ public class EnemyScript : MonoBehaviour
   {
     var newHitPoints = hitPoints - damage;
 
-    //Spawna particula de sangue no inimigo
+    // Spawna particula de sangue no inimigo.
     if (deathEffectPrefab != null)
     {
       Instantiate(deathEffectPrefab, transform.position, transform.rotation);
