@@ -711,11 +711,11 @@ MonoBehaviour:
     enableDrops: 1
     enemyDrops:
     - prefab: {fileID: 3578579234224482949, guid: 69c28c34c6fbeeb4b91ecb764913c032, type: 3}
-      chance: 0.992
+      chance: 0.11
     - prefab: {fileID: 4227791301383778845, guid: e5b6e2820f4646d44bf2868c20e6048e, type: 3}
-      chance: 0.966
+      chance: 0.071
     - prefab: {fileID: 6724353180413059161, guid: f1a5ddd8653b52941b34911e403e9c05, type: 3}
-      chance: 0.966
+      chance: 0.069
   isNavMeshBaked: 0
   currentRoom: {fileID: 0}
 --- !u!114 &1524951598
