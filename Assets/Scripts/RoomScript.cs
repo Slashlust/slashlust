@@ -83,8 +83,6 @@ public class RoomScript : MonoBehaviour
 
               Destroy(deadEnd);
 
-              // TODO: Melhorar fluxo de conexão de salas
-
               var attachmentCorridorScript2 =
                 corridorPrefab.GetComponent<CorridorScript>();
 
