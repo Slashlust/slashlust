@@ -6,14 +6,17 @@ using UnityEngine;
 [System.Serializable]
 public class EnemySpawnSettings
 {
+  [Header("General spawn settings")]
   public bool isEnemySpawnEnabled;
+  [Min(0f)]
+  public float difficultyIndexWeight = 1f;
+  public AnimationCurve difficultyCurve = default!;
+
+  [Header("Room spawn settings")]
   [Min(1)]
   public int spawnBatchSize;
-  [Min(1f)]
-  public float spawnInterval;
-  [Min(1)]
-  public int maxEnemiesAlive = 5;
 
+  public GameObject bossPrefab = default!;
   public List<GameObject> enemyPrefabs = default!;
 
   public GameObject GetRandomEnemyPrefab()

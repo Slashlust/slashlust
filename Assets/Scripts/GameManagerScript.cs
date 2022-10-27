@@ -26,6 +26,7 @@ public class GameManagerScript : MonoBehaviour
   MinimapScript? minimapScript;
   RoomNetwork roomNetwork = new RoomNetwork();
   List<GameObject> enemies = new List<GameObject>();
+  HashSet<GameObject> visitedRooms = new HashSet<GameObject>();
 
   // State.
   MenuState menuState = MenuState.closed;
@@ -36,6 +37,7 @@ public class GameManagerScript : MonoBehaviour
   // Getters de state.
   public MenuState GetMenuState => menuState;
   public ControlState GetControlState => controlState;
+  public List<GameObject> GetEnemies => enemies;
 
   // Getters de tipo primitivo.
   public string GetTargetControlScheme => controlState == ControlState.keyboard
@@ -51,6 +53,23 @@ public class GameManagerScript : MonoBehaviour
     mapGenerationSettings;
   public EnemySpawnSettings GetEnemySpawnSettings => enemySpawnSettings;
   public EnemyDropSettings GetEnemyDropSettings => enemyDropSettings;
+
+  public void AttemptEnemySpawn()
+  {
+    // TODO: Terminar spawn do boss
+
+    if (currentRoom == null || visitedRooms.Contains(currentRoom))
+    {
+      return;
+    }
+
+    visitedRooms.Add(currentRoom);
+
+    if (enemySpawnSettings.isEnemySpawnEnabled)
+    {
+      currentRoom.GetComponent<RoomScript>()?.SpawnEnemies();
+    }
+  }
 
   public void BakeNavMesh()
   {
@@ -131,70 +150,6 @@ public class GameManagerScript : MonoBehaviour
     Destroy(enemy);
   }
 
-  System.Collections.IEnumerator SpawnLoop()
-  {
-    while (true)
-    {
-      if (enemySpawnSettings.isEnemySpawnEnabled &&
-        enemies.Count < enemySpawnSettings.maxEnemiesAlive)
-      {
-        for (int i = 0; i < enemySpawnSettings.spawnBatchSize; i++)
-        {
-          var prefab = enemySpawnSettings.GetRandomEnemyPrefab();
-
-          var tries = 0;
-
-          while (true)
-          {
-            tries++;
-
-            // Sistema de segurança para não cair em loop.
-            if (tries > 10)
-            {
-              break;
-            }
-
-            var vector2 = Random.insideUnitCircle * 10f;
-
-            var position = new Vector3(x: vector2.x, y: 4f, z: vector2.y);
-
-            RaycastHit hit;
-            if (
-              !Physics.Raycast(
-                position,
-                Vector3.down,
-                out hit,
-                10f,
-                Layers.geometryMask
-              )
-            )
-            {
-              continue;
-            }
-
-            // Não deixar o inimigo spawnar em cima de paredes.
-            if (hit.point.y > 1f)
-            {
-              continue;
-            }
-
-            var enemy = Instantiate(
-              prefab,
-              hit.point,
-              Quaternion.identity
-            );
-
-            enemies.Add(enemy);
-
-            break;
-          }
-        }
-      }
-
-      yield return new WaitForSeconds(enemySpawnSettings.spawnInterval);
-    }
-  }
-
   void Awake()
   {
     instance = this;
@@ -213,11 +168,6 @@ public class GameManagerScript : MonoBehaviour
   void OnGUI()
   {
     GUI.Label(new Rect(100, 36, 100, 20), $"Enemies alive: {enemies.Count}");
-  }
-
-  void Start()
-  {
-    StartCoroutine(SpawnLoop());
   }
 
   void Update()

@@ -80,6 +80,8 @@ public class PlayerScript : MonoBehaviour
         // Atualiza a sala atual.
         manager.currentRoom = parent.gameObject;
 
+        manager.AttemptEnemySpawn();
+
         // Verifica se faz sentido procurar um caminho.
         if (manager.currentRoom != null && network.bossRoom != null)
         {
