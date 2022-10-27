@@ -10,6 +10,8 @@ public class GameManagerScript : MonoBehaviour
   MapGenerationSettings mapGenerationSettings = default!;
   [SerializeField]
   EnemySpawnSettings enemySpawnSettings = default!;
+  [SerializeField]
+  EnemyDropSettings enemyDropSettings = default!;
 
   public bool isNavMeshBaked = false;
 
@@ -48,6 +50,7 @@ public class GameManagerScript : MonoBehaviour
   public MapGenerationSettings GetMapGenerationSettings =>
     mapGenerationSettings;
   public EnemySpawnSettings GetEnemySpawnSettings => enemySpawnSettings;
+  public EnemyDropSettings GetEnemyDropSettings => enemyDropSettings;
 
   public void BakeNavMesh()
   {

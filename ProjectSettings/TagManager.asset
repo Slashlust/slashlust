@@ -14,8 +14,8 @@ TagManager:
   - Enemy
   - Geometry
   - EnemyProjectile
-  - 
-  - 
+  - Drop
+  - DropCollector
   - 
   - 
   - 

@@ -66,39 +66,42 @@ public class RoomScript : MonoBehaviour
         {
           if (hit.collider.name == "DeadEndModel")
           {
-            // TODO: Trabalhar um atributo de chance de conexão de salas
+            // Chance de conectar 2 salas com um corredor.
+            if (
+              Random.value <=
+              manager.GetMapGenerationSettings.roomConnectionChance
+            )
+            {
+              var deadEnd = hit.collider.transform.parent.gameObject;
 
-            var deadEnd = hit.collider.transform.parent.gameObject;
+              var deadEndRoom = deadEnd.GetComponent<DeadEndScript>().room;
 
-            var deadEndRoom = deadEnd.GetComponent<DeadEndScript>().room;
+              // TODO: Talvez não seja necessário, mas removendo a layer de
+              // geometry do dead end para evitar que ele impacte nos raycasts ou
+              // geração do navmesh
+              deadEnd.layer = Layers.defaultLayer;
 
-            // TODO: Talvez não seja necessário, mas removendo a layer de
-            // geometry do dead end para evitar que ele impacte nos raycasts ou
-            // geração do navmesh
-            deadEnd.layer = Layers.defaultLayer;
+              Destroy(deadEnd);
 
-            Destroy(deadEnd);
+              var attachmentCorridorScript2 =
+                corridorPrefab.GetComponent<CorridorScript>();
 
-            // TODO: Melhorar fluxo de conexão de salas
+              var corridorLength2 = attachmentCorridorScript2.GetDimensions.z;
 
-            var attachmentCorridorScript2 =
-              corridorPrefab.GetComponent<CorridorScript>();
+              Instantiate(
+                corridorPrefab,
+                attachment.transform.position + attachment.transform.forward *
+                  corridorLength2 / 2f,
+                attachment.transform.rotation
+              );
 
-            var corridorLength2 = attachmentCorridorScript2.GetDimensions.z;
+              network.ConnectRooms(
+                gameObject.GetInstanceID(),
+                deadEndRoom.GetInstanceID()
+              );
 
-            Instantiate(
-              corridorPrefab,
-              attachment.transform.position + attachment.transform.forward *
-                corridorLength2 / 2f,
-              attachment.transform.rotation
-            );
-
-            network.ConnectRooms(
-              gameObject.GetInstanceID(),
-              deadEndRoom.GetInstanceID()
-            );
-
-            continue;
+              continue;
+            }
           }
         }
 
@@ -111,7 +114,28 @@ public class RoomScript : MonoBehaviour
         }
       }
 
-      var roomPrefab = manager.GetMapGenerationSettings.GetRandomRoomPrefab();
+      var blockBossRoomSpawn = false;
+
+      if (network.hasBossRoomSpawned)
+      {
+        blockBossRoomSpawn = true;
+      }
+      else if (network.roomNodes.Count <= 4)
+      {
+        blockBossRoomSpawn = true;
+      }
+
+      var spawnChance =
+        network.roomNodes.Count /
+        (manager.GetMapGenerationSettings.minRoomCount - 2f);
+
+      var shouldBossRoomSpawn = blockBossRoomSpawn
+        ? false
+        : Random.value < spawnChance;
+
+      var roomPrefab = shouldBossRoomSpawn
+        ? manager.GetMapGenerationSettings.bossRoomPrefab!
+        : manager.GetMapGenerationSettings.GetRandomRoomPrefab();
 
       var attachmentRoomScript = roomPrefab.GetComponent<RoomScript>();
 
@@ -157,6 +181,8 @@ public class RoomScript : MonoBehaviour
 
       if (roomScript.roomType == RoomType.boss)
       {
+        network.hasBossRoomSpawned = true;
+
         network.bossRoom = network.roomNodes[room.GetInstanceID()];
       }
 
