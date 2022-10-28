@@ -145,6 +145,14 @@ public class GameManagerScript : MonoBehaviour
     }
   }
 
+  void HandleStartConfigInitialization()
+  {
+    if (!Application.isMobilePlatform)
+    {
+      StaticInventoryDisplay.instance.SetHotbarSizeDesktop();
+    }
+  }
+
   public void KillEnemy(GameObject enemy)
   {
     enemies.Remove(enemy);
@@ -186,6 +194,11 @@ public class GameManagerScript : MonoBehaviour
   void OnGUI()
   {
     GUI.Label(new Rect(100, 36, 100, 20), $"Enemies alive: {enemies.Count}");
+  }
+
+  void Start()
+  {
+    HandleStartConfigInitialization();
   }
 
   void Update()

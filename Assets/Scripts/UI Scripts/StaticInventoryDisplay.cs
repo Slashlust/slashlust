@@ -6,6 +6,22 @@ public class StaticInventoryDisplay : InventoryDisplay
 {
     [SerializeField] private InventoryHolder inventoryHolder;
     [SerializeField] private InventorySlot_UI[] slots;
+
+    public static StaticInventoryDisplay instance = default!;
+
+    public void SetHotbarSizeDesktop()
+    {
+        var rect = (RectTransform)transform;
+
+        rect.localScale = Vector3.one * .5f;
+        rect.Translate(Vector3.down * 50);
+    }
+
+    void Awake()
+    {
+        instance = this;
+    }
+
     protected override void Start()
     {
         base.Start();
