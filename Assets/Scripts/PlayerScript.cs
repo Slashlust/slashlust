@@ -421,6 +421,14 @@ public class PlayerScript : MonoBehaviour
   {
     var newHitPoints = playerBuffs.baseHitPoints - damage;
 
+    GameManagerScript.instance.SpawnFloatingText(
+      transform.position,
+      damage.ToString("- 0"),
+      Colors.roseMadder
+    );
+
+    SoundManagerScript.instance.PlayHitMarker();
+
     if (newHitPoints <= 0)
     {
       Die();

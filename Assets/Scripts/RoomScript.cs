@@ -106,7 +106,6 @@ public class RoomScript : MonoBehaviour
           }
         }
 
-        // TODO: Trabalhar probabilidade de geração de cada attachment.
         if (Random.value > 0.2f)
         {
           GenerateDeadEnd(attachment: attachment);

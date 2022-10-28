@@ -152,7 +152,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   initialHitPoints: 50
-  maxRange: 2
+  maxRange: 1.7
   minRange: 0
   enemyType: 0
   deathEffectPrefab: {fileID: 1390118265774136416, guid: a17030364649a5944926716399bd79f7, type: 3}

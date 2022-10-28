@@ -27,6 +27,19 @@ public class SoundManagerScript : MonoBehaviour
     }
   }
 
+  public void PlayHitMarker()
+  {
+    var volume = LocalPrefs.GetSFXVolume();
+
+    if (audioSource != null)
+    {
+      audioSource.PlayOneShot(
+        audioSettings.GetRandomHitMarkerAudioClip(),
+        volume
+      );
+    }
+  }
+
   public void PlayNpcDeath()
   {
     var volume = LocalPrefs.GetSFXVolume();

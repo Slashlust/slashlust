@@ -91,7 +91,6 @@ public class MinimapScript : MonoBehaviour
       lineRenderer.color = new Color(0.6f, 0.6f, 0.6f);
 
       lineRenderer.LineThickness = 6f;
-      // TODO: Colocar mask em volta dos ícones
       lineRenderer.Points = new Vector2[]{
         Vector2.zero,
         diff
