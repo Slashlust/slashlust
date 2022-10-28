@@ -213,9 +213,17 @@ public class PlayerScript : MonoBehaviour
 
       if (enemyScript != null)
       {
-        enemyDied = enemyScript.InflictDamage(
-          playerBuffs.baseDamageBuff * playerBuffs.damageMultiplierBuff
-        );
+        var damage =
+          playerBuffs.baseDamageBuff * playerBuffs.damageMultiplierBuff;
+
+        enemyDied = enemyScript.InflictDamage(damage);
+
+        GameManagerScript.instance
+          .SpawnFloatingText(
+            collider.transform.position,
+            damage.ToString("0"),
+            null
+          );
       }
 
       if (enemyDied)

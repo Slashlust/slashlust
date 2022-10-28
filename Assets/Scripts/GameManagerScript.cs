@@ -12,6 +12,8 @@ public class GameManagerScript : MonoBehaviour
   EnemySpawnSettings enemySpawnSettings = default!;
   [SerializeField]
   EnemyDropSettings enemyDropSettings = default!;
+  [SerializeField]
+  GameObject? floatingTextPrefab;
 
   public bool isNavMeshBaked = false;
 
@@ -56,7 +58,7 @@ public class GameManagerScript : MonoBehaviour
 
   public void AttemptEnemySpawn()
   {
-    // TODO: Terminar spawn do boss
+    currentRoom?.GetComponent<RoomScript>()?.UpdateDifficulty();
 
     if (currentRoom == null || visitedRooms.Contains(currentRoom))
     {
@@ -148,6 +150,22 @@ public class GameManagerScript : MonoBehaviour
     enemies.Remove(enemy);
 
     Destroy(enemy);
+  }
+
+  public void SpawnFloatingText(Vector3 position, string text, Color? color)
+  {
+    if (floatingTextPrefab != null)
+    {
+      var script = Instantiate(floatingTextPrefab, position + Vector3.up, Quaternion.identity)
+        .GetComponent<FloatingTextScript>();
+
+      script.UpdateText(text);
+
+      if (color != null)
+      {
+        script.UpdateColor((Color)color!);
+      }
+    }
   }
 
   void Awake()

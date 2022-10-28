@@ -117,7 +117,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e8ee19c6594fb44995e9be99b792976, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  initialHitPoints: 300
+  initialHitPoints: 1000
   maxRange: 5
   minRange: 0
   enemyType: 0

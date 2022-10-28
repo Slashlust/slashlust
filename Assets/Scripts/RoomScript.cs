@@ -238,67 +238,82 @@ public class RoomScript : MonoBehaviour
       settings.difficultyIndexWeight *
       settings.difficultyCurve.Evaluate(difficultyIndex / 20);
 
-    StatsScript.instance.UpdateDifficulty(difficultyIndex);
-
     Debug.Log(
       $"Current room difficulty: {difficultyIndex}: {batchSize} enemies."
     );
+
+    if (roomType == RoomType.boss)
+    {
+      var bossPrefab = settings.bossPrefab;
+
+      SpawnEnemy(prefab: bossPrefab, manager: manager);
+    }
 
     for (int i = 0; i < batchSize; i++)
     {
       var prefab = settings.GetRandomEnemyPrefab();
 
-      var tries = 0;
+      SpawnEnemy(prefab: prefab, manager: manager);
+    }
+  }
 
-      while (true)
+  void SpawnEnemy(GameObject prefab, GameManagerScript manager)
+  {
+    var tries = 0;
+
+    while (true)
+    {
+      tries++;
+
+      // Sistema de segurança para não cair em loop.
+      if (tries > 10)
       {
-        tries++;
-
-        // Sistema de segurança para não cair em loop.
-        if (tries > 10)
-        {
-          break;
-        }
-
-        var vector2 = Random.insideUnitCircle * 10f;
-
-        var position = new Vector3(
-          x: vector2.x + transform.position.x,
-          y: 4f,
-          z: vector2.y + transform.position.z
-        );
-
-        RaycastHit hit;
-        if (
-          !Physics.Raycast(
-            position,
-            Vector3.down,
-            out hit,
-            10f,
-            Layers.geometryMask
-          )
-        )
-        {
-          continue;
-        }
-
-        // Não deixar o inimigo spawnar em cima de paredes.
-        if (hit.point.y > 1f)
-        {
-          continue;
-        }
-
-        var enemy = Instantiate(
-          prefab,
-          hit.point,
-          Quaternion.identity
-        );
-
-        manager.GetEnemies.Add(enemy);
-
         break;
       }
+
+      var vector2 = Random.insideUnitCircle * 10f;
+
+      var position = new Vector3(
+        x: vector2.x + transform.position.x,
+        y: 4f,
+        z: vector2.y + transform.position.z
+      );
+
+      RaycastHit hit;
+      if (
+        !Physics.Raycast(
+          position,
+          Vector3.down,
+          out hit,
+          10f,
+          Layers.geometryMask
+        )
+      )
+      {
+        continue;
+      }
+
+      // Não deixar o inimigo spawnar em cima de paredes.
+      if (hit.point.y > 1f)
+      {
+        continue;
+      }
+
+      var enemy = Instantiate(
+        prefab,
+        hit.point,
+        Quaternion.identity
+      );
+
+      manager.GetEnemies.Add(enemy);
+
+      break;
     }
+  }
+
+  public void UpdateDifficulty()
+  {
+    StatsScript.instance.UpdateDifficulty(difficultyIndex);
   }
 
   void Awake()

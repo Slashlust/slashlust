@@ -12,17 +12,17 @@
 
  
 
-* [About](#about)
-* [Built With](#built-with)
-* [Getting Started](#getting-started)
-  + [Prerequisites](#prerequisites)
-* [Resources](#resources)
-* [License](#license)
-* [Credits](#credits)
-  + [Music](#music)
-  + [SFX](#sfx)
-  + [Background](#background)
-* [Members](#members)
+- [About](#about)
+- [Built With](#built-with)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+- [Resources](#resources)
+- [License](#license)
+- [Credits](#credits)
+  - [Music](#music)
+  - [SFX](#sfx)
+  - [Background](#background)
+- [Members](#members)
 
 ## About 
 
@@ -82,6 +82,7 @@ Special thanks to [prod. ayc](https://www.youtube.com/channel/UC06oKQ_VOHjSXtXnU
 * https://freesound.org/people/tonsil5/sounds/555411/
 * https://freesound.org/people/scorpion67890/sounds/614315/
 * https://freesound.org/people/spookymodem/sounds/249813/
+* https://freesound.org/people/swordofkings128/sounds/397611/
 
 ### Background
 

@@ -88,6 +88,7 @@ MonoBehaviour:
     movementSpeedMultiplierBuff: 0
     baseAttackRangeBuff: 0.01
     attackRangeMultiplierBuff: 0.02
+  buffTypes: 0000000001000000
 --- !u!54 &6724353180413059167
 Rigidbody:
   m_ObjectHideFlags: 0

@@ -739,6 +739,7 @@ MonoBehaviour:
       chance: 0.25
     - prefab: {fileID: 6724353180413059161, guid: f1a5ddd8653b52941b34911e403e9c05, type: 3}
       chance: 0.24
+  floatingTextPrefab: {fileID: 5964903305613226833, guid: 3e6770ff9b5bcea4890640572be4507b, type: 3}
   isNavMeshBaked: 0
   currentRoom: {fileID: 0}
 --- !u!114 &1524951598
@@ -785,6 +786,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   musicAudioSource: {fileID: 1524951600}
   audioSettings:
+    gulpAudioClips:
+    - {fileID: 8300000, guid: d9256230b21fa9649a81f9e8f8471858, type: 3}
     npcDeathAudioClips:
     - {fileID: 8300000, guid: a31a2fe54b0256647b35682b2de79aac, type: 3}
     - {fileID: 8300000, guid: 2204296455ff86a47b5d3b7dff7317bf, type: 3}
@@ -1534,7 +1537,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2932101238397256823, guid: 3b586217a958dcd42976ca69ca9e3ed3, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 637.7245
+      value: 756.13184
       objectReference: {fileID: 0}
     - target: {fileID: 2932101238483661021, guid: 3b586217a958dcd42976ca69ca9e3ed3, type: 3}
       propertyPath: m_AnchorMax.x
