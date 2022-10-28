@@ -235,7 +235,7 @@ public class RoomScript : MonoBehaviour
     var batchSize =
       settings.spawnBatchSize *
       settings.difficultyIndexWeight *
-      settings.difficultyCurve.Evaluate(difficultyIndex / 20);
+      settings.difficultyCurve.Evaluate(difficultyIndex / 20f);
 
     Debug.Log(
       $"Current room difficulty: {difficultyIndex}: {batchSize} enemies."
@@ -317,7 +317,13 @@ public class RoomScript : MonoBehaviour
 
   void Awake()
   {
-    difficultyIndex = transform.position.magnitude;
+    var magnitude = transform.position.magnitude;
+
+    var newDifficultyIndex = roomType == RoomType.boss
+      ? magnitude * 2f + 200f
+      : magnitude;
+
+    difficultyIndex = newDifficultyIndex;
   }
 
   void Start()
