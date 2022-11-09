@@ -6,9 +6,21 @@ using UnityEngine;
 [System.Serializable]
 class AudioSettings
 {
+  public List<AudioClip> gulpAudioClips = default!;
+  public List<AudioClip> hitMarkerAudioClips = default!;
   public List<AudioClip> npcDeathAudioClips = default!;
   public List<AudioClip> swordHitAudioClips = default!;
   public List<AudioClip> swordSwingAudioClips = default!;
+
+  public AudioClip GetRandomGulpAudioClip()
+  {
+    return gulpAudioClips[Random.Range(0, gulpAudioClips.Count)];
+  }
+
+  public AudioClip GetRandomHitMarkerAudioClip()
+  {
+    return hitMarkerAudioClips[Random.Range(0, hitMarkerAudioClips.Count)];
+  }
 
   public AudioClip GetRandomNpcDeathAudioClip()
   {

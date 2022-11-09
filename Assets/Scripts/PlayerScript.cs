@@ -80,6 +80,8 @@ public class PlayerScript : MonoBehaviour
         // Atualiza a sala atual.
         manager.currentRoom = parent.gameObject;
 
+        manager.AttemptEnemySpawn();
+
         // Verifica se faz sentido procurar um caminho.
         if (manager.currentRoom != null && network.bossRoom != null)
         {
@@ -211,9 +213,17 @@ public class PlayerScript : MonoBehaviour
 
       if (enemyScript != null)
       {
-        enemyDied = enemyScript.InflictDamage(
-          playerBuffs.baseDamageBuff * playerBuffs.damageMultiplierBuff
-        );
+        var damage =
+          playerBuffs.baseDamageBuff * playerBuffs.damageMultiplierBuff;
+
+        enemyDied = enemyScript.InflictDamage(damage);
+
+        GameManagerScript.instance
+          .SpawnFloatingText(
+            collider.transform.position,
+            damage.ToString("0"),
+            null
+          );
       }
 
       if (enemyDied)
@@ -410,6 +420,14 @@ public class PlayerScript : MonoBehaviour
   public void TakeDamage(float damage)
   {
     var newHitPoints = playerBuffs.baseHitPoints - damage;
+
+    GameManagerScript.instance.SpawnFloatingText(
+      transform.position,
+      damage.ToString("- 0"),
+      Colors.roseMadder
+    );
+
+    SoundManagerScript.instance.PlayHitMarker();
 
     if (newHitPoints <= 0)
     {

@@ -14,6 +14,32 @@ public class SoundManagerScript : MonoBehaviour
 
   AudioSource? audioSource;
 
+  public void PlayGulp()
+  {
+    var volume = LocalPrefs.GetSFXVolume();
+
+    if (audioSource != null)
+    {
+      audioSource.PlayOneShot(
+        audioSettings.GetRandomGulpAudioClip(),
+        volume
+      );
+    }
+  }
+
+  public void PlayHitMarker()
+  {
+    var volume = LocalPrefs.GetSFXVolume();
+
+    if (audioSource != null)
+    {
+      audioSource.PlayOneShot(
+        audioSettings.GetRandomHitMarkerAudioClip(),
+        volume
+      );
+    }
+  }
+
   public void PlayNpcDeath()
   {
     var volume = LocalPrefs.GetSFXVolume();

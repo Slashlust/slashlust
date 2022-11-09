@@ -8,8 +8,17 @@ public class StatsScript : MonoBehaviour
   Text? damageText;
   Text? movementSpeedText;
   Text? attackRangeText;
+  Text? difficultyText;
 
   public static StatsScript instance = default!;
+
+  public void UpdateDifficulty(float difficulty)
+  {
+    if (difficultyText != null)
+    {
+      difficultyText.text = difficulty.ToString("0.00");
+    }
+  }
 
   public void UpdateStats(PlayerBuffs buffs)
   {
@@ -42,5 +51,6 @@ public class StatsScript : MonoBehaviour
     damageText = transform.Find("Damage").GetComponent<Text>();
     movementSpeedText = transform.Find("MovementSpeed").GetComponent<Text>();
     attackRangeText = transform.Find("AttackRange").GetComponent<Text>();
+    difficultyText = transform.Find("Difficulty").GetComponent<Text>();
   }
 }
