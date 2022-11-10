@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -29,7 +30,29 @@ public class EnemyScript : MonoBehaviour
 
   void Die()
   {
+    DropItems();
+
     GameManagerScript.instance?.KillEnemy(gameObject);
+  }
+
+  void DropItems()
+  {
+    var dropPrefabs =
+      GameManagerScript.instance?.GetEnemyDropSettings.RandomizeDropPrefabs() ??
+      new List<GameObject>();
+
+    foreach (var item in dropPrefabs)
+    {
+      Instantiate(
+        item,
+        new Vector3
+        {
+          x = transform.position.x,
+          z = transform.position.z,
+        },
+        Quaternion.identity
+      );
+    }
   }
 
   void HandleAttack(GameObject player)
@@ -74,7 +97,7 @@ public class EnemyScript : MonoBehaviour
   {
     var newHitPoints = hitPoints - damage;
 
-    //Spawna particula de sangue no inimigo
+    // Spawna particula de sangue no inimigo.
     if (deathEffectPrefab != null)
     {
       Instantiate(deathEffectPrefab, transform.position, transform.rotation);

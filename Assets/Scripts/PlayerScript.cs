@@ -19,18 +19,14 @@ public class PlayerScript : MonoBehaviour
   Transform? cameraTransform;
   Vector2 currentLookInput;
   VideoPlayer? videoPlayer;
-
-  public float hitPoints;
-  public float initialHitPoints = 100f;
+  PlayerBuffs playerBuffs = new PlayerBuffs();
 
   int killCount;
   bool attackLock;
 
-  // Getters de tipo primitivo.
-  public float GetCurrentHitPoints() => hitPoints;
-
   // Getters de referência.
   public PlayerInput? GetPlayerInput => playerInput;
+  public PlayerBuffs GetPlayerBuffs() => playerBuffs;
 
   System.Collections.IEnumerator AttackRoutine()
   {
@@ -83,6 +79,8 @@ public class PlayerScript : MonoBehaviour
       {
         // Atualiza a sala atual.
         manager.currentRoom = parent.gameObject;
+
+        manager.AttemptEnemySpawn();
 
         // Verifica se faz sentido procurar um caminho.
         if (manager.currentRoom != null && network.bossRoom != null)
@@ -199,7 +197,7 @@ public class PlayerScript : MonoBehaviour
 
     var colliders = Physics.OverlapSphere(
       transform.position + offset,
-      1f,
+      playerBuffs.baseAttackRangeBuff,
       Layers.enemyMask
     );
 
@@ -215,7 +213,17 @@ public class PlayerScript : MonoBehaviour
 
       if (enemyScript != null)
       {
-        enemyDied = enemyScript.InflictDamage(20f);
+        var damage =
+          playerBuffs.baseDamageBuff * playerBuffs.damageMultiplierBuff;
+
+        enemyDied = enemyScript.InflictDamage(damage);
+
+        GameManagerScript.instance
+          .SpawnFloatingText(
+            collider.transform.position,
+            damage.ToString("0"),
+            null
+          );
       }
 
       if (enemyDied)
@@ -262,6 +270,8 @@ public class PlayerScript : MonoBehaviour
     {
       HandleVideoConfigInitialization(videoPlayer);
     }
+
+    TriggerUpdateStats();
   }
 
   void HandleModelAnimation(GameObject model)
@@ -315,7 +325,11 @@ public class PlayerScript : MonoBehaviour
 
     var move = moveInput.y * transform.forward + moveInput.x * transform.right;
 
-    controller.SimpleMove(Vector3.ClampMagnitude(move, 1f) * 4f);
+    controller.SimpleMove(
+      Vector3.ClampMagnitude(move, 1f) *
+      playerBuffs.baseMovementSpeedBuff *
+      playerBuffs.movementSpeedMultiplierBuff
+    );
   }
 
   void HandleVideoConfigInitialization(VideoPlayer videoPlayer)
@@ -331,6 +345,20 @@ public class PlayerScript : MonoBehaviour
     {
       videoPlayer.Play();
     };
+  }
+
+  public void Heal(float healHitPoints)
+  {
+    var newHitPoints = playerBuffs.baseHitPoints + healHitPoints;
+
+    if (newHitPoints > playerBuffs.initialHitPoints)
+    {
+      playerBuffs.baseHitPoints = playerBuffs.initialHitPoints;
+    }
+    else
+    {
+      playerBuffs.baseHitPoints = newHitPoints;
+    }
   }
 
   public void Look(InputAction.CallbackContext context)
@@ -391,7 +419,15 @@ public class PlayerScript : MonoBehaviour
 
   public void TakeDamage(float damage)
   {
-    var newHitPoints = hitPoints - damage;
+    var newHitPoints = playerBuffs.baseHitPoints - damage;
+
+    GameManagerScript.instance.SpawnFloatingText(
+      transform.position,
+      damage.ToString("- 0"),
+      Colors.roseMadder
+    );
+
+    SoundManagerScript.instance.PlayHitMarker();
 
     if (newHitPoints <= 0)
     {
@@ -399,8 +435,13 @@ public class PlayerScript : MonoBehaviour
     }
     else
     {
-      hitPoints = newHitPoints;
+      playerBuffs.baseHitPoints = newHitPoints;
     }
+  }
+
+  public void TriggerUpdateStats()
+  {
+    StatsScript.instance?.UpdateStats(playerBuffs);
   }
 
   void Awake()
@@ -412,7 +453,7 @@ public class PlayerScript : MonoBehaviour
     cameraTransform = Camera.main.transform;
     videoPlayer = Camera.main.gameObject.GetComponent<VideoPlayer>();
 
-    hitPoints = initialHitPoints;
+    playerBuffs.baseHitPoints = playerBuffs.initialHitPoints;
   }
 
   void OnGUI()

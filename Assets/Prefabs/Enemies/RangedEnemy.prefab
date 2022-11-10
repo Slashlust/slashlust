@@ -138,8 +138,8 @@ MonoBehaviour:
   projectilePrefab: {fileID: 6122725168259043706, guid: 39884e848128ee84b922aad6a24877c4, type: 3}
   mobileProjectilePrefab: {fileID: 4802643116889572473, guid: 3a11f9dbbd4a23d4db2b2401bd79afa2, type: 3}
   attackPoint: {fileID: 4625630236950262534}
-  secondsBeteweenAttacks: 1
-  projectileForce: 5
+  secondsBeteweenAttacks: 0.7
+  projectileForce: 6
 --- !u!1 &7070262502191703618
 GameObject:
   m_ObjectHideFlags: 0

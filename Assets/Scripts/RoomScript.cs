@@ -10,6 +10,7 @@ public class RoomScript : MonoBehaviour
   [SerializeField]
   Vector3 dimensions;
 
+  public float difficultyIndex = 0f;
   public RoomType roomType;
 
   public Vector3 GetDimensions => dimensions;
@@ -66,43 +67,45 @@ public class RoomScript : MonoBehaviour
         {
           if (hit.collider.name == "DeadEndModel")
           {
-            // TODO: Trabalhar um atributo de chance de conexão de salas
+            // Chance de conectar 2 salas com um corredor.
+            if (
+              Random.value <=
+              manager.GetMapGenerationSettings.roomConnectionChance
+            )
+            {
+              var deadEnd = hit.collider.transform.parent.gameObject;
 
-            var deadEnd = hit.collider.transform.parent.gameObject;
+              var deadEndRoom = deadEnd.GetComponent<DeadEndScript>().room;
 
-            var deadEndRoom = deadEnd.GetComponent<DeadEndScript>().room;
+              // TODO: Talvez não seja necessário, mas removendo a layer de
+              // geometry do dead end para evitar que ele impacte nos raycasts ou
+              // geração do navmesh
+              deadEnd.layer = Layers.defaultLayer;
 
-            // TODO: Talvez não seja necessário, mas removendo a layer de
-            // geometry do dead end para evitar que ele impacte nos raycasts ou
-            // geração do navmesh
-            deadEnd.layer = Layers.defaultLayer;
+              Destroy(deadEnd);
 
-            Destroy(deadEnd);
+              var attachmentCorridorScript2 =
+                corridorPrefab.GetComponent<CorridorScript>();
 
-            // TODO: Melhorar fluxo de conexão de salas
+              var corridorLength2 = attachmentCorridorScript2.GetDimensions.z;
 
-            var attachmentCorridorScript2 =
-              corridorPrefab.GetComponent<CorridorScript>();
+              Instantiate(
+                corridorPrefab,
+                attachment.transform.position + attachment.transform.forward *
+                  corridorLength2 / 2f,
+                attachment.transform.rotation
+              );
 
-            var corridorLength2 = attachmentCorridorScript2.GetDimensions.z;
+              network.ConnectRooms(
+                gameObject.GetInstanceID(),
+                deadEndRoom.GetInstanceID()
+              );
 
-            Instantiate(
-              corridorPrefab,
-              attachment.transform.position + attachment.transform.forward *
-                corridorLength2 / 2f,
-              attachment.transform.rotation
-            );
-
-            network.ConnectRooms(
-              gameObject.GetInstanceID(),
-              deadEndRoom.GetInstanceID()
-            );
-
-            continue;
+              continue;
+            }
           }
         }
 
-        // TODO: Trabalhar probabilidade de geração de cada attachment.
         if (Random.value > 0.2f)
         {
           GenerateDeadEnd(attachment: attachment);
@@ -111,7 +114,28 @@ public class RoomScript : MonoBehaviour
         }
       }
 
-      var roomPrefab = manager.GetMapGenerationSettings.GetRandomRoomPrefab();
+      var blockBossRoomSpawn = false;
+
+      if (network.hasBossRoomSpawned)
+      {
+        blockBossRoomSpawn = true;
+      }
+      else if (network.roomNodes.Count <= 4)
+      {
+        blockBossRoomSpawn = true;
+      }
+
+      var spawnChance =
+        network.roomNodes.Count /
+        (manager.GetMapGenerationSettings.minRoomCount - 2f);
+
+      var shouldBossRoomSpawn = blockBossRoomSpawn
+        ? false
+        : Random.value < spawnChance;
+
+      var roomPrefab = shouldBossRoomSpawn
+        ? manager.GetMapGenerationSettings.bossRoomPrefab!
+        : manager.GetMapGenerationSettings.GetRandomRoomPrefab();
 
       var attachmentRoomScript = roomPrefab.GetComponent<RoomScript>();
 
@@ -157,6 +181,8 @@ public class RoomScript : MonoBehaviour
 
       if (roomScript.roomType == RoomType.boss)
       {
+        network.hasBossRoomSpawned = true;
+
         network.bossRoom = network.roomNodes[room.GetInstanceID()];
       }
 
@@ -199,6 +225,105 @@ public class RoomScript : MonoBehaviour
       origin.position + origin.forward * checkArea.z / 2f,
       checkArea / 2.01f
     );
+  }
+
+  public void SpawnEnemies()
+  {
+    var manager = GameManagerScript.instance;
+    var settings = manager.GetEnemySpawnSettings;
+
+    var batchSize =
+      settings.spawnBatchSize *
+      settings.difficultyIndexWeight *
+      settings.difficultyCurve.Evaluate(difficultyIndex / 20f);
+
+    Debug.Log(
+      $"Current room difficulty: {difficultyIndex}: {batchSize} enemies."
+    );
+
+    if (roomType == RoomType.boss)
+    {
+      var bossPrefab = settings.bossPrefab;
+
+      SpawnEnemy(prefab: bossPrefab, manager: manager);
+    }
+
+    for (int i = 0; i < batchSize; i++)
+    {
+      var prefab = settings.GetRandomEnemyPrefab();
+
+      SpawnEnemy(prefab: prefab, manager: manager);
+    }
+  }
+
+  void SpawnEnemy(GameObject prefab, GameManagerScript manager)
+  {
+    var tries = 0;
+
+    while (true)
+    {
+      tries++;
+
+      // Sistema de segurança para não cair em loop.
+      if (tries > 10)
+      {
+        break;
+      }
+
+      var vector2 = Random.insideUnitCircle * 10f;
+
+      var position = new Vector3(
+        x: vector2.x + transform.position.x,
+        y: 4f,
+        z: vector2.y + transform.position.z
+      );
+
+      RaycastHit hit;
+      if (
+        !Physics.Raycast(
+          position,
+          Vector3.down,
+          out hit,
+          10f,
+          Layers.geometryMask
+        )
+      )
+      {
+        continue;
+      }
+
+      // Não deixar o inimigo spawnar em cima de paredes.
+      if (hit.point.y > 1f)
+      {
+        continue;
+      }
+
+      var enemy = Instantiate(
+        prefab,
+        hit.point,
+        Quaternion.identity
+      );
+
+      manager.GetEnemies.Add(enemy);
+
+      break;
+    }
+  }
+
+  public void UpdateDifficulty()
+  {
+    StatsScript.instance.UpdateDifficulty(difficultyIndex);
+  }
+
+  void Awake()
+  {
+    var magnitude = transform.position.magnitude;
+
+    var newDifficultyIndex = roomType == RoomType.boss
+      ? magnitude * 2f + 200f
+      : magnitude;
+
+    difficultyIndex = newDifficultyIndex;
   }
 
   void Start()

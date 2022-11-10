@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class ProjectileScript : MonoBehaviour
 {
+  [SerializeField]
+  [Min(0f)]
+  float damage = 10f;
+
   void Despawn()
   {
     gameObject.SetActive(false);
@@ -16,7 +20,6 @@ public class ProjectileScript : MonoBehaviour
     var collider = collision.collider;
 
     // TODO: Fazer lógica de refletir o projétil
-    // TODO: Otimizar o projétil pra mobile
 
     if (collider.gameObject.layer == Layers.geometryLayer)
     {
@@ -26,7 +29,7 @@ public class ProjectileScript : MonoBehaviour
     {
       Despawn();
 
-      GameManagerScript.instance.GetPlayerScript?.TakeDamage(10f);
+      GameManagerScript.instance.GetPlayerScript?.TakeDamage(damage);
     }
   }
 }

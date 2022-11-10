@@ -18,13 +18,15 @@ public class PlayerHitPointsBarScript : MonoBehaviour
     Text label
   )
   {
-    var hitPoints = playerScript.GetCurrentHitPoints();
+    var playerBuffs = playerScript.GetPlayerBuffs();
+
+    var hitPoints = playerBuffs.baseHitPoints;
 
     label.text = hitPoints.ToString("0");
 
     fillTransform.localScale = new Vector3
     {
-      x = hitPoints / playerScript.initialHitPoints,
+      x = hitPoints / playerBuffs.initialHitPoints,
       y = 1,
       z = 1
     };

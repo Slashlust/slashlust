@@ -10,6 +10,10 @@ public class GameManagerScript : MonoBehaviour
   MapGenerationSettings mapGenerationSettings = default!;
   [SerializeField]
   EnemySpawnSettings enemySpawnSettings = default!;
+  [SerializeField]
+  EnemyDropSettings enemyDropSettings = default!;
+  [SerializeField]
+  GameObject? floatingTextPrefab;
 
   public bool isNavMeshBaked = false;
 
@@ -24,6 +28,7 @@ public class GameManagerScript : MonoBehaviour
   MinimapScript? minimapScript;
   RoomNetwork roomNetwork = new RoomNetwork();
   List<GameObject> enemies = new List<GameObject>();
+  HashSet<GameObject> visitedRooms = new HashSet<GameObject>();
 
   // State.
   MenuState menuState = MenuState.closed;
@@ -34,6 +39,7 @@ public class GameManagerScript : MonoBehaviour
   // Getters de state.
   public MenuState GetMenuState => menuState;
   public ControlState GetControlState => controlState;
+  public List<GameObject> GetEnemies => enemies;
 
   // Getters de tipo primitivo.
   public string GetTargetControlScheme => controlState == ControlState.keyboard
@@ -48,6 +54,24 @@ public class GameManagerScript : MonoBehaviour
   public MapGenerationSettings GetMapGenerationSettings =>
     mapGenerationSettings;
   public EnemySpawnSettings GetEnemySpawnSettings => enemySpawnSettings;
+  public EnemyDropSettings GetEnemyDropSettings => enemyDropSettings;
+
+  public void AttemptEnemySpawn()
+  {
+    currentRoom?.GetComponent<RoomScript>()?.UpdateDifficulty();
+
+    if (currentRoom == null || visitedRooms.Contains(currentRoom))
+    {
+      return;
+    }
+
+    visitedRooms.Add(currentRoom);
+
+    if (enemySpawnSettings.isEnemySpawnEnabled)
+    {
+      currentRoom.GetComponent<RoomScript>()?.SpawnEnemies();
+    }
+  }
 
   public void BakeNavMesh()
   {
@@ -121,6 +145,14 @@ public class GameManagerScript : MonoBehaviour
     }
   }
 
+  void HandleStartConfigInitialization()
+  {
+    if (!Application.isMobilePlatform)
+    {
+      StaticInventoryDisplay.instance.SetHotbarSizeDesktop();
+    }
+  }
+
   public void KillEnemy(GameObject enemy)
   {
     enemies.Remove(enemy);
@@ -128,67 +160,19 @@ public class GameManagerScript : MonoBehaviour
     Destroy(enemy);
   }
 
-  System.Collections.IEnumerator SpawnLoop()
+  public void SpawnFloatingText(Vector3 position, string text, Color? color)
   {
-    while (true)
+    if (floatingTextPrefab != null)
     {
-      if (enemySpawnSettings.isEnemySpawnEnabled &&
-        enemies.Count < enemySpawnSettings.maxEnemiesAlive)
+      var script = Instantiate(floatingTextPrefab, position + Vector3.up, Quaternion.identity)
+        .GetComponent<FloatingTextScript>();
+
+      script.UpdateText(text);
+
+      if (color != null)
       {
-        for (int i = 0; i < enemySpawnSettings.spawnBatchSize; i++)
-        {
-          var prefab = enemySpawnSettings.GetRandomEnemyPrefab();
-
-          var tries = 0;
-
-          while (true)
-          {
-            tries++;
-
-            // Sistema de segurança para não cair em loop.
-            if (tries > 10)
-            {
-              break;
-            }
-
-            var vector2 = Random.insideUnitCircle * 10f;
-
-            var position = new Vector3(x: vector2.x, y: 4f, z: vector2.y);
-
-            RaycastHit hit;
-            if (
-              !Physics.Raycast(
-                position,
-                Vector3.down,
-                out hit,
-                10f,
-                Layers.geometryMask
-              )
-            )
-            {
-              continue;
-            }
-
-            // Não deixar o inimigo spawnar em cima de paredes.
-            if (hit.point.y > 1f)
-            {
-              continue;
-            }
-
-            var enemy = Instantiate(
-              prefab,
-              hit.point,
-              Quaternion.identity
-            );
-
-            enemies.Add(enemy);
-
-            break;
-          }
-        }
+        script.UpdateColor((Color)color!);
       }
-
-      yield return new WaitForSeconds(enemySpawnSettings.spawnInterval);
     }
   }
 
@@ -214,7 +198,7 @@ public class GameManagerScript : MonoBehaviour
 
   void Start()
   {
-    StartCoroutine(SpawnLoop());
+    HandleStartConfigInitialization();
   }
 
   void Update()

@@ -12,6 +12,8 @@ public class RoomNetwork
   public RoomNode? bossRoom;
   public List<RoomNode>? targetPath;
 
+  public bool hasBossRoomSpawned = false;
+
   public void AddRoom(GameObject room, bool isRoot)
   {
     var roomNode = new RoomNode
