@@ -27,6 +27,7 @@ public class PlayerScript : MonoBehaviour
   // Getters de referência.
   public PlayerInput? GetPlayerInput => playerInput;
   public PlayerBuffs GetPlayerBuffs() => playerBuffs;
+  InventoryHolder InventoryHolder;
 
   System.Collections.IEnumerator AttackRoutine()
   {
@@ -188,6 +189,11 @@ public class PlayerScript : MonoBehaviour
 
   void HandleAttack()
   {
+    InventoryHolder = GetComponent<InventoryHolder>();
+    var weaponDamage = 1f;
+    if(InventoryHolder.InventorySystem.InventorySlots[0].ItemData != null){
+      weaponDamage = InventoryHolder.InventorySystem.InventorySlots[0].ItemData.Damage;
+    }
     var offset2d = currentLookInput.normalized;
     var offset = new Vector3
     {
@@ -213,8 +219,9 @@ public class PlayerScript : MonoBehaviour
 
       if (enemyScript != null)
       {
-        var damage =
-          playerBuffs.baseDamageBuff * playerBuffs.damageMultiplierBuff;
+        var damage = weaponDamage * playerBuffs.baseDamageBuff * playerBuffs.damageMultiplierBuff;
+
+        
 
         enemyDied = enemyScript.InflictDamage(damage);
 
