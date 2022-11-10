@@ -208,9 +208,14 @@ public class GameManagerScript : MonoBehaviour
 
     roomNetwork.DebugDrawEdges();
 
-    if (roomNetwork.targetPath != null)
+    if (roomNetwork.bossRoomPath != null)
     {
-      roomNetwork.DebugDrawPath(roomNetwork.targetPath);
+      roomNetwork.DebugDrawPath(roomNetwork.bossRoomPath, 1f, Color.green);
+    }
+
+    if (roomNetwork.difficultRoomPath != null)
+    {
+      roomNetwork.DebugDrawPath(roomNetwork.difficultRoomPath, 2f, Color.blue);
     }
 #endif
   }

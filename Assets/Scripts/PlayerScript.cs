@@ -90,13 +90,14 @@ public class PlayerScript : MonoBehaviour
           var end = network.bossRoom;
 
           // Calcula o caminho.
-          var path = network.AStar(start, end);
 
-          if (network.targetPath?.Count != path?.Count)
+          var bossRoomPath = network.Bfs(start, end);
+
+          if (network.bossRoomPath?.Count != bossRoomPath?.Count)
           {
             // O tamanho dos caminhos é diferente.
             // É uma certeza mais barata do que loopar conferindo se são iguais.
-            if (network.targetPath != null && path != null)
+            if (network.bossRoomPath != null && bossRoomPath != null)
             {
               // Os paths não são null, compará-los.
 
@@ -104,14 +105,14 @@ public class PlayerScript : MonoBehaviour
 
               // TODO: Salvar a última key qnd atualizar o path para não ter que loopar aq
 
-              foreach (var item in network.targetPath)
+              foreach (var item in network.bossRoomPath)
               {
                 oldPath += $"{item.room.GetInstanceID()} ";
               }
 
               var newPath = "";
 
-              foreach (var item in path)
+              foreach (var item in bossRoomPath)
               {
                 newPath += $"{item.room.GetInstanceID()} ";
               }
@@ -120,7 +121,13 @@ public class PlayerScript : MonoBehaviour
               {
                 // Os paths são diferentes, atualizar o antigo.
 
-                network.targetPath = path;
+                network.bossRoomPath = bossRoomPath;
+
+                if (network.mostDifficultRoom != null)
+                {
+                  network.difficultRoomPath =
+                    network.AStar(start, network.mostDifficultRoom);
+                }
 
                 minimapRedrawn = true;
 
@@ -131,7 +138,13 @@ public class PlayerScript : MonoBehaviour
             {
               // Um dos paths é null, aceitar novo path.
 
-              network.targetPath = path;
+              network.bossRoomPath = bossRoomPath;
+
+              if (network.mostDifficultRoom != null)
+              {
+                network.difficultRoomPath =
+                  network.AStar(start, network.mostDifficultRoom);
+              }
 
               minimapRedrawn = true;
 

@@ -45,7 +45,9 @@ public class MinimapScript : MonoBehaviour
   {
     Debug.Log("Minimap redrawn");
 
-    var targetPath = network.targetPath;
+    var targetBossRoomPath = network.bossRoomPath;
+
+    var targetDifficultRoomPath = network.difficultRoomPath;
 
     foreach (var icon in icons)
     {
@@ -135,19 +137,19 @@ public class MinimapScript : MonoBehaviour
 
       icon.GetComponent<RectTransform>().localPosition = position;
 
-      if (targetPath?.Contains(roomNode) == true)
+      if (targetBossRoomPath?.Contains(roomNode) == true)
       {
-        icon.GetComponent<MinimapIconScript>().Paint(new Color(.3f, .8f, .4f));
+        icon.GetComponent<MinimapIconScript>().Paint(Colors.green);
       }
 
       icons.Add(icon);
     }
 
-    if (targetPath != null)
+    if (targetDifficultRoomPath != null)
     {
       RoomNode? lastItem = null;
 
-      foreach (var item in targetPath)
+      foreach (var item in targetDifficultRoomPath)
       {
         if (lastItem != null)
         {
@@ -172,7 +174,51 @@ public class MinimapScript : MonoBehaviour
 
           var lineRenderer = connection.AddComponent<UILineRenderer>();
 
-          lineRenderer.color = new Color(.2f, .7f, .3f);
+          lineRenderer.color = Colors.red;
+
+          lineRenderer.LineThickness = 6f;
+          lineRenderer.Points = new Vector2[]{
+            Vector2.zero,
+            diff
+          };
+
+          connections.Add(connection);
+        }
+
+        lastItem = item;
+      }
+    }
+
+    if (targetBossRoomPath != null)
+    {
+      RoomNode? lastItem = null;
+
+      foreach (var item in targetBossRoomPath)
+      {
+        if (lastItem != null)
+        {
+          var connection = new GameObject("Connection");
+
+          var positionA = new Vector3
+          {
+            x = item.room.transform.position.x,
+            y = item.room.transform.position.z,
+          } * 1f / minimapScale;
+
+          var positionB = new Vector3
+          {
+            x = lastItem.room.transform.position.x,
+            y = lastItem.room.transform.position.z,
+          } * 1f / minimapScale;
+
+          var diff = positionB - positionA;
+
+          connection.transform.SetParent(connectionsTransform, false);
+          connection.transform.localPosition = positionA;
+
+          var lineRenderer = connection.AddComponent<UILineRenderer>();
+
+          lineRenderer.color = Colors.green;
 
           lineRenderer.LineThickness = 6f;
           lineRenderer.Points = new Vector2[]{

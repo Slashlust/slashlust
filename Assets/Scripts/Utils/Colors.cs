@@ -10,6 +10,8 @@ public static class Colors
   public static Color sunglow = Parse("#FDCA40");
   public static Color spanishGreen = Parse("#018E42");
   public static Color orangePantone = Parse("#FE5F00");
+  public static Color red = Parse("#B2334C");
+  public static Color green = Parse("#33B24C");
 
   static Color Parse(string hex)
   {
