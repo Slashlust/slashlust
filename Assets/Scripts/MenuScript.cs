@@ -1,13 +1,19 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 #nullable enable
 
 public class MenuScript : MonoBehaviour
 {
+  static public MenuScript instance = default!;
+
   Toggle? gamepadDisabledToggle;
   Slider? sFXVolumeSlider;
   Slider? musicVolumeSlider;
+  Button? quitButton;
+  GameObject? deathCard;
+  GameObject? successCard;
 
   void SetGamepadDisabled(bool value, Toggle gamepadDisabledToggle)
   {
@@ -35,8 +41,26 @@ public class MenuScript : MonoBehaviour
     SoundManagerScript.instance.SetMusicAudioSourceVolume(value);
   }
 
+  public void ShowDeathCard()
+  {
+    deathCard?.SetActive(true);
+  }
+
+  public void ShowSuccessCard()
+  {
+    successCard?.SetActive(true);
+  }
+
   void Awake()
   {
+    instance = this;
+
+    deathCard = transform.Find("DeathCard").gameObject;
+    deathCard?.SetActive(false);
+
+    successCard = transform.Find("SuccessCard").gameObject;
+    successCard?.SetActive(false);
+
     gamepadDisabledToggle =
       transform.Find(
         "MenuPanel/Body/ScrollArea/Column/GamepadEnabled/Toggle"
@@ -49,6 +73,10 @@ public class MenuScript : MonoBehaviour
       transform.Find(
         "MenuPanel/Body/ScrollArea/Column/MusicVolume/Slider"
       ).GetComponent<Slider>();
+    quitButton =
+      transform.Find(
+        "MenuPanel/Body/ScrollArea/Column/Quit/Button"
+      ).GetComponent<Button>();
   }
 
   void Start()
@@ -92,6 +120,14 @@ public class MenuScript : MonoBehaviour
         SetMusicVolume(value, musicVolumeSlider);
 
         LocalPrefs.SetMusicVolume(value);
+      });
+    }
+
+    if (quitButton != null)
+    {
+      quitButton.onClick.AddListener(() =>
+      {
+        SceneManager.LoadScene(((int)GameScenes.menuScene), LoadSceneMode.Single);
       });
     }
   }

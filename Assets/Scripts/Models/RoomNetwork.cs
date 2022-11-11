@@ -10,16 +10,20 @@ public class RoomNetwork
     new Dictionary<string, RoomEdge>();
   public RoomNode? root;
   public RoomNode? bossRoom;
-  public List<RoomNode>? targetPath;
+  public RoomNode? mostDifficultRoom;
+  public List<RoomNode>? bossRoomPath;
+  public List<RoomNode>? difficultRoomPath;
 
   public bool hasBossRoomSpawned = false;
 
   public void AddRoom(GameObject room, bool isRoot)
   {
+    var script = room.GetComponent<RoomScript>();
+
     var roomNode = new RoomNode
     {
       room = room,
-      roomScript = room.GetComponent<RoomScript>(),
+      roomScript = script,
     };
 
     roomNodes.Add(room.GetInstanceID(), roomNode);
@@ -27,6 +31,22 @@ public class RoomNetwork
     if (isRoot)
     {
       root = roomNode;
+    }
+
+    if (script.roomType == RoomType.regular)
+    {
+      // Verifica e atualiza o room node de maior dificuldade na rede.
+      if (mostDifficultRoom == null)
+      {
+        mostDifficultRoom = roomNode;
+      }
+      else if (
+        roomNode.roomScript.difficultyIndex
+          > mostDifficultRoom.roomScript.difficultyIndex
+      )
+      {
+        mostDifficultRoom = roomNode;
+      }
     }
   }
 
@@ -42,7 +62,7 @@ public class RoomNetwork
     var cameFrom = new Dictionary<RoomNode, RoomNode>();
 
     // Defina um dicionário para mapear os nós visitados para suas respectivas distâncias
-    var costSoFar = new Dictionary<RoomNode, int>();
+    var costSoFar = new Dictionary<RoomNode, float>();
 
     // Adicione o nó inicial à lista de nós para visitar
     open.Add(start);
@@ -55,7 +75,8 @@ public class RoomNetwork
     {
       // Defina o nó atual como o nó com menor distância na lista de nós para visitar
       var current = open[0];
-      for (int i = 0; i < open.Count; i++)
+
+      for (var i = 0; i < open.Count; i++)
       {
         if (costSoFar[open[i]] < costSoFar[current])
         {
@@ -83,8 +104,16 @@ public class RoomNetwork
           continue;
         }
 
-        // Defina a distância estimada do vizinho como a distância do nó atual + 1
-        int estimatedDistance = costSoFar[current] + 1;
+        var currentDifficulty = current.roomScript.difficultyIndex;
+
+        var targetDifficulty =
+          mostDifficultRoom?.roomScript.difficultyIndex ?? currentDifficulty;
+
+        // Heurística construída com base na progressão da busca em relação à dificuldade
+        var heuristic = currentDifficulty / targetDifficulty;
+
+        // Defina a distância estimada do vizinho como a distância do nó atual + 1 - o peso da heurística
+        var estimatedDistance = costSoFar[current] + 1 - heuristic;
 
         // Se o vizinho ainda não estiver na lista de nós para visitar ou se a distância estimada for menor que a distância registrada para o vizinho
         if (!open.Contains(neighbor) || estimatedDistance < costSoFar[neighbor])
@@ -101,6 +130,44 @@ public class RoomNetwork
 
     // Se o algoritmo chegar aqui, isso significa que não existe um caminho até o nó final
     return null;
+  }
+
+  public List<RoomNode>? Bfs(RoomNode start, RoomNode end)
+  {
+    var previous = new Dictionary<RoomNode, RoomNode>();
+
+    var queue = new Queue<RoomNode>();
+
+    queue.Enqueue(start);
+
+    while (queue.Count > 0)
+    {
+      var vertex = queue.Dequeue();
+
+      foreach (var neighbor in vertex.neighbors)
+      {
+        if (previous.ContainsKey(neighbor))
+        {
+          continue;
+        }
+
+        previous[neighbor] = vertex;
+        queue.Enqueue(neighbor);
+      }
+    }
+
+    var path = new List<RoomNode> { };
+
+    while (!end.Equals(start))
+    {
+      path.Add(end);
+      end = previous[end];
+    }
+
+    path.Add(start);
+    path.Reverse();
+
+    return path;
   }
 
   public void ConnectRooms(int instanceIDA, int instanceIDB)
@@ -151,7 +218,7 @@ public class RoomNetwork
     }
   }
 
-  public void DebugDrawPath(List<RoomNode> path)
+  public void DebugDrawPath(List<RoomNode> path, float offset, Color color)
   {
     RoomNode? roomNodeCache = null;
 
@@ -160,9 +227,9 @@ public class RoomNetwork
       if (roomNodeCache != null)
       {
         Debug.DrawLine(
-          roomNode.room.transform.position + Vector3.up,
-          roomNodeCache.room.transform.position + Vector3.up,
-          Color.green
+          roomNode.room.transform.position + Vector3.up * offset,
+          roomNodeCache.room.transform.position + Vector3.up * offset,
+          color
         );
       }
 

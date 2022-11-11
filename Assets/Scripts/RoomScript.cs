@@ -77,9 +77,8 @@ public class RoomScript : MonoBehaviour
 
               var deadEndRoom = deadEnd.GetComponent<DeadEndScript>().room;
 
-              // TODO: Talvez não seja necessário, mas removendo a layer de
-              // geometry do dead end para evitar que ele impacte nos raycasts ou
-              // geração do navmesh
+              // Removendo a layer de geometry do dead end para evitar que ele
+              // impacte nos raycasts ou geração do navmesh
               deadEnd.layer = Layers.defaultLayer;
 
               Destroy(deadEnd);
@@ -229,6 +228,11 @@ public class RoomScript : MonoBehaviour
 
   public void SpawnEnemies()
   {
+    if (GameManagerScript.instance.isGameBeaten)
+    {
+      return;
+    }
+
     var manager = GameManagerScript.instance;
     var settings = manager.GetEnemySpawnSettings;
 
@@ -336,7 +340,8 @@ public class RoomScript : MonoBehaviour
 
       GenerateRooms();
 
-      // TODO: Melhorar workaround pra geração do navmesh funcionar mesmo com a lógica de remover paredes
+      // Workaround pra geração do navmesh funcionar mesmo com a lógica de
+      // remover paredes
       StartCoroutine(BakeNavMesh());
 
       manager.GetPlayerScript?.CalculatePath(true);

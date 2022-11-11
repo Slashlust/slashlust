@@ -16,6 +16,7 @@ public class GameManagerScript : MonoBehaviour
   GameObject? floatingTextPrefab;
 
   public bool isNavMeshBaked = false;
+  public bool isGameBeaten = false;
 
   // Referência.
   public GameObject? currentRoom;
@@ -78,6 +79,15 @@ public class GameManagerScript : MonoBehaviour
     GetComponent<NavMeshSurface>().BuildNavMesh();
 
     isNavMeshBaked = true;
+  }
+
+  public void ClearGame()
+  {
+    isGameBeaten = true;
+
+    MenuScript.instance.ShowSuccessCard();
+
+    KillAllEnemies();
   }
 
   public void DisableGamepad()
@@ -153,6 +163,14 @@ public class GameManagerScript : MonoBehaviour
     }
   }
 
+  public void KillAllEnemies()
+  {
+    foreach (var enemy in enemies.ToArray())
+    {
+      KillEnemy(enemy);
+    }
+  }
+
   public void KillEnemy(GameObject enemy)
   {
     enemies.Remove(enemy);
@@ -174,6 +192,11 @@ public class GameManagerScript : MonoBehaviour
         script.UpdateColor((Color)color!);
       }
     }
+  }
+
+  public void UnsetPLayer()
+  {
+    player = null;
   }
 
   void Awake()
@@ -208,9 +231,14 @@ public class GameManagerScript : MonoBehaviour
 
     roomNetwork.DebugDrawEdges();
 
-    if (roomNetwork.targetPath != null)
+    if (roomNetwork.bossRoomPath != null)
     {
-      roomNetwork.DebugDrawPath(roomNetwork.targetPath);
+      roomNetwork.DebugDrawPath(roomNetwork.bossRoomPath, 1f, Color.green);
+    }
+
+    if (roomNetwork.difficultRoomPath != null)
+    {
+      roomNetwork.DebugDrawPath(roomNetwork.difficultRoomPath, 2f, Color.blue);
     }
 #endif
   }

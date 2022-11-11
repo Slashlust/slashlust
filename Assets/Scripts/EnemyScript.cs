@@ -4,8 +4,6 @@ using UnityEngine.AI;
 
 #nullable enable
 
-// TODO: Adicionar efeito de fumaça na morte do inimigo
-
 public class EnemyScript : MonoBehaviour
 {
   [Min(1f)]
@@ -18,6 +16,8 @@ public class EnemyScript : MonoBehaviour
   public EnemyType enemyType = EnemyType.melee;
 
   public GameObject? deathEffectPrefab;
+
+  public bool isBoss = false;
 
   NavMeshAgent? agent;
   GameObject? player;
@@ -33,6 +33,11 @@ public class EnemyScript : MonoBehaviour
     DropItems();
 
     GameManagerScript.instance?.KillEnemy(gameObject);
+
+    if (isBoss)
+    {
+      GameManagerScript.instance?.ClearGame();
+    }
   }
 
   void DropItems()
@@ -83,10 +88,6 @@ public class EnemyScript : MonoBehaviour
     Debug.DrawLine(transform.position, player.transform.position);
 #endif
 
-    // TODO: Só aumentar o tick de mover pro player target se o player estiver perto
-
-    // TODO: Implementar lógica de movimentação
-
     if (GameManagerScript.instance.isNavMeshBaked)
     {
       agent.destination = player.transform.position;
@@ -127,6 +128,16 @@ public class EnemyScript : MonoBehaviour
     rangedAttackScript?.Attack();
   }
 
+  System.Collections.IEnumerator UpdatePlayer()
+  {
+    while (true)
+    {
+      player = GameManagerScript.instance.GetPlayer;
+
+      yield return new WaitForSeconds(1f);
+    }
+  }
+
   void Awake()
   {
     hitPoints = initialHitPoints;
@@ -135,8 +146,11 @@ public class EnemyScript : MonoBehaviour
 
     meleeAttackScript = GetComponent<MeleeAttackScript>();
     rangedAttackScript = GetComponent<RangedAttackScript>();
+  }
 
-    player = GameObject.Find("Player");
+  void Start()
+  {
+    StartCoroutine(UpdatePlayer());
   }
 
   void FixedUpdate()

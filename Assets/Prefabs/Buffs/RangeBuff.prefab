@@ -86,7 +86,7 @@ MonoBehaviour:
     damageMultiplierBuff: 0.02
     baseMovementSpeedBuff: 0
     movementSpeedMultiplierBuff: 0
-    baseAttackRangeBuff: 0.01
+    baseAttackRangeBuff: 0.05
     attackRangeMultiplierBuff: 0.02
   buffTypes: 0000000001000000
 --- !u!54 &6724353180413059167
