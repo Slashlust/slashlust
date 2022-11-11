@@ -4,8 +4,6 @@ using UnityEngine.AI;
 
 #nullable enable
 
-// TODO: Adicionar efeito de fumaça na morte do inimigo
-
 public class EnemyScript : MonoBehaviour
 {
   [Min(1f)]
@@ -89,10 +87,6 @@ public class EnemyScript : MonoBehaviour
 #if UNITY_EDITOR
     Debug.DrawLine(transform.position, player.transform.position);
 #endif
-
-    // TODO: Só aumentar o tick de mover pro player target se o player estiver perto
-
-    // TODO: Implementar lógica de movimentação
 
     if (GameManagerScript.instance.isNavMeshBaked)
     {

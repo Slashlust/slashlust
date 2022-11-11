@@ -4,8 +4,6 @@ using UnityEngine.Video;
 
 #nullable enable
 
-// TODO: Melhorar mecância de ataque com cooldown
-
 public class PlayerScript : MonoBehaviour
 {
   // Referência.
@@ -203,7 +201,6 @@ public class PlayerScript : MonoBehaviour
       return;
     }
 
-    // TODO: Melhorar mecânica de ataque e autoswing com delay antes e após ataque e lock melhor
     if (attackLock)
     {
       return;
