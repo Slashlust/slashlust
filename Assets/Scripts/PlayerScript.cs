@@ -26,7 +26,7 @@ public class PlayerScript : MonoBehaviour
   // Getters de referência.
   public PlayerInput? GetPlayerInput => playerInput;
   public PlayerBuffs GetPlayerBuffs() => playerBuffs;
-  InventoryHolder InventoryHolder;
+  InventoryHolder? InventoryHolder;
 
   System.Collections.IEnumerator AttackRoutine()
   {
@@ -219,7 +219,8 @@ public class PlayerScript : MonoBehaviour
   {
     InventoryHolder = GetComponent<InventoryHolder>();
     var weaponDamage = 1f;
-    if(InventoryHolder.InventorySystem.InventorySlots[0].ItemData != null){
+    if (InventoryHolder.InventorySystem.InventorySlots[0].ItemData != null)
+    {
       weaponDamage = InventoryHolder.InventorySystem.InventorySlots[0].ItemData.Damage;
     }
     Debug.Log("weaponDamage = " + weaponDamage);
@@ -526,11 +527,12 @@ public class PlayerScript : MonoBehaviour
     GUI.Label(new Rect(100, 16, 100, 20), $"Kill count: {killCount}");
   }
 
-  void SetWeapon(){
-
+  void SetWeapon()
+  {
     InventoryHolder = GetComponent<InventoryHolder>();
     var equippedWeaponName = "empty";
-    if(InventoryHolder.InventorySystem.InventorySlots[0].ItemData != null){
+    if (InventoryHolder.InventorySystem.InventorySlots[0].ItemData != null)
+    {
       equippedWeaponName = InventoryHolder.InventorySystem.InventorySlots[0].ItemData.DisplayName;
     }
     var weapons = transform.Find("DogPolyart/root/pelvis/Weapon").gameObject;
@@ -541,7 +543,9 @@ public class PlayerScript : MonoBehaviour
       if (child.name != equippedWeaponName)
       {
         child.SetActive(false);
-      }else{
+      }
+      else
+      {
         child.SetActive(true);
       }
     }
