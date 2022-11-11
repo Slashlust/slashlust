@@ -4,8 +4,6 @@ using UnityEngine.Video;
 
 #nullable enable
 
-// TODO: Melhorar mecância de ataque com cooldown
-
 public class PlayerScript : MonoBehaviour
 {
   // Referência.
@@ -23,6 +21,7 @@ public class PlayerScript : MonoBehaviour
 
   int killCount;
   bool attackLock;
+  bool isDead = false;
 
   // Getters de referência.
   public PlayerInput? GetPlayerInput => playerInput;
@@ -31,23 +30,26 @@ public class PlayerScript : MonoBehaviour
 
   System.Collections.IEnumerator AttackRoutine()
   {
-    anima?.SetBool("attack", true);
-    attackLock = true;
-
-    yield return new WaitForSeconds(0.2f);
-
-    SoundManagerScript.instance.PlaySwordSwing();
-
-    yield return new WaitForSeconds(0.2f);
-
-    HandleAttack();
-
-    anima?.SetBool("attack", false);
-    attackLock = false;
-
-    if (playerInput?.actions["Look"].ReadValue<Vector2>().magnitude > .5f)
+    if (!isDead)
     {
-      StartCoroutine(AttackRoutine());
+      anima?.SetBool("attack", true);
+      attackLock = true;
+
+      yield return new WaitForSeconds(0.2f);
+
+      SoundManagerScript.instance.PlaySwordSwing();
+
+      yield return new WaitForSeconds(0.2f);
+
+      HandleAttack();
+
+      anima?.SetBool("attack", false);
+      attackLock = false;
+
+      if (playerInput?.actions["Look"].ReadValue<Vector2>().magnitude > .5f)
+      {
+        StartCoroutine(AttackRoutine());
+      }
     }
   }
 
@@ -91,28 +93,27 @@ public class PlayerScript : MonoBehaviour
           var end = network.bossRoom;
 
           // Calcula o caminho.
-          var path = network.AStar(start, end);
 
-          if (network.targetPath?.Count != path?.Count)
+          var bossRoomPath = network.Bfs(start, end);
+
+          if (network.bossRoomPath?.Count != bossRoomPath?.Count)
           {
             // O tamanho dos caminhos é diferente.
             // É uma certeza mais barata do que loopar conferindo se são iguais.
-            if (network.targetPath != null && path != null)
+            if (network.bossRoomPath != null && bossRoomPath != null)
             {
               // Os paths não são null, compará-los.
 
               var oldPath = "";
 
-              // TODO: Salvar a última key qnd atualizar o path para não ter que loopar aq
-
-              foreach (var item in network.targetPath)
+              foreach (var item in network.bossRoomPath)
               {
                 oldPath += $"{item.room.GetInstanceID()} ";
               }
 
               var newPath = "";
 
-              foreach (var item in path)
+              foreach (var item in bossRoomPath)
               {
                 newPath += $"{item.room.GetInstanceID()} ";
               }
@@ -121,7 +122,13 @@ public class PlayerScript : MonoBehaviour
               {
                 // Os paths são diferentes, atualizar o antigo.
 
-                network.targetPath = path;
+                network.bossRoomPath = bossRoomPath;
+
+                if (network.mostDifficultRoom != null)
+                {
+                  network.difficultRoomPath =
+                    network.AStar(start, network.mostDifficultRoom);
+                }
 
                 minimapRedrawn = true;
 
@@ -132,7 +139,13 @@ public class PlayerScript : MonoBehaviour
             {
               // Um dos paths é null, aceitar novo path.
 
-              network.targetPath = path;
+              network.bossRoomPath = bossRoomPath;
+
+              if (network.mostDifficultRoom != null)
+              {
+                network.difficultRoomPath =
+                  network.AStar(start, network.mostDifficultRoom);
+              }
 
               minimapRedrawn = true;
 
@@ -153,6 +166,11 @@ public class PlayerScript : MonoBehaviour
   {
     while (true)
     {
+      if (isDead)
+      {
+        break;
+      }
+
       CalculatePath(false);
 
       yield return new WaitForSeconds(1f);
@@ -161,19 +179,29 @@ public class PlayerScript : MonoBehaviour
 
   void Die()
   {
-    // TODO: Implementar funcionalidade do player morrer
+    isDead = true;
 
-    // TODO: Adicionar som de morte do player
+    GameManagerScript.instance.UnsetPLayer();
+
+    transform.Find("DogPolyart").gameObject.SetActive(false);
+    transform.Find("PlayerHitPointsBar").gameObject.SetActive(false);
+    transform.Find("DropCollider").gameObject.SetActive(false);
+
+    MenuScript.instance.ShowDeathCard();
   }
 
   public void Fire(InputAction.CallbackContext context)
   {
+    if (isDead)
+    {
+      return;
+    }
+
     if (GameManagerScript.instance.GetMenuState == MenuState.open)
     {
       return;
     }
 
-    // TODO: Melhorar mecânica de ataque e autoswing com delay antes e após ataque e lock melhor
     if (attackLock)
     {
       return;
@@ -305,6 +333,11 @@ public class PlayerScript : MonoBehaviour
 
   void HandleMouseAndKeyboardInput()
   {
+    if (isDead)
+    {
+      return;
+    }
+
     if (GameManagerScript.instance.GetControlState == ControlState.keyboard)
     {
       var mousePosition = Mouse.current.position;
@@ -318,6 +351,11 @@ public class PlayerScript : MonoBehaviour
 
   void HandleMovement(CharacterController controller)
   {
+    if (isDead)
+    {
+      return;
+    }
+
     var targetMoveInput =
       GameManagerScript.instance.GetMenuState == MenuState.open
       ? Vector2.zero : currentMoveInput;
@@ -370,6 +408,11 @@ public class PlayerScript : MonoBehaviour
 
   public void Look(InputAction.CallbackContext context)
   {
+    if (isDead)
+    {
+      return;
+    }
+
     var value = context.ReadValue<Vector2>();
 
     if (
@@ -392,6 +435,11 @@ public class PlayerScript : MonoBehaviour
   // relacionado ao input.
   public void Move()
   {
+    if (isDead)
+    {
+      return;
+    }
+
     var value = Vector2.zero;
 
     currentMoveInput = value;
@@ -399,6 +447,11 @@ public class PlayerScript : MonoBehaviour
 
   public void Move(InputAction.CallbackContext context)
   {
+    if (isDead)
+    {
+      return;
+    }
+
     var value = context.ReadValue<Vector2>();
 
     if (
@@ -426,6 +479,11 @@ public class PlayerScript : MonoBehaviour
 
   public void TakeDamage(float damage)
   {
+    if (isDead)
+    {
+      return;
+    }
+
     var newHitPoints = playerBuffs.baseHitPoints - damage;
 
     GameManagerScript.instance.SpawnFloatingText(
