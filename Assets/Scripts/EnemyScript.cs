@@ -19,6 +19,8 @@ public class EnemyScript : MonoBehaviour
 
   public GameObject? deathEffectPrefab;
 
+  public bool isBoss = false;
+
   NavMeshAgent? agent;
   GameObject? player;
   MeleeAttackScript? meleeAttackScript;
@@ -33,6 +35,11 @@ public class EnemyScript : MonoBehaviour
     DropItems();
 
     GameManagerScript.instance?.KillEnemy(gameObject);
+
+    if (isBoss)
+    {
+      GameManagerScript.instance?.ClearGame();
+    }
   }
 
   void DropItems()
@@ -127,6 +134,16 @@ public class EnemyScript : MonoBehaviour
     rangedAttackScript?.Attack();
   }
 
+  System.Collections.IEnumerator UpdatePlayer()
+  {
+    while (true)
+    {
+      player = GameManagerScript.instance.GetPlayer;
+
+      yield return new WaitForSeconds(1f);
+    }
+  }
+
   void Awake()
   {
     hitPoints = initialHitPoints;
@@ -135,8 +152,11 @@ public class EnemyScript : MonoBehaviour
 
     meleeAttackScript = GetComponent<MeleeAttackScript>();
     rangedAttackScript = GetComponent<RangedAttackScript>();
+  }
 
-    player = GameObject.Find("Player");
+  void Start()
+  {
+    StartCoroutine(UpdatePlayer());
   }
 
   void FixedUpdate()

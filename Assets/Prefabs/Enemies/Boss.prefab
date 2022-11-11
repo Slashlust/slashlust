@@ -122,6 +122,7 @@ MonoBehaviour:
   minRange: 0
   enemyType: 0
   deathEffectPrefab: {fileID: 1390118265774136416, guid: a17030364649a5944926716399bd79f7, type: 3}
+  isBoss: 1
 --- !u!114 &2244221387408746164
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -12,17 +12,16 @@
 
  
 
-- [About](#about)
-- [Built With](#built-with)
-- [Getting Started](#getting-started)
-  - [Prerequisites](#prerequisites)
-- [Resources](#resources)
-- [License](#license)
-- [Credits](#credits)
-  - [Music](#music)
-  - [SFX](#sfx)
-  - [Background](#background)
-- [Members](#members)
+* [About](#about)
+* [Built With](#built-with)
+  + [Prerequisites](#prerequisites)
+* [Resources](#resources)
+* [License](#license)
+* [Credits](#credits)
+  + [Music](#music)
+  + [SFX](#sfx)
+  + [Background](#background)
+* [Members](#members)
 
 ## About 
 
@@ -39,10 +38,6 @@ The team decided to make a game in the style of hack 'n slash with inspirations 
 ## Built With
 
 * ``Unity 2021.3.6f1 7da38d85baf6 - unityhub://2021.3.6f1/7da38d85baf6``
-
-## Getting Started
-
-TODO: Getting started
 
 ### Prerequisites
 

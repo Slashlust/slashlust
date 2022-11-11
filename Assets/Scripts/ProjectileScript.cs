@@ -19,8 +19,6 @@ public class ProjectileScript : MonoBehaviour
   {
     var collider = collision.collider;
 
-    // TODO: Fazer lógica de refletir o projétil
-
     if (collider.gameObject.layer == Layers.geometryLayer)
     {
       Despawn();
