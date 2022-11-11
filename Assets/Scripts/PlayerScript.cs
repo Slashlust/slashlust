@@ -26,6 +26,7 @@ public class PlayerScript : MonoBehaviour
   // Getters de referência.
   public PlayerInput? GetPlayerInput => playerInput;
   public PlayerBuffs GetPlayerBuffs() => playerBuffs;
+  InventoryHolder? InventoryHolder;
 
   System.Collections.IEnumerator AttackRoutine()
   {
@@ -216,6 +217,13 @@ public class PlayerScript : MonoBehaviour
 
   void HandleAttack()
   {
+    InventoryHolder = GetComponent<InventoryHolder>();
+    var weaponDamage = 1f;
+    if (InventoryHolder.InventorySystem.InventorySlots[0].ItemData != null)
+    {
+      weaponDamage = InventoryHolder.InventorySystem.InventorySlots[0].ItemData.Damage;
+    }
+    Debug.Log("weaponDamage = " + weaponDamage);
     var offset2d = currentLookInput.normalized;
     var offset = new Vector3
     {
@@ -241,8 +249,8 @@ public class PlayerScript : MonoBehaviour
 
       if (enemyScript != null)
       {
-        var damage =
-          playerBuffs.baseDamageBuff * playerBuffs.damageMultiplierBuff;
+        var damage = weaponDamage * playerBuffs.baseDamageBuff * playerBuffs.damageMultiplierBuff;
+        Debug.Log("totalDamage = " + damage);
 
         enemyDied = enemyScript.InflictDamage(damage);
 
@@ -519,15 +527,39 @@ public class PlayerScript : MonoBehaviour
     GUI.Label(new Rect(100, 16, 100, 20), $"Kill count: {killCount}");
   }
 
+  void SetWeapon()
+  {
+    InventoryHolder = GetComponent<InventoryHolder>();
+    var equippedWeaponName = "empty";
+    if (InventoryHolder.InventorySystem.InventorySlots[0].ItemData != null)
+    {
+      equippedWeaponName = InventoryHolder.InventorySystem.InventorySlots[0].ItemData.DisplayName;
+    }
+    var weapons = transform.Find("DogPolyart/root/pelvis/Weapon").gameObject;
+
+    for (int i = 0; i < weapons.transform.childCount; i++)
+    {
+      GameObject child = weapons.transform.GetChild(i).gameObject;
+      if (child.name != equippedWeaponName)
+      {
+        child.SetActive(false);
+      }
+      else
+      {
+        child.SetActive(true);
+      }
+    }
+  }
+
   void Start()
   {
     HandleConfigInitialization();
-
     StartCoroutine(CalculatePathLoop());
   }
 
   void Update()
   {
+    SetWeapon();
     var manager = GameManagerScript.instance;
 
     switch (manager.GetMenuState)

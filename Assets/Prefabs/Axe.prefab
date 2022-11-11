@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6685588177341926650}
   - component: {fileID: 446580309450626146}
   - component: {fileID: 7006137615273775628}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Axe
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -73,7 +73,7 @@ GameObject:
   - component: {fileID: 7936118471956355810}
   - component: {fileID: 7936118471955224610}
   - component: {fileID: 7936118471966684450}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: twoHandedAxe
   m_TagString: Untagged
   m_Icon: {fileID: 0}

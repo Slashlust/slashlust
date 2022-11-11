@@ -17,4 +17,4 @@ MonoBehaviour:
   Description: its a sword :D
   Icon: {fileID: 21300000, guid: b20bb1f822693463499065afa6c27f4c, type: 3}
   MaxStackSize: 2
-  Damage: 10
+  Damage: 1.1

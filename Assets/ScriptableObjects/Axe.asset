@@ -17,4 +17,4 @@ MonoBehaviour:
   Description: it is an axe :)
   Icon: {fileID: 21300000, guid: 467bc45910efb4d96a94a325403607b5, type: 3}
   MaxStackSize: 1
-  Damage: 8
+  Damage: 1.2
